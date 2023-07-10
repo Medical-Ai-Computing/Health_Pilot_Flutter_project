@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:healthpilot/data/contants.dart';
-import 'package:healthpilot/screens/on_boarding_screens/home_screen.dart';
+import 'package:healthpilot/screens/on_boarding_screens/physical_therapy_screen.dart';
 
 void main() {
   runApp(const HealthPilotApp());

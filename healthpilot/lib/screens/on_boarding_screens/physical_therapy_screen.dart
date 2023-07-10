@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:healthpilot/data/contants.dart';
+import 'package:healthpilot/theme/app_theme.dart';
 
 class PhysicalTherapyScreen extends StatefulWidget {
   const PhysicalTherapyScreen({super.key});
@@ -13,8 +14,13 @@ class _PhysicalTherapyScreenState extends State<PhysicalTherapyScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return SafeArea(
       child: Scaffold(
+        appBar: AppBar(
+          centerTitle: true,
+          title: const Text('Health Pilot'),
+        ),
         body: Column(children: [
           Padding(
             padding: const EdgeInsets.symmetric(
@@ -24,47 +30,37 @@ class _PhysicalTherapyScreenState extends State<PhysicalTherapyScreen> {
               image: AssetImage(physicalTherapy),
             ),
           ),
-          const SizedBox(
-            height: 44.95,
+          SizedBox(
+            height: size.height * 0.059,
           ),
           Container(
-            width: 290,
-            height: 61,
-            child: const Text(
-              'Consult with specialists about your health.',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                  fontSize: 20,
-                  color: Color.fromRGBO(42, 42, 42, 1),
-                  fontFamily: 'Plus Jakarta Sans',
-                  fontWeight: FontWeight.w600),
-            ),
+            width: size.width * 0.705,
+            height: size.height * 0.072,
+            child: const Text(descriptionTextForSpecialist,
+                textAlign: TextAlign.center,
+                style: AppTheme.descriptionTextForSpecialistStyle),
           ),
-          const SizedBox(
-            height: 22,
+          SizedBox(
+            height: size.height * 0.026,
           ),
           Container(
-            width: 290,
-            height: 61,
-            child: const Text(
-              'Get access to our ranged health professionals and start feeling better.',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                  fontSize: 14,
-                  color: Color.fromRGBO(42, 42, 42, 0.5),
-                  fontFamily: 'Plus Jakarta Sans',
-                  fontWeight: FontWeight.w400),
-            ),
+            width: size.width * 0.705,
+            height: size.height * 0.072,
+            child: const Text(helperTextForUser,
+                textAlign: TextAlign.center,
+                style: AppTheme.helperTextForUserStyle),
           ),
-          const SizedBox(
-            height: 22,
+          SizedBox(
+            height: size.height * 0.026,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               for (int i = 0; i < 3; i++)
                 Container(
-                  width: _currentPage == i ? 29 : 10,
+                  width: _currentPage == i
+                      ? size.width * 0.07
+                      : size.width * 0.024,
                   height: 10,
                   margin: const EdgeInsets.symmetric(horizontal: 4),
                   decoration: BoxDecoration(
@@ -78,8 +74,8 @@ class _PhysicalTherapyScreenState extends State<PhysicalTherapyScreen> {
                 ),
             ],
           ),
-          const SizedBox(
-            height: 46,
+          SizedBox(
+            height: size.height * 0.054,
           ),
           GestureDetector(
             onTap: () {},
