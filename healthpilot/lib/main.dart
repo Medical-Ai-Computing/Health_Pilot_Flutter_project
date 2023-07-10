@@ -1,85 +1,61 @@
 import 'package:flutter/material.dart';
+import 'package:healthpilot/data/contants.dart';
+import 'package:healthpilot/screens/on_boarding_screens/physical_therapy_screen.dart';
 
 void main() {
-  runApp(HealthPilotApp());
+  runApp(const HealthPilotApp());
 }
 
 class HealthPilotApp extends StatelessWidget {
+  const HealthPilotApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Health Pilot',
       theme: ThemeData(
         primarySwatch: Colors.blue,
         fontFamily: 'Roboto', // Example font family
       ),
-      home: WelcomeScreen(),
+      home: const WelcomeScreen(),
     );
   }
 }
 
-class WelcomeScreen extends StatelessWidget {
+class WelcomeScreen extends StatefulWidget {
+  const WelcomeScreen({super.key});
+
+  @override
+  State<WelcomeScreen> createState() => _WelcomeScreenState();
+}
+
+class _WelcomeScreenState extends State<WelcomeScreen> {
+  void goToNextScreen() {
+    Future.delayed(const Duration(seconds: 2), () {
+      // Navigate to the next screen
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const PhysicalTherapyScreen()),
+      );
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    goToNextScreen();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Health Pilot'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Welcome to',
-              style: TextStyle(
-                fontSize: 24.0,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            Text(
-              'Health Pilot',
-              style: TextStyle(
-                fontSize: 36.0,
-                fontWeight: FontWeight.bold,
-                color: Colors.blue,
-              ),
-            ),
-            SizedBox(height: 16.0),
-            Text(
-              'Expert Health Assistance',
-              style: TextStyle(
-                fontSize: 20.0,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            SizedBox(height: 8.0),
-            Text(
-              'Our team of expert health assistance is available to help you improve your well-being.',
-              style: TextStyle(
-                fontSize: 16.0,
-                fontStyle: FontStyle.italic,
-              ),
-            ),
-            SizedBox(height: 16.0),
-            Text(
-              'Consult with Specialists',
-              style: TextStyle(
-                fontSize: 20.0,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            SizedBox(height: 8.0),
-            Text(
-              'Consult with specialists about your health.',
-              style: TextStyle(
-                fontSize: 16.0,
-                fontStyle: FontStyle.italic,
-              ),
-            ),
-          ],
-        ),
-      ),
+    return SafeArea(
+      child: Scaffold(
+          appBar: AppBar(
+            centerTitle: true,
+            title: const Text('Health Pilot'),
+          ),
+          body: const Center(child: Image(image: AssetImage(welcomeLogo)))),
     );
   }
 }
