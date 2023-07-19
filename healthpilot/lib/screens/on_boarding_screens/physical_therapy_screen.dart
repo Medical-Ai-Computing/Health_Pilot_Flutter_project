@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:healthpilot/data/contants.dart';
+import 'package:healthpilot/data/constants.dart';
+import 'package:healthpilot/screens/user_initial_info_Screens/get_started_screen.dart';
 import 'package:healthpilot/theme/app_theme.dart';
 
 class PhysicalTherapyScreen extends StatefulWidget {
@@ -207,12 +208,11 @@ class _PhysicalTherapyScreenState extends State<PhysicalTherapyScreen> {
                       });
                     }
                     if (_currentPage == pages.length - 1) {
-                      setState(() {
-                        _pageController.previousPage(
-                          duration: const Duration(milliseconds: 300),
-                          curve: Curves.easeOut,
-                        );
-                      });
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => GetStartedScreen(),
+                          ));
                     }
                     print('_currentPage:$_currentPage');
                   },

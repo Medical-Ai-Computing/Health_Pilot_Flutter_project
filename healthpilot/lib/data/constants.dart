@@ -14,3 +14,6 @@ const String descriptionTextForSpecialist =
 const String expertAssistance = 'Expert Health Assistance.';
 const String chatBotText =
     'Chat with our AI to obtain answers to any health-related questions.';
+
+const String appBarTitleImage = 'assets/images/Vector.png';
+const String letsStartAppBarTitle = "Let's Get Started";
