@@ -211,10 +211,9 @@ class _PhysicalTherapyScreenState extends State<PhysicalTherapyScreen> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => GetStartedScreen(),
+                            builder: (context) => const GetStartedScreen(),
                           ));
                     }
-                    print('_currentPage:$_currentPage');
                   },
                   child: Container(
                     alignment: Alignment.center,

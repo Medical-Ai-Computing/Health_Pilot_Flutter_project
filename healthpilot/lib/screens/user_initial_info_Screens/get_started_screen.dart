@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_ruler_picker/flutter_ruler_picker.dart';
 import '/widget/custom_app_bar_title.dart';
 
 import '../../data/constants.dart';
@@ -15,6 +16,13 @@ class GetStartedScreen extends StatefulWidget {
 class _GetStartedScreenState extends State<GetStartedScreen> {
   double tickWidth = 1.0;
   int selectedAge = 18;
+  RulerPickerController? _rulerPickerController;
+  int currentValue = 18;
+  @override
+  void initState() {
+    super.initState();
+    _rulerPickerController = RulerPickerController(value: 0);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -92,76 +100,41 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
               ],
             ),
           ),
-          SizedBox(
-            height: 100,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: 100,
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              itemBuilder: (context, index) {
-                return GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      selectedAge = index + 1;
-                    });
-                  },
-                  child: SizedBox(
-                    height: 40,
-                    width: 22,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        selectedAge == index + 1
-                            ? Container(
-                                alignment: Alignment.topLeft,
-                                height: 10,
-                                width: 30,
-                                child: const Icon(
-                                  Icons.arrow_drop_down,
-                                  color: Color.fromRGBO(110, 182, 255, 1),
-                                ),
-                              )
-                            : const Text(''),
-                        SizedBox(
-                          width: tickWidth,
-                          height: (index + 1) % 5 == 0 || index == 0 ? 15 : 10,
-                          child: ListView.separated(
-                              scrollDirection: Axis.horizontal,
-                              padding: EdgeInsets.zero,
-                              itemBuilder: (context, innerIndex) {
-                                return Container(
-                                  width: tickWidth,
-                                  color: selectedAge == index + 1
-                                      ? const Color.fromRGBO(110, 182, 255, 1)
-                                      : const Color.fromRGBO(42, 42, 42, 1),
-                                );
-                              },
-                              separatorBuilder: (context, innerIndex) {
-                                return const SizedBox(
-                                  width: 1,
-                                );
-                              },
-                              itemCount: 1),
-                        ),
-                        Text(
-                          index == 0
-                              ? (index + 1).toString()
-                              : (index + 1) % 5 == 0
-                                  ? ((index + 1)).toString()
-                                  : '',
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            color: selectedAge == index + 1
-                                ? const Color.fromRGBO(110, 182, 255, 1)
-                                : const Color.fromRGBO(42, 42, 42, 1),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
+          Container(
+            margin: const EdgeInsets.only(top: 8),
+            child: RulerPicker(
+              controller: _rulerPickerController,
+              beginValue: 0,
+              endValue: 100,
+              initValue: currentValue,
+              // onBuildRulerScalueText: (index, rulerScaleValue) {
+              //   print('rulerScaleValue:$rulerScaleValue');
+              //   print('index:$index');
+              //   return index.toString();
+              // },
+              rulerScaleTextStyle: TextStyle(
+                  color: currentValue == _rulerPickerController!.value
+                      ? Colors.amber
+                      : Colors.grey),
+              rulerBackgroundColor: Colors.grey.shade200,
+              scaleLineStyleList: const [
+                ScaleLineStyle(
+                    color: Colors.grey, width: 1.5, height: 30, scale: 0),
+                ScaleLineStyle(
+                    color: Colors.red, width: 1, height: 25, scale: 5),
+                ScaleLineStyle(
+                    color: Colors.green, width: 1, height: 15, scale: -1)
+              ],
+              onValueChange: (value) {
+                setState(() {
+                  currentValue = value;
+                });
+                print('currentValue:$currentValue');
+                print('value:${_rulerPickerController!.value}');
               },
+              width: MediaQuery.of(context).size.width * 1,
+              height: 80,
+              rulerMarginTop: 8,
             ),
           ),
           Padding(
@@ -185,78 +158,6 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
                         fontWeight: FontWeight.w600,
                         fontFamily: 'Plus Jakarta Sans'))
               ],
-            ),
-          ),
-          SizedBox(
-            height: 100,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: 100,
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              itemBuilder: (context, index) {
-                return GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      selectedAge = index + 1;
-                    });
-                  },
-                  child: SizedBox(
-                    height: 40,
-                    width: 22,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        selectedAge == index + 1
-                            ? Container(
-                                alignment: Alignment.topLeft,
-                                height: 10,
-                                width: 30,
-                                child: const Icon(
-                                  Icons.arrow_drop_down,
-                                  color: Color.fromRGBO(110, 182, 255, 1),
-                                ),
-                              )
-                            : const Text(''),
-                        SizedBox(
-                          width: tickWidth,
-                          height: (index + 1) % 5 == 0 || index == 0 ? 15 : 10,
-                          child: ListView.separated(
-                              scrollDirection: Axis.horizontal,
-                              padding: EdgeInsets.zero,
-                              itemBuilder: (context, innerIndex) {
-                                return Container(
-                                  width: tickWidth,
-                                  color: selectedAge == index + 1
-                                      ? const Color.fromRGBO(110, 182, 255, 1)
-                                      : const Color.fromRGBO(42, 42, 42, 1),
-                                );
-                              },
-                              separatorBuilder: (context, innerIndex) {
-                                return const SizedBox(
-                                  width: 1,
-                                );
-                              },
-                              itemCount: 1),
-                        ),
-                        Text(
-                          index == 0
-                              ? (index + 1).toString()
-                              : (index + 1) % 5 == 0
-                                  ? ((index + 1)).toString()
-                                  : '',
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            color: selectedAge == index + 1
-                                ? const Color.fromRGBO(110, 182, 255, 1)
-                                : const Color.fromRGBO(42, 42, 42, 1),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
             ),
           ),
         ],

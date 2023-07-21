@@ -70,6 +70,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.2"
+  flutter_ruler_picker:
+    dependency: "direct main"
+    description:
+      name: flutter_ruler_picker
+      sha256: "50f550a55ddcb9007240e1b76eaf132fe0dca596383dd0006644369e882c1521"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.3"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -123,6 +131,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.8.2"
+  rulers:
+    dependency: "direct main"
+    description:
+      name: rulers
+      sha256: f305bddd59b3b3f4e9a314bd12a09d8efbc657e50866502a1216663baa0781b2
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.7"
   sky_engine:
     dependency: transitive
     description: flutter
@@ -186,3 +202,4 @@ packages:
     version: "2.1.4"
 sdks:
   dart: ">=2.19.5 <3.0.0"
+  flutter: ">=1.17.0"
