@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 class CustomAppBarTitle extends StatefulWidget {
@@ -29,14 +28,15 @@ class _CustomAppBarTitleState extends State<CustomAppBarTitle> {
           width: size.width * 0.097,
           height: size.height * 0.047,
           decoration: const BoxDecoration(
-              shape: BoxShape.circle,
-              color: Color.fromRGBO(110, 182, 255, 0.25)),
-          child: IconButton(
-            icon: Icon(
+            shape: BoxShape.circle,
+            color: Color.fromRGBO(110, 182, 255, 0.25),
+          ),
+          child: InkWell(
+            child: Icon(
               widget.leadingIcon,
               color: const Color.fromRGBO(110, 182, 255, 1),
             ),
-            onPressed: () => Navigator.pop(context),
+            onTap: () => Navigator.pop(context),
           ),
         ),
         SizedBox(
