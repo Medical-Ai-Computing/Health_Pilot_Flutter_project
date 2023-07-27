@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_ruler_picker/flutter_ruler_picker.dart';
+import 'package:healthpilot/screens/user_initial_info_Screens/all_most_their_screen.dart';
 import '/widget/custom_app_bar_title.dart';
 
 import '../../data/constants.dart';
@@ -458,7 +459,13 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
                 padding:
                     const EdgeInsets.symmetric(vertical: 40.0, horizontal: 80),
                 child: GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const AllMostTheirScreen(),
+                        ));
+                  },
                   child: Container(
                     alignment: Alignment.center,
                     width: 231,
