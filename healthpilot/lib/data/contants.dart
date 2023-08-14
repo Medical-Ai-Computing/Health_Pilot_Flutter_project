@@ -3,6 +3,10 @@ const String physicalTherapy = 'assets/images/Physical_therapy.png';
 const String professionalHealthTeam =
     'assets/images/health_professional_team.png';
 const String chatBotImage = 'assets/images/chat_bot.png';
+const String devsImage = 'assets/images/devs_image.png';
+const String githubLogo = 'assets/images/github_logo.svg';
+const String gmailLogo = 'assets/images/gmail_logo.svg';
+const String linkedinLogo = 'assets/images/linkedin_logo.svg';
 const String helperTextForUser =
     'Get access to our ranged health professionals and start feeling better.';
 const String expertAssistanceDescription =
