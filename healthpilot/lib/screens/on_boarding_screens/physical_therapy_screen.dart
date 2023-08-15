@@ -214,7 +214,6 @@ class _PhysicalTherapyScreenState extends State<PhysicalTherapyScreen> {
                         );
                       });
                     }
-                    print('_currentPage:$_currentPage');
                   },
                   child: Container(
                     alignment: Alignment.center,

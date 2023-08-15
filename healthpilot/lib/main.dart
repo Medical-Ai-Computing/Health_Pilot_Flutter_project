@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:healthpilot/data/contants.dart';
+import 'package:healthpilot/screens/on_boarding_screens/personal_information_screen.dart';
 import 'package:healthpilot/screens/on_boarding_screens/physical_therapy_screen.dart';
 
 void main() {
@@ -18,7 +19,7 @@ class HealthPilotApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         fontFamily: 'Roboto', // Example font family
       ),
-      home: const WelcomeScreen(),
+      home: const PersonalInformationScreen(),
     );
   }
 }
