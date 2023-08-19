@@ -11,4 +11,10 @@ class AppTheme {
       color: Color.fromRGBO(42, 42, 42, 0.5),
       fontFamily: 'Plus Jakarta Sans',
       fontWeight: FontWeight.w400);
+  static const ButtonStyle buttonStyleForAppBarBackButto = ButtonStyle(
+      iconColor: MaterialStatePropertyAll(Color.fromRGBO(110, 182, 255, 1)),
+      backgroundColor:
+          MaterialStatePropertyAll(Color.fromRGBO(219, 237, 255, 1)));
+  static const CardTheme cardThemeForDevs =
+      CardTheme(color: Color.fromRGBO(219, 237, 255, 1));
 }
