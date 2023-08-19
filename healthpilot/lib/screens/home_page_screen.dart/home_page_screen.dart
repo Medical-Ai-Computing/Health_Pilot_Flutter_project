@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -18,6 +20,7 @@ class HomePageScreen extends StatefulWidget {
 class _HomePageScreenState extends State<HomePageScreen> {
   // const HomePageScreen({super.key});
   final userName = "Mohammed";
+  bool showAiAlert = true;
   //list of blogs
   final _blogs = [
     [
@@ -49,7 +52,8 @@ class _HomePageScreenState extends State<HomePageScreen> {
     setState(() {
       _currentIndex = index;
       if (_currentIndex != 0) {
-        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        showAiAlert = false;
+        ScaffoldMessenger.of(context).removeCurrentSnackBar();
       }
     });
   }
@@ -57,10 +61,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
   void _showAlertAiBot(BuildContext ctx) {
     final size = MediaQuery.of(ctx).size;
 
-    Future.delayed(
-        Duration(
-          seconds: (_currentIndex == 0) ? 20 : 0,
-        ), () {
+    Timer.periodic(const Duration(seconds: 30), (timer) {
       setState(
         () {
           ScaffoldMessenger.of(ctx).showSnackBar(
@@ -141,11 +142,18 @@ class _HomePageScreenState extends State<HomePageScreen> {
   }
 
   @override
+  void didChangeDependencies() {
+    if (showAiAlert) {
+      _showAlertAiBot(context);
+    } else {
+      ScaffoldMessenger.of(context).removeCurrentSnackBar();
+    }
+    super.didChangeDependencies();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    if (_currentIndex == 0) {
-      _showAlertAiBot(context);
-    }
 
     final List<Widget> _pages = [
       Column(
@@ -288,19 +296,21 @@ class _HomePageScreenState extends State<HomePageScreen> {
 
     return Scaffold(
       bottomNavigationBar: BottomNavigationBar(
+        selectedItemColor:
+            AppTheme.buttonStyleForFloatingActionBtn.backgroundColor,
+        unselectedItemColor: Colors.grey,
+        selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold),
         elevation: 30,
-        type: BottomNavigationBarType.fixed,
+        // type: BottomNavigationBarType.shifting,
         currentIndex: _currentIndex,
         onTap: _onTabTapped,
-        fixedColor: AppTheme.buttonStyleForFloatingActionBtn.backgroundColor,
         items: [
           BottomNavigationBarItem(
-            // icon: Icon(LineIcons.home),
             icon: SvgPicture.asset(
               bottomNavBarHomeIcon,
               color: _currentIndex == 0
-                  ? AppTheme.buttonStyleForFloatingActionBtn.backgroundColor
-                  : null,
+                  ? Color.fromARGB(255, 72, 162, 252)
+                  : Colors.grey,
             ),
             label: 'Home',
           ),
@@ -308,8 +318,8 @@ class _HomePageScreenState extends State<HomePageScreen> {
             icon: SvgPicture.asset(
               bottomNavBarHealthIcon,
               color: _currentIndex == 1
-                  ? AppTheme.buttonStyleForFloatingActionBtn.backgroundColor
-                  : null,
+                  ? const Color.fromRGBO(110, 182, 255, 1)
+                  : Colors.grey,
             ),
             label: 'Health',
           ),
@@ -317,8 +327,8 @@ class _HomePageScreenState extends State<HomePageScreen> {
             icon: SvgPicture.asset(
               bottomNavBarAssesmentIcon,
               color: _currentIndex == 2
-                  ? AppTheme.buttonStyleForFloatingActionBtn.backgroundColor
-                  : null,
+                  ? const Color.fromRGBO(110, 182, 255, 1)
+                  : Colors.grey,
             ),
             label: 'Assesment',
           ),
@@ -326,8 +336,8 @@ class _HomePageScreenState extends State<HomePageScreen> {
             icon: SvgPicture.asset(
               bottomNavBarChatIcon,
               color: _currentIndex == 3
-                  ? AppTheme.buttonStyleForFloatingActionBtn.backgroundColor
-                  : null,
+                  ? const Color.fromRGBO(110, 182, 255, 1)
+                  : Colors.grey,
             ),
             label: 'Chat',
           ),
@@ -335,8 +345,8 @@ class _HomePageScreenState extends State<HomePageScreen> {
             icon: SvgPicture.asset(
               bottomNavBarProfileIcon,
               color: _currentIndex == 4
-                  ? const Color.fromARGB(255, 69, 155, 241)
-                  : null,
+                  ? const Color.fromRGBO(110, 182, 255, 1)
+                  : Colors.grey,
             ),
             label: 'Profile',
           ),

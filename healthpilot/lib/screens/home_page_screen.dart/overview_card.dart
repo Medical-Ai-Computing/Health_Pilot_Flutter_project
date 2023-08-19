@@ -17,6 +17,7 @@ class OverviewCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Card(
+      elevation: 5,
       child: Container(
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(size.width * 0.02),
