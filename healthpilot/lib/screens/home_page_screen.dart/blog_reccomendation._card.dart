@@ -16,18 +16,28 @@ class BlogRecomendationCard extends StatelessWidget {
     return Container(
       margin: EdgeInsets.only(left: size.width * 0.05),
       // padding: EdgeInsets.symmetric(horizontal: size.height * 0.05),
+
       width: size.width * 0.5,
       child: Column(
         children: [
-          Card(
-            child: Container(
-              height: size.height * 0.15,
-              width: double.infinity,
-              padding: EdgeInsets.all(size.width * 0.03),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(size.width * 0.02),
-                  gradient: AppTheme.cardThemeForHomeScreenOverview.gradient),
-              child: SvgPicture.asset(img),
+          Container(
+            decoration: BoxDecoration(boxShadow: [
+              BoxShadow(
+                  color: Colors.black.withOpacity(0.07),
+                  blurRadius: 5,
+                  blurStyle: BlurStyle.normal),
+            ], borderRadius: BorderRadius.circular(size.width * 0.04)),
+            child: Card(
+              // elevation: 3,
+              child: Container(
+                height: size.height * 0.15,
+                width: double.infinity,
+                padding: EdgeInsets.all(size.width * 0.03),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(size.width * 0.02),
+                    gradient: AppTheme.cardThemeForHomeScreenOverview.gradient),
+                child: SvgPicture.asset(img),
+              ),
             ),
           ),
           Container(

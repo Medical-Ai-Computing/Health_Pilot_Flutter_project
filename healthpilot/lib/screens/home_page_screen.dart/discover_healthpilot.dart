@@ -11,10 +11,19 @@ class DiscoverHealthpilot extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    return Card(
-        margin: EdgeInsets.all(size.width * 0.06),
+    return Container(
+      margin: EdgeInsets.all(size.width * 0.06),
+      decoration: BoxDecoration(
+        boxShadow: [
+          BoxShadow(
+              color: Colors.black.withOpacity(0.07),
+              blurRadius: size.width * 0.02,
+              spreadRadius: size.width * 0.01),
+        ],
+      ),
+      child: Card(
         child: Container(
-          width: double.infinity,
+          // width: ,
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(size.width * 0.02),
               gradient: AppTheme.cardThemeForHomeScreenOverview.gradient),
@@ -81,6 +90,8 @@ class DiscoverHealthpilot extends StatelessWidget {
                   )),
             ],
           ),
-        ));
+        ),
+      ),
+    );
   }
 }

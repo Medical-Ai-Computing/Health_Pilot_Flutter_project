@@ -37,6 +37,12 @@ class AppTheme {
     color: Color.fromRGBO(0, 0, 0, 0.5),
     fontFamily: 'Plus Jakarta Sans',
   );
+  // static const TextStyle buttomNavBarTextStyle = TextStyle(
+  //   fontSize: 14,
+  //   fontWeight: ,
+  //   color: Color.fromRGBO(0, 0, 0, 1),
+  //   fontFamily: 'Manrope',
+  // );
   static const ButtonStyle buttonStyleForAppBarBackButto = ButtonStyle(
       iconColor: MaterialStatePropertyAll(Color.fromRGBO(110, 182, 255, 1)),
       backgroundColor:
