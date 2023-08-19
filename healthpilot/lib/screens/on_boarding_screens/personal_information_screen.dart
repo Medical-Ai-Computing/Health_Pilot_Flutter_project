@@ -1,3 +1,34 @@
+// This Flutter screen allows users to enter and manage their personal information./// It includes fields for first name, last name, email, and phone number.
+/// Users can also set up emergency contacts, personal doctor, and nutrition tracking.
+// class PersonalInformationScreen extends StatefulWidget {
+//   // ... (widget constructor and state creation)
+// }
+
+// /// The state class for the PersonalInformationScreen widget.
+// class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
+//   // ... (state variables and UI building logic)
+// }
+
+// /// A reusable widget for input fields like first name, last name, and email.
+// class InputFields extends StatelessWidget {
+//   // ... (constructor and UI building logic for input fields)
+// }
+
+/// A reusable widget for the phone number input field using the IntlPhoneField package.
+// //class PhoneInputFields extends StatelessWidget {
+//   // ... (constructor and UI building logic for phone input fields)
+// }
+
+/// A custom card widget that displays subscription-related information.
+// c//lass SubscriptionCard extends StatefulWidget {
+//   // ... (constructor and state creation for subscription card)
+// }
+
+/// The state class for the SubscriptionCard widget.
+// class _SubscriptionCardState extends State<SubscriptionCard> {
+//   // ... (UI building logic for subscription card)
+// }
+
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
