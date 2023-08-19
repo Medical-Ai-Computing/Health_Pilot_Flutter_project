@@ -1,0 +1,38 @@
+Index: healthpilot/lib/data/contants.dart
+===================================================================
+diff --git a/healthpilot/lib/data/contants.dart b/healthpilot/lib/data/contants.dart
+--- a/healthpilot/lib/data/contants.dart	
++++ b/healthpilot/lib/data/contants.dart	
+@@ -1,5 +1,7 @@
+ const String welcomeLogo = 'assets/images/image_4.png';
+ const String physicalTherapy = 'assets/images/Physical_therapy.png';
++const String googlelogo = 'assets/images/google.png';
++const String checkemail = 'assets/images/checkmail.png';
+ const String professionalHealthTeam =
+     'assets/images/health_professional_team.png';
+ const String chatBotImage = 'assets/images/chat_bot.png';
+@@ -11,6 +13,24 @@
+     ' By engaging with our AI, you can receive accurate and reliable answers to your questions, without the need for a human expert.';
+ const String descriptionTextForSpecialist =
+     'Consult with specialists about your health.';
++const String loginGreeting = 'Glad to have you back';
++const String loginInfo =
++    "We've missed you, login to continue tracking your health";
++const String forgotPassword = "Forgot your password?";
++const String resetNow = "Reset now";
++const String or = "Or";
++const String donthaveaccount = "Don't have an account?";
++const String giveitatry = "Wanna give it a try?";
++const String signup = "Sign up";
++const String skip = "Skip";
++const String letsgetyou = "Let's get you all checked up";
++const String alreadyhave = "Already have an account?";
++const String login = "Login";
++const String terms = "terms";
++const String and = " and ";
++const String conditions = "conditions";
++const String forgotpassword = "Forgot Password";
++const String checkEmail = "Check your email";
+ const String expertAssistance = 'Expert Health Assistance.';
+ const String chatBotText =
+     'Chat with our AI to obtain answers to any health-related questions.';
