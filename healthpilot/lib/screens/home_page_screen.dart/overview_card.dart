@@ -22,14 +22,12 @@ class OverviewCard extends StatelessWidget {
           width: size.width * 0.18,
           decoration: BoxDecoration(boxShadow: [
             BoxShadow(
-                color: const Color.fromRGBO(46, 46, 46, 1.000).withOpacity(0.3),
-                blurRadius: 40,
+                color:
+                    const Color.fromRGBO(46, 46, 46, 1.000).withOpacity(0.07),
+                blurRadius: 30,
                 spreadRadius: 0,
                 offset: const Offset(0, 0))
           ]),
-          child: Center(
-              child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10))),
         ),
         Container(
           decoration: BoxDecoration(

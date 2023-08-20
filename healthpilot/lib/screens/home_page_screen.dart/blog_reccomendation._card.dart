@@ -20,9 +20,9 @@ class BlogRecomendationCard extends StatelessWidget {
           height: size.height * 0.3,
           decoration: BoxDecoration(boxShadow: [
             BoxShadow(
-              blurRadius: 40,
+              blurRadius: 30,
               spreadRadius: 0,
-              color: const Color.fromRGBO(46, 46, 46, 1.000).withOpacity(0.2),
+              color: const Color.fromRGBO(46, 46, 46, 1.000).withOpacity(0.07),
             )
           ]),
         ),

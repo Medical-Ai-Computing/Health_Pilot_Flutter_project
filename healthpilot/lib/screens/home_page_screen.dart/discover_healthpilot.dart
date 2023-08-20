@@ -21,10 +21,10 @@ class DiscoverHealthpilot extends StatelessWidget {
             height: size.height * 0.2,
             decoration: BoxDecoration(boxShadow: [
               BoxShadow(
-                blurRadius: 40,
+                blurRadius: 35,
                 spreadRadius: 0,
                 color:
-                    const Color.fromRGBO(46, 46, 46, 1.000).withOpacity(0.25),
+                    const Color.fromRGBO(46, 46, 46, 1.000).withOpacity(0.07),
               )
             ]),
           ),
