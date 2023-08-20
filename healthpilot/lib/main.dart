@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:healthpilot/data/contants.dart';
+import 'package:healthpilot/screens/emergency_contact/setup_emergency_contact.dart';
 
+import 'screens/emergency_contact/personal_information.dart';
 import 'screens/home_page_screen.dart/home_page_screen.dart';
 
 void main() {
@@ -19,7 +21,9 @@ class HealthPilotApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         fontFamily: 'Roboto', // Example font family
       ),
-      home: HomePageScreen(),
+      // home: SetupEmergencyContact(),
+      home: PersonalInformation(),
+      // home: HomePageScreen(),
     );
   }
 }

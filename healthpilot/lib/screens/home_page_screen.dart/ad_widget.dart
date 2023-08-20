@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../../theme/app_theme.dart';
 import '../../theme/app_theme.dart';
@@ -18,19 +19,6 @@ class _AdWidgetState extends State<AdWidget> {
     'Place Ad two Here',
     'Place Ad three Here',
   ];
-  void changeAdPage() {
-    // Future.delayed(
-    //   Duration(seconds: 5),
-    //   () {
-    //     if (_currentPage >= ads.length) {
-    //       _currentPage = 0;
-    //     }
-    setState(() {
-      _currentPage++;
-    });
-    // },
-    // );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,52 +28,42 @@ class _AdWidgetState extends State<AdWidget> {
       width: double.infinity,
       height: size.height * 0.2,
       decoration: AppTheme.cardThemeForHomeScreenOverview,
-      child: PageView.builder(
-        controller: _pageController,
-        itemCount: ads.length,
-        onPageChanged: (index) {
-          setState(() {
-            _currentPage = index;
-          });
-        },
-        itemBuilder: (context, index) => GestureDetector(
-          onHorizontalDragCancel: () => changeAdPage(),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              SizedBox(
-                width: double.infinity,
-                child: Text(
-                  ads[_currentPage],
-                  textAlign: TextAlign.left,
-                ),
+      child: Stack(
+        children: [
+          PageView.builder(
+            controller: _pageController,
+            itemCount: ads.length,
+            onPageChanged: (index) {
+              setState(() {
+                _currentPage = index;
+              });
+            },
+            itemBuilder: (context, index) => GestureDetector(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  SizedBox(
+                    width: double.infinity,
+                    child: Text(
+                      ads[_currentPage],
+                      textAlign: TextAlign.left,
+                    ),
+                  ),
+                ],
               ),
-              Container(
-                margin: EdgeInsets.only(bottom: size.height * 0.03),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    for (int i = 0; i < ads.length; i++)
-                      Container(
-                        margin:
-                            EdgeInsets.symmetric(horizontal: size.width * 0.01),
-                        height: size.height * 0.0118,
-                        width: _currentPage == i
-                            ? size.width * 0.05
-                            : size.width * 0.025,
-                        // color: Color.fromRGBO(110, 182, 255, 1),
-                        decoration: BoxDecoration(
-                          borderRadius:
-                              BorderRadius.all(Radius.elliptical(100, 100)),
-                          color: Color.fromRGBO(110, 182, 255, 1),
-                        ),
-                      )
-                  ],
-                ),
-              )
-            ],
+            ),
           ),
-        ),
+          Container(
+            alignment: Alignment(0, 0.75),
+            child: SmoothPageIndicator(
+              controller: _pageController,
+              count: ads.length,
+              effect: ExpandingDotsEffect(
+                  activeDotColor: Color.fromRGBO(110, 182, 255, 1),
+                  dotColor: Color.fromRGBO(183, 216, 249, 0.839)),
+            ),
+          )
+        ],
       ),
     );
   }

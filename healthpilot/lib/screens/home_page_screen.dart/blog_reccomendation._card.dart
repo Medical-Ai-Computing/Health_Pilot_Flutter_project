@@ -13,55 +13,67 @@ class BlogRecomendationCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
 
-    return Container(
-      margin: EdgeInsets.only(left: size.width * 0.05),
-      // padding: EdgeInsets.symmetric(horizontal: size.height * 0.05),
-
-      width: size.width * 0.5,
-      child: Column(
-        children: [
-          Container(
-            decoration: BoxDecoration(boxShadow: [
-              BoxShadow(
-                  color: Colors.black.withOpacity(0.07),
-                  blurRadius: 5,
-                  blurStyle: BlurStyle.normal),
-            ], borderRadius: BorderRadius.circular(size.width * 0.04)),
-            child: Card(
-              // elevation: 3,
-              child: Container(
-                height: size.height * 0.15,
-                width: double.infinity,
-                padding: EdgeInsets.all(size.width * 0.03),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(size.width * 0.02),
-                    gradient: AppTheme.cardThemeForHomeScreenOverview.gradient),
-                child: SvgPicture.asset(img),
+    return Stack(
+      children: [
+        Container(
+          width: size.width * 0.04,
+          height: size.height * 0.3,
+          decoration: BoxDecoration(boxShadow: [
+            BoxShadow(
+              blurRadius: 30,
+              spreadRadius: 0,
+              color: const Color.fromRGBO(46, 46, 46, 1.000).withOpacity(0.07),
+            )
+          ]),
+        ),
+        Container(
+          margin: EdgeInsets.only(left: size.width * 0.05),
+          decoration: BoxDecoration(
+              color: const Color.fromARGB(206, 255, 255, 255),
+              borderRadius: BorderRadius.circular(size.width * 0.03)),
+          width: size.width * 0.5,
+          height: size.height * 0.3,
+          child: Column(
+            children: [
+              Container(
+                child: Card(
+                  // elevation: 3,
+                  child: Container(
+                    height: size.height * 0.15,
+                    width: double.infinity,
+                    padding: EdgeInsets.all(size.width * 0.03),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(size.width * 0.02),
+                        gradient:
+                            AppTheme.cardThemeForHomeScreenOverview.gradient),
+                    child: SvgPicture.asset(img),
+                  ),
+                ),
               ),
-            ),
+              Container(
+                padding: EdgeInsets.all(
+                  size.width * 0.02,
+                ),
+                width: double.infinity,
+                child: Text(
+                  title,
+                  textAlign: TextAlign.left,
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.only(
+                  left: size.width * 0.02,
+                ),
+                width: double.infinity,
+                child: Text(
+                  description,
+                  style: AppTheme.blogDescriptionForBlogReccomdation,
+                ),
+              )
+            ],
           ),
-          Container(
-            padding: EdgeInsets.all(
-              size.width * 0.02,
-            ),
-            width: double.infinity,
-            child: Text(
-              title,
-              textAlign: TextAlign.left,
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.only(
-              left: size.width * 0.02,
-            ),
-            width: double.infinity,
-            child: Text(
-              description,
-              style: AppTheme.blogDescriptionForBlogReccomdation,
-            ),
-          )
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

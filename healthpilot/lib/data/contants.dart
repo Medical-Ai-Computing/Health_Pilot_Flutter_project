@@ -5,6 +5,7 @@ const String professionalHealthTeam =
     'assets/images/health_professional_team.png';
 const String chatBotImage = 'assets/images/chat_bot.png';
 const String devsImage = 'assets/images/devs_image.png';
+const String personPicForprofile = 'assets/images/person.png';
 const String gynecologyConsultation =
     'assets/images/gynecology_consultation.svg';
 const String womanReading = 'assets/images/woman_reading.svg';
