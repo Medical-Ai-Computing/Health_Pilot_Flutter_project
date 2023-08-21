@@ -43,24 +43,18 @@ class DevsCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 GestureDetector(
-                  onTap: () {
-                    //TODO:
-                  },
+                  onTap: () {},
                   child: SizedBox(
                     width: size.height * 0.02,
                     child: SvgPicture.asset(githubLogo),
                   ),
                 ),
                 GestureDetector(
-                  onTap: () {
-                    // TODO:
-                  },
+                  onTap: () {},
                   child: SvgPicture.asset(linkedinLogo),
                 ),
                 GestureDetector(
-                  onTap: () {
-                    // TODO:
-                  },
+                  onTap: () {},
                   child: SizedBox(
                       width: size.height * 0.02,
                       child: SvgPicture.asset(gmailLogo)),

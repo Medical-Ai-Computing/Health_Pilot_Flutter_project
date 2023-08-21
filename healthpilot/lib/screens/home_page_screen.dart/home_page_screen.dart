@@ -1,8 +1,9 @@
+// ignore_for_file: deprecated_member_use
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:healthpilot/screens/home_page_screen.dart/discover_healthpilot.dart';
 import 'package:line_icons/line_icons.dart';
 import '/screens/home_page_screen.dart/overview_card.dart';
@@ -13,6 +14,8 @@ import 'ad_widget.dart';
 import 'blog_reccomendation._card.dart';
 
 class HomePageScreen extends StatefulWidget {
+  const HomePageScreen({super.key});
+
   @override
   State<HomePageScreen> createState() => _HomePageScreenState();
 }
@@ -101,7 +104,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
                             height: 15,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
-                              color: Color.fromRGBO(110, 182, 255, 1),
+                              color: const Color.fromRGBO(110, 182, 255, 1),
                             ),
                             child: Center(
                               child: Icon(
@@ -155,7 +158,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
 
-    final List<Widget> _pages = [
+    final List<Widget> pages = [
       Column(
         children: [
           SizedBox(
@@ -251,7 +254,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
           SizedBox(
             height: size.height * 0.02,
           ),
-          AdWidget(),
+          const AdWidget(),
           SizedBox(
             height: size.height * 0.01,
           ),
@@ -264,7 +267,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
           SizedBox(
             height: size.height * 0.01,
           ),
-          Container(
+          SizedBox(
             width: double.infinity,
             height: size.height * 0.35,
             child: ListView.builder(
@@ -309,7 +312,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
             icon: SvgPicture.asset(
               bottomNavBarHomeIcon,
               color: _currentIndex == 0
-                  ? Color.fromARGB(255, 72, 162, 252)
+                  ? const Color.fromARGB(255, 72, 162, 252)
                   : Colors.grey,
             ),
             label: 'Home',
@@ -354,7 +357,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
       ),
       body: SingleChildScrollView(
           child: SafeArea(
-        child: _pages[_currentIndex],
+        child: pages[_currentIndex],
       )),
       floatingActionButton: _currentIndex == 0
           ? FloatingActionButton(

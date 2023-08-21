@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:healthpilot/theme/app_theme.dart';
 
@@ -8,7 +6,8 @@ class OverviewCard extends StatelessWidget {
   final String overviewResult;
   final String overviewUnit;
   const OverviewCard(
-      {required this.icon,
+      {super.key,
+      required this.icon,
       required this.overviewResult,
       required this.overviewUnit});
 

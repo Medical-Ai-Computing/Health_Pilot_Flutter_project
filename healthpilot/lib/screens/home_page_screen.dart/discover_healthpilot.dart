@@ -45,7 +45,7 @@ class DiscoverHealthpilot extends StatelessWidget {
                       Padding(
                         padding: EdgeInsets.only(top: size.height * 0.02),
                         child: Image(
-                          image: AssetImage(welcomeLogo),
+                          image: const AssetImage(welcomeLogo),
                           height: size.height * 0.03,
                           alignment: Alignment.topLeft,
                         ),
@@ -87,7 +87,7 @@ class DiscoverHealthpilot extends StatelessWidget {
                     ],
                   ),
                 ),
-                Container(
+                SizedBox(
                     width: double.infinity,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,

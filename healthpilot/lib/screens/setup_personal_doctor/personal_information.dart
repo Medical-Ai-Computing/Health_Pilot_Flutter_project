@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+
 import 'package:healthpilot/theme/app_theme.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:line_icons/line_icons.dart';
 
 import '../../data/contants.dart';
+import 'setup_personal_doctor.dart';
 
 class PersonalInformation extends StatefulWidget {
   const PersonalInformation({super.key});
@@ -274,7 +276,11 @@ class _PersonalInformationState extends State<PersonalInformation> {
                         ),
                         IconButton(
                             onPressed: () {
-                              addDoctor();
+                              // addDoctor();
+                              Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) =>
+                                    SetupPersonalDoctor(add: addDoctor),
+                              ));
                             },
                             icon: const Icon(
                               Icons.add_circle_outline,
@@ -283,74 +289,91 @@ class _PersonalInformationState extends State<PersonalInformation> {
                       ],
                     ),
                     SizedBox(
-                      height: size.height * 0.3,
-                      child: ListView.builder(
-                        itemCount: doctorCount,
-                        itemBuilder: (context, index) {
-                          return Row(
-                            children: [
-                              Stack(
-                                alignment: Alignment.center,
-                                children: [
-                                  Container(
-                                    width: size.width * 0.003,
-                                    height: size.height * 0.08,
-                                    color:
-                                        const Color.fromRGBO(110, 182, 255, 1),
-                                  ),
-                                  Container(
-                                    width: size.width * 0.03,
-                                    height: size.width * 0.03,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(
-                                          size.width * 0.015),
-                                      color: const Color.fromRGBO(
-                                          110, 182, 255, 1),
-                                    ),
-                                  ),
-                                  Container(
-                                    width: size.width * 0.03,
-                                    height: size.width * 0.03,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(
-                                          size.width * 0.015),
-                                      color: const Color.fromRGBO(
-                                          110, 182, 255, 1),
-                                    ),
-                                  ),
-                                ],
+                      height: doctorCount <= 0
+                          ? size.height * 0.08
+                          : size.height * 0.08 * doctorCount,
+                      child: doctorCount <= 0
+                          ? const Center(
+                              child: Text(
+                                'You don\'t have a personal doctor!',
+                                style: TextStyle(
+                                    color: Color.fromRGBO(110, 182, 255, 1),
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 14),
                               ),
-                              Container(
-                                padding:
-                                    EdgeInsets.only(left: size.width * 0.02),
-                                width: size.width * 0.8,
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                            )
+                          : ListView.builder(
+                              itemCount: doctorCount,
+                              itemBuilder: (context, index) {
+                                return Row(
                                   children: [
-                                    const Text('Bobby Firminio'),
-                                    ElevatedButton(
-                                      onPressed: () {},
-                                      style: ElevatedButton.styleFrom(
-                                          backgroundColor: const Color.fromRGBO(
+                                    Stack(
+                                      alignment: Alignment.center,
+                                      children: [
+                                        Container(
+                                          width: size.width * 0.003,
+                                          height: size.height * 0.08,
+                                          color: const Color.fromRGBO(
                                               110, 182, 255, 1),
-                                          foregroundColor: Colors.white,
-                                          shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(5))),
-                                      child: const Text(
-                                        'Edit',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w600),
+                                        ),
+                                        Container(
+                                          width: size.width * 0.03,
+                                          height: size.width * 0.03,
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(
+                                                size.width * 0.015),
+                                            color: const Color.fromRGBO(
+                                                110, 182, 255, 1),
+                                          ),
+                                        ),
+                                        Container(
+                                          width: size.width * 0.03,
+                                          height: size.width * 0.03,
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(
+                                                size.width * 0.015),
+                                            color: const Color.fromRGBO(
+                                                110, 182, 255, 1),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    Container(
+                                      padding: EdgeInsets.only(
+                                          left: size.width * 0.02),
+                                      width: size.width * 0.8,
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          const Text('Bobby Firminio'),
+                                          ElevatedButton(
+                                            onPressed: () {},
+                                            style: ElevatedButton.styleFrom(
+                                                backgroundColor:
+                                                    const Color.fromRGBO(
+                                                        110, 182, 255, 1),
+                                                foregroundColor: Colors.white,
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            5))),
+                                            child: const Text(
+                                              'Edit',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.w600),
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   ],
-                                ),
-                              ),
-                            ],
-                          );
-                        },
-                      ),
+                                );
+                              },
+                            ),
+                    ),
+                    SizedBox(
+                      height: size.height * 0.05,
                     ),
                     Card(
                       child: Container(
@@ -370,9 +393,9 @@ class _PersonalInformationState extends State<PersonalInformation> {
                         child: Column(
                           // crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Container(
+                            const SizedBox(
                               width: double.infinity,
-                              child: const Text(
+                              child: Text(
                                 'Set up food and nutrition tracking',
                                 style: TextStyle(
                                     fontWeight: FontWeight.w500,

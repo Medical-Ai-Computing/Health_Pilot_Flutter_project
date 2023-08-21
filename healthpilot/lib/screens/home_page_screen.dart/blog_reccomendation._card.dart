@@ -6,8 +6,11 @@ class BlogRecomendationCard extends StatelessWidget {
   final String img;
   final String title;
   final String description;
-  BlogRecomendationCard(
-      {required this.img, required this.title, required this.description});
+  const BlogRecomendationCard(
+      {super.key,
+      required this.img,
+      required this.title,
+      required this.description});
 
   @override
   Widget build(BuildContext context) {
@@ -35,19 +38,17 @@ class BlogRecomendationCard extends StatelessWidget {
           height: size.height * 0.3,
           child: Column(
             children: [
-              Container(
-                child: Card(
-                  // elevation: 3,
-                  child: Container(
-                    height: size.height * 0.15,
-                    width: double.infinity,
-                    padding: EdgeInsets.all(size.width * 0.03),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(size.width * 0.02),
-                        gradient:
-                            AppTheme.cardThemeForHomeScreenOverview.gradient),
-                    child: SvgPicture.asset(img),
-                  ),
+              Card(
+                // elevation: 3,
+                child: Container(
+                  height: size.height * 0.15,
+                  width: double.infinity,
+                  padding: EdgeInsets.all(size.width * 0.03),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(size.width * 0.02),
+                      gradient:
+                          AppTheme.cardThemeForHomeScreenOverview.gradient),
+                  child: SvgPicture.asset(img),
                 ),
               ),
               Container(
