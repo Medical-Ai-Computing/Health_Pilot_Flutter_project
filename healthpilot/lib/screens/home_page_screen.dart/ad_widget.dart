@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../../theme/app_theme.dart';
-import '../../theme/app_theme.dart';
 
 class AdWidget extends StatefulWidget {
+  const AdWidget({super.key});
+
   @override
   State<AdWidget> createState() => _AdWidgetState();
 }
@@ -54,11 +55,11 @@ class _AdWidgetState extends State<AdWidget> {
             ),
           ),
           Container(
-            alignment: Alignment(0, 0.75),
+            alignment: const Alignment(0, 0.75),
             child: SmoothPageIndicator(
               controller: _pageController,
               count: ads.length,
-              effect: ExpandingDotsEffect(
+              effect: const ExpandingDotsEffect(
                   activeDotColor: Color.fromRGBO(110, 182, 255, 1),
                   dotColor: Color.fromRGBO(183, 216, 249, 0.839)),
             ),

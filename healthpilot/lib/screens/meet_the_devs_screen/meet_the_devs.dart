@@ -4,6 +4,8 @@ import 'package:healthpilot/screens/meet_the_devs_screen/devs_card.dart';
 import '../../theme/app_theme.dart';
 
 class MeetTheDevs extends StatelessWidget {
+  const MeetTheDevs({super.key});
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;

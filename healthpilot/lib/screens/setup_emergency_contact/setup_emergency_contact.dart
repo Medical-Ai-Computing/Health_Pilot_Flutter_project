@@ -1,7 +1,4 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 
@@ -194,7 +191,7 @@ class SetupEmergencyContact extends StatelessWidget {
                 ElevatedButton(
                   onPressed: () {},
                   style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue,
+                      backgroundColor: const Color.fromRGBO(110, 182, 255, 1),
                       foregroundColor: Colors.white,
                       padding: EdgeInsets.symmetric(
                           horizontal: size.width * 0.25,

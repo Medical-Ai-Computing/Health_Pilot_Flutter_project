@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:healthpilot/data/contants.dart';
-import 'package:healthpilot/screens/emergency_contact/setup_emergency_contact.dart';
-import 'package:healthpilot/screens/setup_personal_doctor/setup_personal_doctor.dart';
+// import 'package:healthpilot/screens/emergency_contact/setup_emergency_contact.dart';
+// import 'package:healthpilot/screens/setup_personal_doctor/setup_personal_doctor.dart';
 import 'package:healthpilot/screens/setup_personal_doctor/personal_information.dart'
     as doctor;
 
-import 'screens/emergency_contact/personal_information.dart';
-import 'screens/home_page_screen.dart/home_page_screen.dart';
+// import 'screens/setup_emergency_contact/personal_information.dart';
+// import 'screens/home_page_screen.dart/home_page_screen.dart';
 
 void main() {
   runApp(const HealthPilotApp());
@@ -24,11 +24,11 @@ class HealthPilotApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         fontFamily: 'Roboto', // Example font family
       ),
-      // home: SetupEmergencyContact(),
-      // home: PersonalInformation(),
-      // home: SetupPersonalDoctor(),
-      // home: HomePageScreen(),
-      home: doctor.PersonalInformation(),
+      // home: const SetupEmergencyContact(),
+      // home: const PersonalInformation(),
+      // home: const SetupPersonalDoctor(),
+      // home: const HomePageScreen(),
+      home: const doctor.PersonalInformation(),
     );
   }
 }

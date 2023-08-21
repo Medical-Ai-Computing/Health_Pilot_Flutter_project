@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:dropdown_textfield/dropdown_textfield.dart';
 
 import 'package:healthpilot/theme/app_theme.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
@@ -8,7 +7,8 @@ import 'package:intl_phone_field/intl_phone_field.dart';
 import '../../data/contants.dart';
 
 class SetupPersonalDoctor extends StatefulWidget {
-  const SetupPersonalDoctor({super.key});
+  final Function() add;
+  const SetupPersonalDoctor({super.key, required this.add});
 
   @override
   State<SetupPersonalDoctor> createState() => _SetupPersonalDoctorState();
@@ -28,8 +28,7 @@ class _SetupPersonalDoctorState extends State<SetupPersonalDoctor> {
             Icons.arrow_back,
           ),
           onPressed: () {
-            // Define the action when the back button is pressed
-            // Navigator.pop(context);
+            Navigator.of(context).pop();
           },
           style: AppTheme.buttonStyleForAppBarBackButto,
         ),
@@ -134,30 +133,29 @@ class _SetupPersonalDoctorState extends State<SetupPersonalDoctor> {
                         fontSize: 14,
                       ),
                     ),
-                    DropDownTextField(
-                      dropDownList: const [
-                        DropDownValueModel(
-                            name: 'Psychiatrists', value: 'Psychiatrists'),
-                        DropDownValueModel(
-                            name: 'Internists', value: 'Internists'),
-                        DropDownValueModel(
-                            name: 'Nephrologists', value: 'Nephrologists'),
-                        DropDownValueModel(
-                            name: 'Neurologists', value: 'Neurologists'),
-                        DropDownValueModel(
-                            name: 'Hematologists', value: 'Hematologists'),
-                      ],
-                      isEnabled: true,
-                      textFieldDecoration: InputDecoration(
-                        contentPadding: EdgeInsets.symmetric(
-                            vertical: size.height * 0.015,
-                            horizontal: size.width * 0.03),
-                        border: const OutlineInputBorder(),
-                        isDense: true,
-                        focusedBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey),
+                    CustomDropDownTextFild(
+                      customDropDownModels: [
+                        CustomDropDownModel(
+                          name: 'Psychiatrists',
+                          value: 'Psychiatrists',
                         ),
-                      ),
+                        CustomDropDownModel(
+                          name: 'Internists',
+                          value: 'Internists',
+                        ),
+                        CustomDropDownModel(
+                          name: 'Nephrologists',
+                          value: 'Nephrologists',
+                        ),
+                        CustomDropDownModel(
+                          name: 'Neurologists',
+                          value: 'Neurologists',
+                        ),
+                        CustomDropDownModel(
+                          name: 'Hematologists',
+                          value: 'Hematologists',
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -235,7 +233,7 @@ class _SetupPersonalDoctorState extends State<SetupPersonalDoctor> {
                     SizedBox(
                       height: size.height * 0.02,
                     ),
-                    Container(
+                    SizedBox(
                       width: double.infinity,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -357,15 +355,20 @@ class _SetupPersonalDoctorState extends State<SetupPersonalDoctor> {
                   height: size.height * 0.1,
                 ),
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    widget.add();
+                    Navigator.of(context).pop();
+                  },
                   style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromRGBO(110, 182, 255, 1),
-                      foregroundColor: Colors.white,
-                      padding: EdgeInsets.symmetric(
-                          horizontal: size.width * 0.25,
-                          vertical: size.height * 0.02),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10))),
+                    backgroundColor: const Color.fromRGBO(110, 182, 255, 1),
+                    foregroundColor: Colors.white,
+                    padding: EdgeInsets.symmetric(
+                        horizontal: size.width * 0.25,
+                        vertical: size.height * 0.02),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
                   child: const Text(
                     'Save',
                     style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
@@ -384,8 +387,11 @@ class CustomRadioBtn extends StatefulWidget {
   final int value;
   final int groupValue;
   final Function(int value) onChanged;
-  CustomRadioBtn(
-      {required this.value, required this.groupValue, required this.onChanged});
+  const CustomRadioBtn(
+      {super.key,
+      required this.value,
+      required this.groupValue,
+      required this.onChanged});
 
   @override
   State<CustomRadioBtn> createState() => _CustomRadioBtnState();
@@ -413,7 +419,7 @@ class _CustomRadioBtnState extends State<CustomRadioBtn> {
                 width: size.height * 0.015,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(size.height * 0.075),
-                  color: Colors.blue,
+                  color: const Color.fromRGBO(110, 182, 255, 1),
                   // border:
                   //     Border.all(color: const Color.fromARGB(23, 0, 0, 0), width: 2),
                 ),
@@ -422,4 +428,146 @@ class _CustomRadioBtnState extends State<CustomRadioBtn> {
       ),
     );
   }
+}
+
+class CustomDropDownTextFild extends StatefulWidget {
+  final List<CustomDropDownModel> customDropDownModels;
+  const CustomDropDownTextFild({super.key, required this.customDropDownModels});
+
+  @override
+  State<CustomDropDownTextFild> createState() => _CustomDropDownTextFildState();
+}
+
+class _CustomDropDownTextFildState extends State<CustomDropDownTextFild> {
+  String selectedValue = '';
+  final _textEditingController = TextEditingController();
+
+  void _onTap(String value) {
+    selectedValue = value;
+
+    setState(() {
+      _textEditingController.text = value;
+    });
+  }
+
+  void _showDialog() {
+    final size = MediaQuery.of(context).size;
+
+    showDialog(
+      barrierColor: const Color.fromARGB(0, 255, 193, 7),
+      context: context,
+      builder: (context) {
+        return Container(
+          padding: EdgeInsets.all(size.width * 0.08),
+
+          alignment: const Alignment(0, 0.3),
+
+          // elevation: 0,
+          child: Container(
+            decoration: BoxDecoration(color: Colors.white, boxShadow: [
+              BoxShadow(
+                blurRadius: 35,
+                spreadRadius: 0,
+                color:
+                    const Color.fromRGBO(46, 46, 46, 1.000).withOpacity(0.07),
+              )
+            ]),
+            padding: EdgeInsets.all(size.width * 0.06),
+            height: size.height * 0.25,
+            child: ListView.builder(
+              itemCount: widget.customDropDownModels.length,
+              itemBuilder: (context, index) {
+                // print(_textEditingController.text);
+                return GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _onTap(widget.customDropDownModels[index].value);
+                      Navigator.of(context).pop();
+                    });
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(bottom: size.width * 0.055),
+                        child: Text(
+                          widget.customDropDownModels[index].name,
+                          style: TextStyle(
+                            color: selectedValue ==
+                                    widget.customDropDownModels[index].value
+                                ? const Color.fromRGBO(110, 182, 255, 1)
+                                : Colors.black,
+                            fontWeight: FontWeight.w400,
+                            fontFamily: 'Plus Jakarta Sans',
+                            fontSize: 14,
+                          ),
+                        ),
+                      ),
+                      if (selectedValue ==
+                          widget.customDropDownModels[index].value)
+                        Padding(
+                          padding: EdgeInsets.only(bottom: size.width * 0.055),
+                          child: const Icon(
+                            Icons.check,
+                            size: 20,
+                            color: Color.fromRGBO(110, 182, 255, 1),
+                          ),
+                        ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    _textEditingController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    return TextFormField(
+      controller: _textEditingController,
+      readOnly: true,
+      decoration: InputDecoration(
+        suffixIcon: GestureDetector(
+          onTap: () => _showDialog(),
+          child: const Icon(
+            Icons.expand_more,
+            size: 24,
+          ),
+        ),
+        hintText: 'Select doctor profession',
+        hintStyle: const TextStyle(
+          fontWeight: FontWeight.w400,
+          fontFamily: 'Plus Jakarta Sans',
+          fontSize: 14,
+        ),
+        contentPadding: EdgeInsets.symmetric(
+            vertical: size.height * 0.015, horizontal: size.width * 0.03),
+        border: const OutlineInputBorder(),
+        isDense: true,
+        focusedBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.grey),
+        ),
+      ),
+    );
+  }
+}
+
+class CustomDropDownModel {
+  final String name;
+  final String value;
+
+  CustomDropDownModel({
+    required this.name,
+    required this.value,
+  });
 }
