@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:healthpilot/data/contants.dart';
-// import 'package:healthpilot/screens/emergency_contact/setup_emergency_contact.dart';
-// import 'package:healthpilot/screens/setup_personal_doctor/setup_personal_doctor.dart';
+
 import 'package:healthpilot/screens/setup_personal_doctor/personal_information.dart'
     as doctor;
 
-// import 'screens/setup_emergency_contact/personal_information.dart';
-// import 'screens/home_page_screen.dart/home_page_screen.dart';
+
 
 void main() {
   runApp(const HealthPilotApp());
