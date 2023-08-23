@@ -303,6 +303,8 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                       setState(() {
                         _isPersonalDoctorSubscribed =
                             !_isPersonalDoctorSubscribed;
+                        Navigator.of(context)
+                            .pushNamed(PaymentMethodScreen.routeName);
                       });
                     },
                   ),
@@ -322,6 +324,8 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                       setState(() {
                         _isNutritionTrackingSubscribed =
                             !_isNutritionTrackingSubscribed;
+                        Navigator.of(context)
+                            .pushNamed(PaymentMethodScreen.routeName);
                       });
                     },
                   ),
@@ -585,6 +589,558 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
           ],
         ),
       ),
+    );
+  }
+}
+
+//Payment Screen starts Here
+
+class PaymentMethodScreen extends StatefulWidget {
+  static const routeName = '/PaymentScreen';
+
+  const PaymentMethodScreen({super.key});
+
+  @override
+  State<PaymentMethodScreen> createState() => _PaymentMethodScreenState();
+}
+
+class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
+  bool isChecked = false;
+  bool isPaypalChecked = false;
+  bool isChappaChecked = false;
+  bool isPaymentChecked = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SafeArea(
+        child: LayoutBuilder(
+            // ignore: non_constant_identifier_names
+            builder: (context, Constraints) {
+          final size = Constraints.biggest;
+          final screenWidth = size.width;
+          final screenHeight = size.height;
+          return SingleChildScrollView(
+            reverse: true,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(
+                        screenWidth * 0.04,
+                        screenHeight * 0.02,
+                        0,
+                        0,
+                      ),
+                      child: Container(
+                        width: screenWidth * 0.1,
+                        height: screenWidth * 0.1,
+                        decoration: BoxDecoration(
+                          color: const Color.fromRGBO(110, 182, 255, 0.25),
+                          borderRadius:
+                              BorderRadius.circular(screenWidth * 0.05),
+                        ),
+                        child: IconButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          icon: const Icon(Icons.arrow_back),
+                          color: const Color.fromRGBO(110, 182, 255, 1),
+                          iconSize: screenWidth * 0.055,
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(
+                        screenWidth * 0.05,
+                        screenHeight * 0.03,
+                        0,
+                        0,
+                      ),
+                      child: Text(
+                        "Confirm Email",
+                        style: TextStyle(
+                          fontSize: screenWidth * 0.05,
+                          fontWeight: FontWeight.w700,
+                          fontFamily: "PlusJakartaSans",
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(
+                        top: screenHeight * 0.04,
+                        left: screenWidth * 0.37,
+                      ),
+                      child: SizedBox(
+                        width: screenWidth * 0.04,
+                        height: screenWidth * 0.04,
+                        child: SvgPicture.asset(
+                          'assets/images/Vector.svg',
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                PageTitlesInPayment(
+                  title: "Select your payment method",
+                  screenWidth: screenWidth,
+                  screenHeight: screenHeight,
+                ),
+                Row(
+                  children: [
+                    PaymentMethodButtons(
+                        screenWidth: screenWidth,
+                        screenHeight: screenHeight,
+                        isChecked: isPaymentChecked,
+                        icons: Icons.payment_outlined,
+                        pngAssetPath: null,
+                        checker: () {
+                          setState(() {
+                            isPaymentChecked = !isPaymentChecked;
+                          });
+                        }),
+                    PaymentMethodButtons(
+                        screenWidth: screenWidth,
+                        screenHeight: screenHeight,
+                        isChecked: isPaypalChecked,
+                        icons: Icons.paypal_outlined,
+                        pngAssetPath: null,
+                        checker: () {
+                          setState(() {
+                            isPaypalChecked = !isPaypalChecked;
+                          });
+                        }),
+                    PaymentMethodButtons(
+                        screenWidth: screenWidth,
+                        screenHeight: screenHeight,
+                        isChecked: isChappaChecked,
+                        icons: null,
+                        pngAssetPath: "assets/Icons/chapa.png",
+                        checker: () {
+                          setState(() {
+                            isChappaChecked = !isChappaChecked;
+                          });
+                        }),
+                  ],
+                ),
+                PageTitlesInPayment(
+                  title: "Enter your card information",
+                  screenWidth: screenWidth,
+                  screenHeight: screenHeight,
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: screenHeight * 0.01),
+                  child: PaymentInputFields(
+                    screenWidth: screenWidth * 0.5,
+                    screenHeight: screenHeight,
+                    keyboardType: TextInputType.emailAddress,
+                    hintText: "Card number",
+                    suffixIcon: null,
+                    prefixIcon: null,
+                    inputActiom: TextInputAction.next,
+                    isobscured: false,
+                    controller: null,
+                    iconPressed: null,
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: screenHeight * 0.01),
+                  child: PaymentInputFields(
+                    screenWidth: screenWidth * 0.5,
+                    screenHeight: screenHeight,
+                    keyboardType: TextInputType.emailAddress,
+                    hintText: "Card holder’s name",
+                    suffixIcon: null,
+                    prefixIcon: null,
+                    inputActiom: TextInputAction.next,
+                    isobscured: false,
+                    controller: null,
+                    iconPressed: null,
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: screenHeight * 0.01),
+                  child: PaymentInputFields(
+                    screenWidth: screenWidth * 0.5,
+                    screenHeight: screenHeight,
+                    keyboardType: TextInputType.emailAddress,
+                    hintText: "Expiry date",
+                    suffixIcon: null,
+                    prefixIcon: null,
+                    inputActiom: TextInputAction.next,
+                    isobscured: false,
+                    controller: null,
+                    iconPressed: null,
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: screenHeight * 0.01),
+                  child: PaymentInputFields(
+                    screenWidth: screenWidth * 0.5,
+                    screenHeight: screenHeight,
+                    keyboardType: TextInputType.emailAddress,
+                    hintText: "CVC",
+                    suffixIcon: null,
+                    prefixIcon: null,
+                    inputActiom: TextInputAction.next,
+                    isobscured: false,
+                    controller: null,
+                    iconPressed: null,
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: screenWidth * 0.05,
+                      vertical: screenHeight * 0.013),
+                  child: Row(
+                    children: [
+                      CustomCheckBox(
+                        onChange: (value) {
+                          isChecked = value;
+                        },
+                        isChecked: isChecked,
+                        screenWidth: screenWidth,
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(left: screenWidth * 0.02),
+                        child: const Text(
+                          'Remember payment information',
+                          style: TextStyle(
+                            fontFamily: 'PlusJakartaSans',
+                            fontSize: 12,
+                            fontWeight: FontWeight.w400,
+                            height:
+                                1.25, // Calculated based on line height: 20 / 16
+                            letterSpacing: -0.165,
+                            color: Color.fromRGBO(42, 42, 42, 0.5),
+                          ),
+                          textAlign: TextAlign.left,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.center,
+                  child: Padding(
+                    padding:
+                        EdgeInsets.symmetric(vertical: screenHeight * 0.06),
+                    child: PaymentButton(
+                        screenWidth: screenWidth,
+                        screenHeight: screenHeight,
+                        buttonText: "Next"),
+                  ),
+                ),
+                Padding(
+                    padding: EdgeInsets.only(
+                        bottom: MediaQuery.of(context).viewInsets.bottom))
+              ],
+            ),
+          );
+        }),
+      ),
+      resizeToAvoidBottomInset: false,
+    );
+  }
+}
+
+//payment screen ends here
+
+class PaymentInputFields extends StatelessWidget {
+  final double screenWidth;
+  final double screenHeight;
+  final TextInputType keyboardType;
+  final String hintText;
+  final IconData? suffixIcon;
+  final IconData? prefixIcon;
+  final TextInputAction inputActiom;
+  final bool isobscured;
+  final TextEditingController? controller;
+  final VoidCallback? iconPressed;
+
+  const PaymentInputFields(
+      {super.key,
+      required this.screenWidth,
+      required this.screenHeight,
+      required this.keyboardType,
+      required this.hintText,
+      this.suffixIcon,
+      this.prefixIcon,
+      required this.inputActiom,
+      required this.isobscured,
+      required this.controller,
+      this.iconPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
+      child: Column(
+        children: [
+          SizedBox(
+            height: 53,
+            child: TextFormField(
+              controller: controller,
+              obscureText: isobscured,
+              textInputAction: inputActiom,
+              keyboardType: keyboardType,
+              textAlignVertical: TextAlignVertical.bottom,
+              decoration: InputDecoration(
+                hintText: hintText,
+                hintStyle: const TextStyle(
+                  color: Color.fromRGBO(42, 42, 42, 0.5),
+
+                  fontFamily: 'PlusJakartaSans',
+                  fontSize: 14,
+                  fontWeight: FontWeight.w300,
+                  letterSpacing: -0.165,
+                  height: 18 / 14, // line-height / font-size
+                ),
+                suffixIcon: IconButton(
+                  icon: Icon(suffixIcon),
+                  onPressed: iconPressed,
+                ),
+                prefixIcon: prefixIcon != null
+                    ? Padding(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: screenWidth * 0.03),
+                        child: Icon(prefixIcon),
+                      )
+                    : null,
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(5),
+                    borderSide: const BorderSide()),
+                contentPadding: EdgeInsets.symmetric(
+                  vertical: 53, // No vertical padding
+                  horizontal: prefixIcon == null
+                      ? screenWidth * 0.05
+                      : screenWidth * 0.07,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class PaymentButton extends StatelessWidget {
+  final String buttonText;
+  final double screenWidth;
+  final double screenHeight;
+  final VoidCallback? buttonAction;
+  const PaymentButton(
+      {Key? key,
+      required this.screenWidth,
+      required this.screenHeight,
+      // ignore: non_constant_identifier_names
+      required this.buttonText,
+      this.buttonAction})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: buttonAction,
+      child: ClipRRect(
+          borderRadius: BorderRadius.circular(10),
+          child: Container(
+            width: screenWidth * 0.48, // 23.1% of screen width
+            height: screenHeight * 0.063, // 5% of screen height
+            decoration: const BoxDecoration(
+              color: Color.fromRGBO(110, 182, 255, 1),
+            ), // Adjust the width as needed
+            child: Center(
+              child: Text(
+                buttonText,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontFamily: "PlusJakartaSans",
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: -0.16,
+                ),
+              ),
+            ),
+          )),
+    );
+  }
+}
+
+class PageTitlesInPayment extends StatelessWidget {
+  final String title;
+  final double screenWidth;
+  final double screenHeight;
+
+  const PageTitlesInPayment(
+      {super.key,
+      required this.title,
+      required this.screenWidth,
+      required this.screenHeight});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+        padding: EdgeInsets.symmetric(
+            vertical: screenHeight * 0.02, horizontal: screenWidth * 0.047),
+        child: Text(title,
+            textAlign: TextAlign.left,
+            style: const TextStyle(
+              fontFamily: 'PlusJakartaSans',
+              color: Color.fromRGBO(42, 42, 42, 1),
+              fontSize: 17,
+              fontWeight: FontWeight.w500,
+              letterSpacing: -0.17,
+              height: 2,
+            )));
+  }
+}
+
+class PaymentMethodButtons extends StatelessWidget {
+  final double screenWidth;
+  final double screenHeight;
+  final bool isChecked;
+  final VoidCallback checker;
+  final IconData? icons;
+  final String? pngAssetPath;
+  const PaymentMethodButtons(
+      {super.key,
+      required this.screenWidth,
+      required this.screenHeight,
+      required this.isChecked,
+      required this.checker,
+      this.icons,
+      this.pngAssetPath});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: checker,
+      child: Padding(
+        padding: EdgeInsets.symmetric(
+            vertical: screenHeight * 0.005, horizontal: screenWidth * 0.047),
+        child: Container(
+          width: screenWidth * 0.235,
+          height: screenHeight * 0.07,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(5),
+            border: Border.all(
+                color: isChecked
+                    ? const Color.fromRGBO(110, 182, 255, 1)
+                    : const Color.fromRGBO(42, 42, 42, 0.25),
+                width: 1),
+            color: isChecked
+                ? const Color.fromRGBO(110, 182, 255, 1)
+                : Colors.white,
+            boxShadow: const [
+              BoxShadow(
+                color: Colors.white,
+                spreadRadius: 1,
+              ),
+            ],
+          ),
+          child: Center(
+            child: pngAssetPath != null
+                ? ColorFiltered(
+                    colorFilter: isChecked
+                        ? const ColorFilter.mode(
+                            Colors.white,
+                            BlendMode.srcIn,
+                          )
+                        : const ColorFilter.mode(
+                            Color.fromRGBO(110, 182, 255, 1),
+                            BlendMode.srcIn,
+                          ),
+                    child: Image.asset(
+                      pngAssetPath!,
+                      // fit: BoxFit.cover,
+                    ), // Replace with your image asset
+                  )
+                : Icon(
+                    icons,
+                    color: isChecked
+                        ? Colors.white
+                        : const Color.fromRGBO(110, 182, 255, 1),
+                  ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ignore: must_be_immutable
+class CustomCheckBox extends StatefulWidget {
+  double? size;
+  double? iconSize;
+  Function onChange;
+  Color? backgroundColor;
+  Color? iconColor;
+  Color? borderColor;
+  IconData? icon;
+  bool isChecked;
+  double screenWidth;
+
+  CustomCheckBox({
+    Key? key,
+    this.size,
+    this.iconSize,
+    required this.onChange,
+    this.backgroundColor,
+    this.iconColor,
+    this.icon,
+    this.borderColor,
+    required this.isChecked,
+    required this.screenWidth,
+  }) : super(key: key);
+
+  @override
+  State<CustomCheckBox> createState() => _CustomCheckBoxState();
+}
+
+class _CustomCheckBoxState extends State<CustomCheckBox> {
+  @override
+  void initState() {
+    super.initState();
+    widget.isChecked = widget.isChecked;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          widget.isChecked = !widget.isChecked;
+          widget.onChange(widget.isChecked);
+        });
+      },
+      child: AnimatedContainer(
+          height: widget.screenWidth * 0.04,
+          width: widget.screenWidth * 0.04,
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.fastLinearToSlowEaseIn,
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(2.0),
+              color: widget.isChecked
+                  ? widget.backgroundColor ??
+                      const Color.fromRGBO(110, 182, 255, 1)
+                  : Colors.transparent,
+              border: Border.all(
+                  color: widget.isChecked
+                      ? const Color.fromRGBO(110, 182, 255, 1)
+                      : widget.borderColor ??
+                          const Color.fromARGB(255, 78, 77, 77))),
+          child: widget.isChecked
+              ? Icon(
+                  widget.icon ?? Icons.check,
+                  color: widget.iconColor ?? Colors.white,
+                  size: widget.iconSize ?? 10,
+                )
+              : null),
     );
   }
 }
