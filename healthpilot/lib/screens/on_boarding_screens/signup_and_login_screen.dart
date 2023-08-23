@@ -142,8 +142,9 @@ class _SignupAndLoginScreenState extends State<SignupAndLoginScreen> {
                               normalTexts: "Forgot your password? ",
                               commandTexts: "Reset now",
                               login: () {
-                                Navigator.of(context)
-                                    .pushNamed(ForgotPasswordScreen.routeName);
+                                Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => ForgotPasswordScreen(),
+                                ));
                               },
                               fontSize: 17,
                             )
@@ -175,8 +176,12 @@ class _SignupAndLoginScreenState extends State<SignupAndLoginScreen> {
                         buttonText: _isLogin ? "Login" : "Sign Up",
                         buttonAction: _isLogin
                             ? () {}
-                            : () => Navigator.of(context)
-                                .pushNamed(ConfirmEmailScreen.routeName),
+                            : () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) =>
+                                      const ConfirmEmailScreen(),
+                                ));
+                              },
                       ),
                       SizedBox(
                         height: screenHeight * 0.03,
@@ -558,8 +563,9 @@ class ForgotPasswordScreen extends StatelessWidget {
                       screenHeight: screenHeight,
                       buttonText: "Next",
                       buttonAction: () {
-                        Navigator.of(context)
-                            .pushNamed(ForgotPasswordCheckEmail.routeName);
+                        Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => ForgotPasswordCheckEmail(),
+                        ));
                       }),
                 ),
                 Padding(
