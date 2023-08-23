@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:healthpilot/data/contants.dart';
 
-import 'package:healthpilot/screens/setup_personal_doctor/personal_information.dart'
-    as doctor;
-
 void main() {
   runApp(const HealthPilotApp());
 }
