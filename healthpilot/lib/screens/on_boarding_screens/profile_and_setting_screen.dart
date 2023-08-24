@@ -325,7 +325,6 @@ class GradientButton extends StatelessWidget {
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
-
           ), // Adjust the width as needed
           child: Center(
             child: TextButton(
@@ -374,7 +373,6 @@ class Button extends StatelessWidget {
               ),
             ),
           )),
-
     );
   }
 }
