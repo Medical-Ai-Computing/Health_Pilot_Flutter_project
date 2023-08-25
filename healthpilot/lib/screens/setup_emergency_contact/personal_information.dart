@@ -45,8 +45,7 @@ class _PersonalInformationState extends State<PersonalInformation> {
             Icons.arrow_back,
           ),
           onPressed: () {
-            // Define the action when the back button is pressed
-            // Navigator.pop(context);
+            Navigator.of(context).pop();
           },
           style: AppTheme.buttonStyleForAppBarBackButto,
         ),
