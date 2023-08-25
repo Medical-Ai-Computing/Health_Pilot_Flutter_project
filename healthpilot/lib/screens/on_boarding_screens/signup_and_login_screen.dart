@@ -1,6 +1,8 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:healthpilot/data/contants.dart';
+import 'package:healthpilot/screens/home_page_screen.dart/home_page_screen.dart';
 
 class SignupAndLoginScreen extends StatefulWidget {
   static const routeName = '/SignupandLogin';
@@ -175,7 +177,11 @@ class _SignupAndLoginScreenState extends State<SignupAndLoginScreen> {
                         screenHeight: screenHeight,
                         buttonText: _isLogin ? "Login" : "Sign Up",
                         buttonAction: _isLogin
-                            ? () {}
+                            ? () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => HomePageScreen(),
+                                ));
+                              }
                             : () {
                                 Navigator.of(context).push(MaterialPageRoute(
                                   builder: (context) =>
@@ -564,7 +570,8 @@ class ForgotPasswordScreen extends StatelessWidget {
                       buttonText: "Next",
                       buttonAction: () {
                         Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => ForgotPasswordCheckEmail(),
+                          builder: (context) =>
+                              const ForgotPasswordCheckEmail(),
                         ));
                       }),
                 ),
@@ -991,13 +998,17 @@ class IconContainor extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: EdgeInsets.all(screenWidth * 0.025),
       width: screenWidth * 0.1,
       height: screenHeight * 0.05,
       decoration: BoxDecoration(
-          color: Colors.white,
+          // color: Colors.white,
           borderRadius: BorderRadius.circular(10),
           border: Border.all(color: const Color.fromRGBO(221, 218, 218, 1))),
-      child: Image.asset('assets/Icons/Google1.png'),
+      // child: Image.asset('assets/Icons/Google1.png'),
+      child: SvgPicture.asset(
+        googleSignIn,
+      ),
     );
   }
 }

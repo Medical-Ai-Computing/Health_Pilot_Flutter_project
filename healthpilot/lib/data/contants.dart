@@ -12,6 +12,7 @@ const String womanReading = 'assets/images/woman_reading.svg';
 const String dicoverHelthBotSvg = 'assets/images/Mobile_inbox.svg';
 const String githubLogo = 'assets/icons/github_logo.svg';
 const String gmailLogo = 'assets/icons/gmail_logo.svg';
+const String googleSignIn = 'assets/icons/gsign.svg';
 const String linkedinLogo = 'assets/icons/linkedin_logo.svg';
 const String transalteIcon = 'assets/icons/translate.svg';
 const String bellReminder = 'assets/icons/bell_reminder.svg';

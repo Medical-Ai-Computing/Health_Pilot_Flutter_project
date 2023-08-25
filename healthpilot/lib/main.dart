@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:healthpilot/data/contants.dart';
 
-import 'package:healthpilot/screens/setup_personal_doctor/personal_information.dart'
-    as doctor;
-
-
+import 'screens/on_boarding_screens/physical_therapy_screen.dart';
 
 void main() {
   runApp(const HealthPilotApp());
@@ -22,11 +19,7 @@ class HealthPilotApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         fontFamily: 'Roboto', // Example font family
       ),
-      // home: const SetupEmergencyContact(),
-      // home: const PersonalInformation(),
-      // home: const SetupPersonalDoctor(),
-      // home: const HomePageScreen(),
-      home: const doctor.PersonalInformation(),
+      home: const WelcomeScreen(),
     );
   }
 }
@@ -42,10 +35,10 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   void goToNextScreen() {
     Future.delayed(const Duration(seconds: 2), () {
       // Navigate to the next screen
-      // Navigator.push(
-      //   context,
-      //   MaterialPageRoute(builder: (context) => HomePageScreen()),
-      // );
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const PhysicalTherapyScreen()),
+      );
     });
   }
 

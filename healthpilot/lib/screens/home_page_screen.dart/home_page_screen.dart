@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:healthpilot/screens/home_page_screen.dart/discover_healthpilot.dart';
 import 'package:line_icons/line_icons.dart';
+import '../on_boarding_screens/profile_and_setting_screen.dart';
 import '/screens/home_page_screen.dart/overview_card.dart';
 import 'package:healthpilot/theme/app_theme.dart';
 
@@ -22,6 +23,7 @@ class HomePageScreen extends StatefulWidget {
 
 class _HomePageScreenState extends State<HomePageScreen> {
   // const HomePageScreen({super.key});
+
   final userName = "Mohammed";
   bool showAiAlert = true;
   //list of blogs
@@ -56,15 +58,17 @@ class _HomePageScreenState extends State<HomePageScreen> {
       _currentIndex = index;
       if (_currentIndex != 0) {
         showAiAlert = false;
+        timer.cancel();
         ScaffoldMessenger.of(context).removeCurrentSnackBar();
       }
     });
   }
 
+  late Timer timer;
   void _showAlertAiBot(BuildContext ctx) {
     final size = MediaQuery.of(ctx).size;
 
-    Timer.periodic(const Duration(seconds: 30), (timer) {
+    timer = Timer.periodic(const Duration(seconds: 30), (timer) {
       setState(
         () {
           ScaffoldMessenger.of(ctx).showSnackBar(
@@ -152,6 +156,14 @@ class _HomePageScreenState extends State<HomePageScreen> {
       ScaffoldMessenger.of(context).removeCurrentSnackBar();
     }
     super.didChangeDependencies();
+  }
+
+  @override
+  void dispose() {
+    ScaffoldMessenger.of(context).removeCurrentSnackBar();
+    timer.cancel();
+    showAiAlert = false;
+    super.dispose();
   }
 
   @override
@@ -292,9 +304,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
       const Center(
         child: Text('chat'),
       ),
-      const Center(
-        child: Text('profile'),
-      ),
+      const ProfileAndSettingScreen(),
     ];
 
     return Scaffold(

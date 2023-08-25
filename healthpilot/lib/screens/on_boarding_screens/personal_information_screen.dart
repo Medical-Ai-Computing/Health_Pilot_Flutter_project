@@ -153,7 +153,9 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                                 BorderRadius.circular(screenWidth * 0.05),
                           ),
                           child: IconButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
                             icon: const Icon(Icons.arrow_back),
                             color: const Color.fromRGBO(110, 182, 255, 1),
                             iconSize: screenWidth * 0.055,
@@ -303,8 +305,8 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                       setState(() {
                         _isPersonalDoctorSubscribed =
                             !_isPersonalDoctorSubscribed;
-                        Navigator.of(context)
-                            .pushNamed(PaymentMethodScreen.routeName);
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => const PaymentMethodScreen()));
                       });
                     },
                   ),
@@ -456,7 +458,7 @@ class PhoneInputFields extends StatelessWidget {
             height: 67, // Set a fixed height for the SizedBox
             child: IntlPhoneField(
               dropdownIconPosition: IconPosition.trailing,
-              disableLengthCheck: false,
+              disableLengthCheck: true,
               initialCountryCode: 'ET',
               decoration: InputDecoration(
                 border: OutlineInputBorder(
