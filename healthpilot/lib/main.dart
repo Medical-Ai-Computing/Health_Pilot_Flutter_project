@@ -28,7 +28,7 @@ class HealthPilotApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         fontFamily: 'Roboto', // Example font family
       ),
-      home: InitialInfoFirst(),
+      home: const WelcomeScreen(),
     );
   }
 }
