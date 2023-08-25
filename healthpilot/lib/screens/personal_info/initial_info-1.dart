@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_ruler_picker/flutter_ruler_picker.dart';
 import 'package:flutter_svg/svg.dart';
+// import 'package:flutter_ruler_picker/flutter_ruler_picker.dart';
 import 'package:healthpilot/data/contants.dart';
 import 'package:healthpilot/screens/personal_info/initial_info-2.dart';
 
@@ -14,6 +16,13 @@ class InitialInfoFirst extends StatefulWidget {
 
 class _InitialInfoFirstState extends State<InitialInfoFirst> {
   double _currentAge = 0;
+  double tickWidth = 1.0;
+  int selectedAge = 18;
+  int selectedWeight = 18;
+  int selectedHeight = 18;
+  RulerPickerController? _rulerPickerController;
+  String selectedHeightUnit = 'cm';
+  String selectedWeightUnit = 'kg';
   String? mesurementTypeForWeight = "kg";
   List listItemsForWeight = ["kg", "gm"];
   String? mesurementTypeForHeight = "cm";
@@ -124,13 +133,60 @@ class _InitialInfoFirstState extends State<InitialInfoFirst> {
                       ),
                     ],
                   ),
-                  Slider(
-                      value: _currentAge,
-                      onChanged: (value) {
+                  Container(
+                    margin: const EdgeInsets.only(
+                      top: 10,
+                    ),
+                    child: RulerPicker(
+                      ranges: [
+                        RulerRange(begin: 0, end: 10, scale: 0.1),
+                        RulerRange(begin: 10, end: 100, scale: 1),
+                        RulerRange(begin: 100, end: 1000, scale: 10),
+                        RulerRange(begin: 1000, end: 10000, scale: 100),
+                        RulerRange(begin: 10000, end: 100000, scale: 1000)
+                      ],
+                      controller: _rulerPickerController,
+                      // beginValue: 0,
+                      // endValue: 100,
+                      // initValue: _rulerPickerController!.value,
+
+                      rulerScaleTextStyle: const TextStyle(
+                          fontStyle: FontStyle.normal,
+                          color: Color.fromRGBO(42, 42, 42, 1),
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500), //
+                      scaleLineStyleList: const [
+                        ScaleLineStyle(
+                            color: Color.fromRGBO(42, 42, 42, 1),
+                            width: 1.5,
+                            height: 20,
+                            scale: 0),
+                        ScaleLineStyle(
+                            color: Color.fromRGBO(42, 42, 42, 1),
+                            width: 1,
+                            height: 15,
+                            scale: 5),
+                        ScaleLineStyle(
+                            color: Color.fromRGBO(42, 42, 42, 1),
+                            width: 1,
+                            height: 10,
+                            scale: -1)
+                      ],
+                      onValueChanged: (num value) {
                         setState(() {
-                          _currentAge = value;
+                          selectedAge = value.toInt();
                         });
-                      }),
+                      },
+                      width: MediaQuery.of(context).size.width * 1,
+                      height: 40,
+                      rulerMarginTop: 15,
+
+                      onBuildRulerScaleText: (int index, num rulerScaleValue) {
+                        return rulerScaleValue.toInt().toString();
+                      },
+                      // onBuildRulerScaleText: (int index, num rulerScaleValue) {  },
+                    ),
+                  ),
                   Row(
                     children: [
                       Padding(
@@ -158,10 +214,9 @@ class _InitialInfoFirstState extends State<InitialInfoFirst> {
                         ),
                       ),
                       DropdownButton(
-                        hint: Text(mesurementTypeForHeight!,
-                          style: TextStyle(
-                            color: Colors.grey
-                          ),
+                        hint: Text(
+                          mesurementTypeForHeight!,
+                          style: TextStyle(color: Colors.grey),
                         ),
                         value: mesurementTypeForHeight,
                         onChanged: (newValue) {
@@ -178,13 +233,60 @@ class _InitialInfoFirstState extends State<InitialInfoFirst> {
                       )
                     ],
                   ),
-                  Slider(
-                      value: _currentAge,
-                      onChanged: (value) {
+                  Container(
+                    margin: const EdgeInsets.only(
+                      top: 10,
+                    ),
+                    child: RulerPicker(
+                      ranges: [
+                        RulerRange(begin: 0, end: 10, scale: 0.1),
+                        RulerRange(begin: 10, end: 100, scale: 1),
+                        RulerRange(begin: 100, end: 1000, scale: 10),
+                        RulerRange(begin: 1000, end: 10000, scale: 100),
+                        RulerRange(begin: 10000, end: 100000, scale: 1000)
+                      ],
+                      controller: _rulerPickerController,
+                      // beginValue: 0,
+                      // endValue: 100,
+                      // initValue: _rulerPickerController!.value,
+
+                      rulerScaleTextStyle: const TextStyle(
+                          fontStyle: FontStyle.normal,
+                          color: Color.fromRGBO(42, 42, 42, 1),
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500), //
+                      scaleLineStyleList: const [
+                        ScaleLineStyle(
+                            color: Color.fromRGBO(42, 42, 42, 1),
+                            width: 1.5,
+                            height: 20,
+                            scale: 0),
+                        ScaleLineStyle(
+                            color: Color.fromRGBO(42, 42, 42, 1),
+                            width: 1,
+                            height: 15,
+                            scale: 5),
+                        ScaleLineStyle(
+                            color: Color.fromRGBO(42, 42, 42, 1),
+                            width: 1,
+                            height: 10,
+                            scale: -1)
+                      ],
+                      onValueChanged: (num value) {
                         setState(() {
-                          _currentAge = value;
+                          selectedAge = value.toInt();
                         });
-                      }),
+                      },
+                      width: MediaQuery.of(context).size.width * 1,
+                      height: 40,
+                      rulerMarginTop: 15,
+
+                      onBuildRulerScaleText: (int index, num rulerScaleValue) {
+                        return rulerScaleValue.toInt().toString();
+                      },
+                      // onBuildRulerScaleText: (int index, num rulerScaleValue) {  },
+                    ),
+                  ),
                   Row(
                     children: [
                       Padding(
@@ -212,10 +314,9 @@ class _InitialInfoFirstState extends State<InitialInfoFirst> {
                         ),
                       ),
                       DropdownButton(
-                        hint: Text(mesurementTypeForWeight!,
-                          style: TextStyle(
-                              color: Colors.grey
-                          ),
+                        hint: Text(
+                          mesurementTypeForWeight!,
+                          style: TextStyle(color: Colors.grey),
                         ),
                         value: mesurementTypeForWeight,
                         onChanged: (newValue) {
@@ -232,29 +333,79 @@ class _InitialInfoFirstState extends State<InitialInfoFirst> {
                       )
                     ],
                   ),
-                  Slider(
-                      value: _currentAge,
-                      onChanged: (value) {
+                  Container(
+                    margin: const EdgeInsets.only(
+                      top: 10,
+                    ),
+                    child: RulerPicker(
+                      ranges: [
+                        RulerRange(begin: 0, end: 10, scale: 0.1),
+                        RulerRange(begin: 10, end: 100, scale: 1),
+                        RulerRange(begin: 100, end: 1000, scale: 10),
+                        RulerRange(begin: 1000, end: 10000, scale: 100),
+                        RulerRange(begin: 10000, end: 100000, scale: 1000)
+                      ],
+                      controller: _rulerPickerController,
+                      // beginValue: 0,
+                      // endValue: 100,
+                      // initValue: _rulerPickerController!.value,
+
+                      rulerScaleTextStyle: const TextStyle(
+                          fontStyle: FontStyle.normal,
+                          color: Color.fromRGBO(42, 42, 42, 1),
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500), //
+                      scaleLineStyleList: const [
+                        ScaleLineStyle(
+                            color: Color.fromRGBO(42, 42, 42, 1),
+                            width: 1.5,
+                            height: 20,
+                            scale: 0),
+                        ScaleLineStyle(
+                            color: Color.fromRGBO(42, 42, 42, 1),
+                            width: 1,
+                            height: 15,
+                            scale: 5),
+                        ScaleLineStyle(
+                            color: Color.fromRGBO(42, 42, 42, 1),
+                            width: 1,
+                            height: 10,
+                            scale: -1)
+                      ],
+                      onValueChanged: (num value) {
                         setState(() {
-                          _currentAge = value;
+                          selectedAge = value.toInt();
                         });
-                      }),
+                      },
+                      width: MediaQuery.of(context).size.width * 1,
+                      height: 40,
+                      rulerMarginTop: 15,
+                      onBuildRulerScaleText: (int index, num rulerScaleValue) {
+                        return rulerScaleValue.toInt().toString();
+                      },
+                      // onBuildRulerScaleText: (int index, num rulerScaleValue) {  },
+                    ),
+                  ),
                   Padding(
-                    padding: const EdgeInsets.only( top:48.0),
+                    padding: const EdgeInsets.only(top: 48.0, bottom: 48),
                     child: ElevatedButton(
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => InitialInfoSecond()), // Navigate to the DestinationPage
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  InitialInfoSecond()), // Navigate to the DestinationPage
                         );
                       },
                       style: ElevatedButton.styleFrom(
                           backgroundColor:
-                          const Color.fromRGBO(110, 182, 255, 1),
+                              const Color.fromRGBO(110, 182, 255, 1),
                           foregroundColor: Colors.white,
                           padding: EdgeInsets.symmetric(
-                              horizontal: MediaQuery.of(context).size.width * 0.25,
-                              vertical: MediaQuery.of(context).size.height * 0.02),
+                              horizontal:
+                                  MediaQuery.of(context).size.width * 0.25,
+                              vertical:
+                                  MediaQuery.of(context).size.height * 0.02),
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10))),
                       child: const Text('Next'),
