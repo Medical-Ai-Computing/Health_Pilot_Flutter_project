@@ -5,10 +5,32 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c25fa8c4-cd86-44f0-863a-16739339b9f7" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/healthpilot/assets/images/brainfuck.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/healthpilot/assets/images/doctor.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/healthpilot/assets/images/female.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/healthpilot/assets/images/height.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/healthpilot/assets/images/male.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/healthpilot/assets/images/weight.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/healthpilot/lib/screens/personal_info/initial_info-1.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/healthpilot/lib/screens/personal_info/initial_info-2.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/healthpilot/lib/screens/personal_info/initial_info-3.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/healthpilot/lib/screens/personal_info/initial_info-4.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_SDK.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_SDK.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/flutter.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/flutter.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_SDK.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_SDK.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/healthpilot/linux/flutter/generated_plugin_registrant.cc" beforeDir="false" afterPath="$PROJECT_DIR$/healthpilot/linux/flutter/generated_plugin_registrant.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/healthpilot/linux/flutter/generated_plugin_registrant.h" beforeDir="false" afterPath="$PROJECT_DIR$/healthpilot/linux/flutter/generated_plugin_registrant.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/healthpilot/linux/flutter/generated_plugins.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/healthpilot/linux/flutter/generated_plugins.cmake" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/healthpilot/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/healthpilot/lib/main.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/healthpilot/macos/Flutter/GeneratedPluginRegistrant.swift" beforeDir="false" afterPath="$PROJECT_DIR$/healthpilot/macos/Flutter/GeneratedPluginRegistrant.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/healthpilot/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/healthpilot/pubspec.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/healthpilot/windows/flutter/generated_plugin_registrant.cc" beforeDir="false" afterPath="$PROJECT_DIR$/healthpilot/windows/flutter/generated_plugin_registrant.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/healthpilot/windows/flutter/generated_plugin_registrant.h" beforeDir="false" afterPath="$PROJECT_DIR$/healthpilot/windows/flutter/generated_plugin_registrant.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/healthpilot/windows/flutter/generated_plugins.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/healthpilot/windows/flutter/generated_plugins.cmake" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/healthpilot/linux/flutter/generated_plugin_registrant.cc" beforeDir="false" afterPath="$PROJECT_DIR$/healthpilot/linux/flutter/generated_plugin_registrant.cc" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/healthpilot/linux/flutter/generated_plugin_registrant.h" beforeDir="false" afterPath="$PROJECT_DIR$/healthpilot/linux/flutter/generated_plugin_registrant.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/healthpilot/linux/flutter/generated_plugins.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/healthpilot/linux/flutter/generated_plugins.cmake" afterDir="false" />
@@ -23,6 +45,13 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Dart File" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
@@ -30,6 +59,9 @@
     <option name="stateVersion" value="1" />
   </component>
   <component name="ProjectId" id="2SexBy9SndVkPSdn4rcKVTLyEaz" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -77,5 +109,9 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
   </component>
 </project>
