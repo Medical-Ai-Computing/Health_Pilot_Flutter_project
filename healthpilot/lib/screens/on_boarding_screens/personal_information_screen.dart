@@ -22,6 +22,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:healthpilot/screens/on_boarding_screens/subscription_and_payment_screen.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
+import 'package:line_icons/line_icons.dart';
 import '../setup_personal_doctor/personal_information.dart' as doctor;
 import '../setup_emergency_contact/personal_information.dart' as emergency;
 
@@ -204,21 +205,20 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                         ),
                       ),
                       Positioned(
-                        bottom: 0,
-                        right: 0,
+                        bottom: screenWidth * 0.000,
+                        right: screenWidth * 0.03,
                         child: Container(
-                          width: screenWidth * 0.08,
-                          height: screenWidth * 0.08,
-                          decoration: BoxDecoration(
-                              borderRadius:
-                                  BorderRadius.circular(screenWidth * 0.04),
-                              color: Colors.white),
-                          child: const Icon(
-                            Icons.edit_square,
-                            color: Colors.black,
-                            size: 20,
-                          ),
-                        ),
+                            width: screenWidth * 0.05,
+                            height: screenWidth * 0.05,
+                            decoration: BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.circular(screenWidth * 0.025),
+                                color: Colors.white),
+                            child: Icon(
+                              LineIcons.edit,
+                              size: screenWidth * 0.03,
+                              color: const Color.fromARGB(255, 73, 70, 70),
+                            )),
                       ),
                     ],
                   ),
@@ -577,7 +577,7 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
           ),
         ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Padding(
               padding: const EdgeInsets.only(top: 13, left: 9),
@@ -589,7 +589,7 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
                     textAlign: TextAlign.left,
                     style: const TextStyle(
                       fontFamily: "PlusJakartaSans",
-                      fontSize: 17,
+                      fontSize: 16,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -610,42 +610,31 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
                 widget.description,
                 style: const TextStyle(
                   fontFamily: "PlusJakartaSans",
-                  fontSize: 15,
+                  color: Color.fromARGB(132, 0, 0, 0),
+                  fontSize: 14,
                   fontWeight: FontWeight.w400,
                 ),
               ),
             ),
             const Spacer(),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 0),
-                child: SizedBox(
-                  width: 110,
-                  height: 28,
-                  child: ElevatedButton(
-                    onPressed: widget.subscription,
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(
-                          const Color.fromRGBO(110, 182, 255, 1)),
-                      foregroundColor: MaterialStateProperty.all(Colors.white),
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                      ),
-                    ),
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: Text(
-                        widget.buttontxt,
-                        style: const TextStyle(
-                          fontFamily: "PlusJakartaSans",
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
+            Container(
+              width: widget.screenWidth * 0.3,
+              height: widget.screenWidth * 0.08,
+              margin: EdgeInsets.only(bottom: widget.screenWidth * 0.02),
+              child: ElevatedButton(
+                onPressed: widget.subscription,
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromRGBO(110, 182, 255, 1),
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(horizontal: 25),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5))),
+                child: Text(
+                  widget.buttontxt,
+                  style: const TextStyle(
+                    fontFamily: "PlusJakartaSans",
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
               ),
