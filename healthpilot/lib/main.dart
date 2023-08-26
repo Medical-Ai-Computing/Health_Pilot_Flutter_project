@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:healthpilot/data/contants.dart';
-
-import 'package:healthpilot/screens/setup_personal_doctor/personal_information.dart'
-    as doctor;
-
-
+import 'package:healthpilot/screens/on_boarding_screens/language_translation.dart';
+import 'package:healthpilot/screens/on_boarding_screens/subscription_and_payment_screen.dart';
 
 void main() {
   runApp(const HealthPilotApp());
@@ -26,7 +23,7 @@ class HealthPilotApp extends StatelessWidget {
       // home: const PersonalInformation(),
       // home: const SetupPersonalDoctor(),
       // home: const HomePageScreen(),
-      home: const doctor.PersonalInformation(),
+      home: const LanguageTranslation(),
     );
   }
 }

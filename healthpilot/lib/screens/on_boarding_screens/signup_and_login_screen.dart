@@ -60,7 +60,7 @@ class _SignupAndLoginScreenState extends State<SignupAndLoginScreen> {
                     ),
                     Padding(
                       padding: EdgeInsets.only(
-                          top: screenHeight * 0.013, left: screenWidth * 0.03),
+                          top: screenHeight * 0.013, left: screenWidth * 0.025),
                       child: SvgPicture.asset('assets/images/Vector.svg'),
                     ),
                   ],
@@ -354,7 +354,7 @@ class ConfirmEmailScreen extends StatelessWidget {
                     Padding(
                       padding: EdgeInsets.only(
                         top: screenHeight * 0.04,
-                        left: screenWidth * 0.37,
+                        left: screenWidth * 0.32,
                       ),
                       child: SizedBox(
                         width: screenWidth * 0.04,
@@ -512,7 +512,7 @@ class ForgotPasswordScreen extends StatelessWidget {
                     Padding(
                       padding: EdgeInsets.only(
                         top: screenHeight * 0.04,
-                        left: screenWidth * 0.28,
+                        left: screenWidth * 0.24,
                       ),
                       child: SizedBox(
                         width: screenWidth * 0.04,
@@ -667,7 +667,7 @@ class ForgotPasswordCheckEmail extends StatelessWidget {
                       Padding(
                         padding: EdgeInsets.only(
                           top: screenHeight * 0.04,
-                          left: screenWidth * 0.37,
+                          left: screenWidth * 0.32,
                         ),
                         child: SizedBox(
                           width: screenWidth * 0.04,

@@ -23,8 +23,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:healthpilot/screens/on_boarding_screens/subscription_and_payment_screen.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:line_icons/line_icons.dart';
-import '../setup_personal_doctor/personal_information.dart' as doctor;
-import '../setup_emergency_contact/personal_information.dart' as emergency;
 
 class PersonalInformationScreen extends StatefulWidget {
   const PersonalInformationScreen({Key? key}) : super(key: key);
@@ -172,7 +170,7 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                       Padding(
                         padding: EdgeInsets.only(
                           top: screenHeight * 0.04,
-                          left: screenWidth * 0.2,
+                          left: screenWidth * 0.17,
                         ),
                         child: SizedBox(
                           width: screenWidth * 0.04,
@@ -278,9 +276,9 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                     icon: null,
                     buttontxt: "Start setup",
                     subscription: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) =>
-                              const emergency.PersonalInformation()));
+                      // Navigator.of(context).push(MaterialPageRoute(
+                      //     builder: (context) =>
+                      //         // const emergency.PersonalInformation()));
                     },
                   ),
                   SubscriptionCard(
@@ -299,7 +297,7 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                       _isPersonalDoctorSubscribed == true
                           ? Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) =>
-                                  const doctor.PersonalInformation()))
+                                  const PersonalInformationScreen()))
                           : setState(() {
                               _isPersonalDoctorSubscribed =
                                   !_isPersonalDoctorSubscribed;
