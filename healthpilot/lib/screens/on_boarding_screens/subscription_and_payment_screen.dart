@@ -477,7 +477,7 @@ class PaymentReviewScreen extends StatelessWidget {
                     Padding(
                       padding: EdgeInsets.only(
                         top: screenHeight * 0.04,
-                        left: screenWidth * 0.37,
+                        left: screenWidth * 0.32,
                       ),
                       child: SizedBox(
                         width: screenWidth * 0.04,
