@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:healthpilot/data/contants.dart';
+import 'package:healthpilot/screens/home_page_screen.dart/home_page_screen.dart';
+import 'package:healthpilot/screens/meet_the_devs_screen/meet_the_devs.dart';
+import 'package:healthpilot/screens/on_boarding_screens/physical_therapy_screen.dart';
+import 'package:healthpilot/screens/personal_info/initial_info-1.dart';
+import 'package:healthpilot/screens/personal_info/initial_info-2.dart';
+import 'package:healthpilot/screens/personal_info/initial_info-3.dart';
+import 'package:healthpilot/screens/personal_info/initial_info-4.dart';
+import 'package:healthpilot/screens/setup_emergency_contact/personal_information.dart';
+import 'package:healthpilot/screens/setup_emergency_contact/setup_emergency_contact.dart';
 
-import 'package:healthpilot/screens/setup_personal_doctor/personal_information.dart'
-    as doctor;
-
-
+import 'screens/on_boarding_screens/physical_therapy_screen.dart';
 
 void main() {
   runApp(const HealthPilotApp());
@@ -22,11 +28,7 @@ class HealthPilotApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         fontFamily: 'Roboto', // Example font family
       ),
-      // home: const SetupEmergencyContact(),
-      // home: const PersonalInformation(),
-      // home: const SetupPersonalDoctor(),
-      // home: const HomePageScreen(),
-      home: const doctor.PersonalInformation(),
+      home: const WelcomeScreen(),
     );
   }
 }
@@ -42,10 +44,10 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   void goToNextScreen() {
     Future.delayed(const Duration(seconds: 2), () {
       // Navigate to the next screen
-      // Navigator.push(
-      //   context,
-      //   MaterialPageRoute(builder: (context) => HomePageScreen()),
-      // );
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const PhysicalTherapyScreen()),
+      );
     });
   }
 
