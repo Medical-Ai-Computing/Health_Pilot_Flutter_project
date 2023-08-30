@@ -6,6 +6,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:healthpilot/screens/home_page_screen.dart/discover_healthpilot.dart';
+import 'package:healthpilot/screens/on_boarding_screens/language_translation.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import '../on_boarding_screens/profile_and_setting_screen.dart';
@@ -222,7 +223,13 @@ class _HomePageScreenState extends State<HomePageScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    SvgPicture.asset(transalteIcon),
+                    InkWell(
+                        splashColor: const Color.fromARGB(100, 0, 0, 0),
+                        onTap: () =>
+                            Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => const LanguageTranslation(),
+                            )),
+                        child: SvgPicture.asset(transalteIcon)),
                     InkWell(
                       splashColor: const Color.fromARGB(100, 0, 0, 0),
                       onTap: () => cancelEmergencyCall(),

@@ -7,8 +7,18 @@ class AppTheme {
       color: Color.fromRGBO(42, 42, 42, 1),
       fontFamily: 'Plus Jakarta Sans',
       fontWeight: FontWeight.w600);
+  static const TextStyle descriptionTextForInitalPage = TextStyle(
+      fontSize: 24,
+      color: Color.fromRGBO(42, 42, 42, 1),
+      fontFamily: 'Plus Jakarta Sans',
+      fontWeight: FontWeight.w800);
   static const TextStyle helperTextForUserStyle = TextStyle(
       fontSize: 14,
+      color: Color.fromRGBO(42, 42, 42, 0.5),
+      fontFamily: 'Plus Jakarta Sans',
+      fontWeight: FontWeight.w400);
+  static const TextStyle helperTextForInitialStyle = TextStyle(
+      fontSize: 16,
       color: Color.fromRGBO(42, 42, 42, 0.5),
       fontFamily: 'Plus Jakarta Sans',
       fontWeight: FontWeight.w400);
