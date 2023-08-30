@@ -11,6 +11,9 @@ const String gynecologyConsultation =
 const String womanReading = 'assets/images/woman_reading.svg';
 const String dicoverHelthBotSvg = 'assets/images/Mobile_inbox.svg';
 const String githubLogo = 'assets/icons/github_logo.svg';
+const String chatBot = 'assets/icons/bot.svg';
+const String triangeExclamationPic =
+    'assets/icons/triangle_exclamation_pic.svg';
 const String gmailLogo = 'assets/icons/gmail_logo.svg';
 const String googleSignIn = 'assets/icons/gsign.svg';
 const String linkedinLogo = 'assets/icons/linkedin_logo.svg';

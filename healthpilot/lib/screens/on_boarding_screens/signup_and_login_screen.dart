@@ -189,7 +189,7 @@ class _SignupAndLoginScreenState extends State<SignupAndLoginScreen> {
                         buttonAction: _isLogin
                             ? () {
                                 Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => HomePageScreen(),
+                                  builder: (context) => const HomePageScreen(),
                                 ));
                               }
                             : () {
