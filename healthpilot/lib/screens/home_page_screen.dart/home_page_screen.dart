@@ -31,9 +31,9 @@ class _HomePageScreenState extends State<HomePageScreen> {
 
   final _tutorText = [
     {
-      'title': 'Welcome to healthy bot',
+      'title': 'Welcome to health pilot',
       'description':
-          'Let’s learn a few things about what healthy bot can do for you.'
+          'Let’s learn a few things about what health pilot can do for you.'
     },
     {
       'title': 'Did you know? Premium users can have personal doctors',

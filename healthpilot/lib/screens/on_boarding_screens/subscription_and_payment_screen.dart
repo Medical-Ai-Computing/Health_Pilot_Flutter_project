@@ -44,7 +44,7 @@ class SubscriptionAndPaymentScreen extends StatelessWidget {
             child: Column(
               children: [
                 PageTitles(
-                  title: "Unleash the full potential of HealthyBot",
+                  title: "Unleash the full potential of HealthPilot",
                   screenWidth: screenWidth,
                   screenHeight: screenHeight,
                   padding: EdgeInsets.only(
