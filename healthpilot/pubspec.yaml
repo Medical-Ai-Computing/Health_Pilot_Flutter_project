@@ -36,8 +36,12 @@ dependencies:
   smooth_page_indicator: ^1.1.0
   intl_phone_number_input: ^0.7.3+1
   dropdown_textfield: ^1.0.8
+
+  shared_preferences: ^2.2.0
+
   rulers: ^1.0.7
   flutter_ruler_picker: ^1.0.3
+
 
 
   # The following adds the Cupertino Icons font to your application.

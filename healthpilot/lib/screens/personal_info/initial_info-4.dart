@@ -52,7 +52,6 @@ class _InitialInfoFinal extends State<InitialInfoFinal> {
             textAlign: TextAlign.center,
             style: AppTheme.descriptionTextForInitalPage),
       ),
-
       SizedBox(
         width: size.width * 0.79,
         height: size.height * 0.0903,
@@ -67,7 +66,9 @@ class _InitialInfoFinal extends State<InitialInfoFinal> {
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => HomePageScreen()), // Navigate to the DestinationPage
+            MaterialPageRoute(
+                builder: (context) =>
+                    const HomePageScreen()), // Navigate to the DestinationPage
           );
         },
         child: Container(
@@ -80,9 +81,9 @@ class _InitialInfoFinal extends State<InitialInfoFinal> {
               Radius.elliptical(10, 10),
             ),
           ),
-          child: Text(
+          child: const Text(
             'Done',
-            style: const TextStyle(
+            style: TextStyle(
                 fontWeight: FontWeight.w600,
                 fontSize: 16,
                 color: Color.fromRGBO(255, 255, 255, 1)),
