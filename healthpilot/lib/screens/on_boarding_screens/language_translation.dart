@@ -118,6 +118,7 @@ class LangButton extends StatelessWidget {
   final VoidCallback onPressed;
 
   const LangButton({
+    super.key,
     required this.index,
     required this.screenWidth,
     required this.screenHeight,
