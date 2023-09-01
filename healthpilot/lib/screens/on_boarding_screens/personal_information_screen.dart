@@ -23,8 +23,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:healthpilot/screens/on_boarding_screens/subscription_and_payment_screen.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:line_icons/line_icons.dart';
-import '../setup_personal_doctor/personal_information.dart' as doctor;
-import '../setup_emergency_contact/personal_information.dart' as emergency;
+// import '../setup_personal_doctor/personal_information.dart' as doctor;
+// import '../setup_emergency_contact/personal_information.dart' as emergency;
 
 class PersonalInformationScreen extends StatefulWidget {
   const PersonalInformationScreen({Key? key}) : super(key: key);
@@ -35,7 +35,7 @@ class PersonalInformationScreen extends StatefulWidget {
 }
 
 class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
-  bool _isPersonalDoctorSubscribed = false;
+  final bool _isPersonalDoctorSubscribed = false;
 
   bool _isNutritionTrackingSubscribed = false;
 
@@ -278,9 +278,10 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                     icon: null,
                     buttontxt: "Start setup",
                     subscription: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) =>
-                              const emergency.PersonalInformation()));
+                      // Navigator.of(context).push(MaterialPageRoute(
+                      //     builder: (context) =>
+                      //         const emergency.PersonalInformation()
+                      // ));
                     },
                   ),
                   SubscriptionCard(
@@ -296,17 +297,17 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                         ? "Start setup"
                         : "Subscribe",
                     subscription: () {
-                      _isPersonalDoctorSubscribed == true
-                          ? Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) =>
-                                  const doctor.PersonalInformation()))
-                          : setState(() {
-                              _isPersonalDoctorSubscribed =
-                                  !_isPersonalDoctorSubscribed;
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) =>
-                                      const PaymentMethodScreen()));
-                            });
+                      // _isPersonalDoctorSubscribed == true
+                      //     ? Navigator.of(context).push(MaterialPageRoute(
+                      //         builder: (context) =>
+                      //             const doctor.PersonalInformation()))
+                      //     : setState(() {
+                      //         _isPersonalDoctorSubscribed =
+                      //             !_isPersonalDoctorSubscribed;
+                      //         Navigator.of(context).push(MaterialPageRoute(
+                      //             builder: (context) =>
+                      //                 const PaymentMethodScreen()));
+                      //       });
                     },
                   ),
                   SubscriptionCard(
