@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:healthpilot/data/contants.dart';
-import 'package:healthpilot/screens/on_boarding_screens/medications._screen.dart';
-
-import 'package:healthpilot/screens/on_boarding_screens/physical_therapy_screen.dart';
+import 'package:healthpilot/screens/home_page_screen.dart/home_page_screen.dart';
 
 void main() {
   runApp(const HealthPilotApp());
@@ -20,7 +18,8 @@ class HealthPilotApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         fontFamily: 'Roboto', // Example font family
       ),
-      home: const MedicationAddScreen(),
+      // home: const WelcomeScreen(),
+      home: HomePageScreen(),
     );
   }
 }
@@ -36,10 +35,10 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   void goToNextScreen() {
     Future.delayed(const Duration(seconds: 2), () {
       // Navigate to the next screen
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const PhysicalTherapyScreen()),
-      );
+      // Navigator.push(
+      //   context,
+      //   MaterialPageRoute(builder: (context) => const PhysicalTherapyScreen()),
+      // );
     });
   }
 
