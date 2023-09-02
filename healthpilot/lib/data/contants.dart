@@ -7,13 +7,14 @@ const String chatBotImage = 'assets/images/chat_bot.png';
 const String devsImage = 'assets/images/devs_image.png';
 const String personPicForprofile = 'assets/images/person.png';
 //initial Info
-const String maleForinital = 'assets/images/male.png';
-const String femaleForinital = 'assets/images/female.png';
-const String brainfuck = 'assets/images/brainfuck.png';
-const String height = 'assets/images/height.png';
-const String weight = 'assets/images/weight.png';
-const String doctor = 'assets/images/doctor.png';
-
+const String maleForinital = 'assets/icons/male_pic.svg';
+const String femaleForinital = 'assets/icons/female_pic.svg';
+const String lineMarker = 'assets/icons/line_marker.svg';
+const String triangleMarker = 'assets/icons/triangle_marker.svg';
+const String brainIcon = 'assets/icons/brain.svg';
+const String height = 'assets/icons/height.svg';
+const String weight = 'assets/icons/weight.svg';
+const String doctor = 'assets/icons/online_doctor.svg';
 
 const String gynecologyConsultation =
     'assets/images/gynecology_consultation.svg';
@@ -48,5 +49,4 @@ const String chatBotText =
     'Chat with our AI to obtain answers to any health-related questions.';
 const String initialInfoFinalTextDescription =
     'We are delighted to have you here. Visit your homepage to explore a range of features, including symptom checking, health monitoring, and engaging in both group and private chats with our AI';
-const String initialInfoFinalTextTitle =
-    'Welcome aboard';
+const String initialInfoFinalTextTitle = 'Welcome aboard';

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:healthpilot/data/contants.dart';
 import 'package:healthpilot/screens/home_page_screen.dart/home_page_screen.dart';
-import 'package:healthpilot/theme/app_theme.dart';
 
 class InitialInfoFinal extends StatefulWidget {
   const InitialInfoFinal({super.key});
@@ -13,7 +13,6 @@ class InitialInfoFinal extends StatefulWidget {
 class _InitialInfoFinal extends State<InitialInfoFinal> {
   final PageController _pageController = PageController();
 
-  int _currentPage = 0;
   // static Size size = const Size(0, 0);
   @override
   void dispose() {
@@ -36,28 +35,37 @@ class _InitialInfoFinal extends State<InitialInfoFinal> {
         padding: const EdgeInsets.symmetric(
           horizontal: 43.0,
         ).copyWith(top: 70),
-        child: Image(
-          height: 355,
-          width: 355,
-          image: const AssetImage(doctor),
-        ),
+        child: SvgPicture.asset(doctor),
       ),
       SizedBox(
         height: size.height * 0.052,
       ),
       SizedBox(
         width: size.width * 0.79,
-        height: size.height * 0.103,
-        child: const Text(initialInfoFinalTextTitle,
-            textAlign: TextAlign.center,
-            style: AppTheme.descriptionTextForInitalPage),
+        child: const Text(
+          initialInfoFinalTextTitle,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+              fontFamily: 'PlusJakartaSans',
+              fontWeight: FontWeight.w600,
+              fontSize: 22,
+              color: Colors.black),
+        ),
       ),
       SizedBox(
-        width: size.width * 0.79,
-        height: size.height * 0.0903,
-        child: const Text(initialInfoFinalTextDescription,
-            textAlign: TextAlign.center,
-            style: AppTheme.helperTextForInitialStyle),
+        height: size.height * 0.01,
+      ),
+      SizedBox(
+        width: size.width * 1,
+        child: const Text(
+          initialInfoFinalTextDescription,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+              fontFamily: 'PlusJakartaSans',
+              fontWeight: FontWeight.w500,
+              fontSize: 12,
+              color: Color.fromRGBO(41, 41, 41, 0.5)),
+        ),
       ),
       SizedBox(
         height: size.height * 0.084,

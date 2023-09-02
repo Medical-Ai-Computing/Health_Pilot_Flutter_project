@@ -170,8 +170,6 @@ class _HomePageScreenState extends State<HomePageScreen> {
 
   @override
   void didChangeDependencies() {
-    getTutorStatus();
-
     super.didChangeDependencies();
   }
 
@@ -185,7 +183,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
   late SharedPreferences prefs;
   late bool isTutoreGiven = false;
   late bool isOnEmeregencyCalling = false;
-  void getTutorStatus() async {
+  Future getTutorStatus() async {
     prefs = await SharedPreferences.getInstance();
     isTutoreGiven = prefs.getBool('isTutorGiven') ?? false;
   }
@@ -347,359 +345,388 @@ class _HomePageScreenState extends State<HomePageScreen> {
       const ProfileAndSettingScreen(),
     ];
 
-    return Stack(
-      children: [
-        Scaffold(
-          bottomNavigationBar: BottomNavigationBar(
-            selectedItemColor:
-                AppTheme.buttonStyleForFloatingActionBtn.backgroundColor,
-            unselectedItemColor: Colors.grey,
-            selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold),
-            elevation: 30,
-            // type: BottomNavigationBarType.shifting,
-            currentIndex: _currentIndex,
-            onTap: _onTabTapped,
-            items: [
-              BottomNavigationBarItem(
-                icon: SvgPicture.asset(
-                  bottomNavBarHomeIcon,
-                  color: _currentIndex == 0
-                      ? const Color.fromARGB(255, 72, 162, 252)
-                      : Colors.grey,
-                ),
-                label: 'Home',
-              ),
-              BottomNavigationBarItem(
-                icon: SvgPicture.asset(
-                  bottomNavBarHealthIcon,
-                  color: _currentIndex == 1
-                      ? const Color.fromRGBO(110, 182, 255, 1)
-                      : Colors.grey,
-                ),
-                label: 'Health',
-              ),
-              BottomNavigationBarItem(
-                icon: SvgPicture.asset(
-                  bottomNavBarAssesmentIcon,
-                  color: _currentIndex == 2
-                      ? const Color.fromRGBO(110, 182, 255, 1)
-                      : Colors.grey,
-                ),
-                label: 'Assesment',
-              ),
-              BottomNavigationBarItem(
-                icon: SvgPicture.asset(
-                  bottomNavBarChatIcon,
-                  color: _currentIndex == 3
-                      ? const Color.fromRGBO(110, 182, 255, 1)
-                      : Colors.grey,
-                ),
-                label: 'Chat',
-              ),
-              BottomNavigationBarItem(
-                icon: SvgPicture.asset(
-                  bottomNavBarProfileIcon,
-                  color: _currentIndex == 4
-                      ? const Color.fromRGBO(110, 182, 255, 1)
-                      : Colors.grey,
-                ),
-                label: 'Profile',
-              ),
-            ],
-          ),
-          body: SingleChildScrollView(
-              child: SafeArea(
-            child: pages[_currentIndex],
-          )),
-          floatingActionButton: _currentIndex == 0
-              ? FloatingActionButton(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30.0),
-                  ),
-                  onPressed: () {},
-                  backgroundColor:
-                      AppTheme.buttonStyleForFloatingActionBtn.backgroundColor,
-                  foregroundColor:
-                      AppTheme.buttonStyleForFloatingActionBtn.foregroundColor,
-                  child: const Icon(LineIcons.robot),
-                )
-              : null,
-        ),
-        if (isOnEmeregencyCalling)
-          Dialog(
-            backgroundColor: Colors.transparent,
-            child: SizedBox(
-              height: size.height * 0.3,
-              child: Stack(
-                children: [
-                  Positioned.fill(
-                    child: BackdropFilter(
-                      filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-                      child: Container(
-                        color: Colors.transparent,
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: size.width * 0.03),
-                    child: Card(
-                      color: const Color.fromARGB(255, 255, 255, 255),
-                      child: Padding(
-                        padding:
-                            EdgeInsets.symmetric(vertical: size.height * 0.02),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SvgPicture.asset(triangeExclamationPic),
-                            Container(
-                              decoration: BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.circular(size.width * 0.02),
-                              ),
-                              height: size.height * 0.1,
-                              width: size.width * 0.9,
-                              child: PageView.builder(
-                                controller: _pageControllerOfTutorial,
-                                itemCount: _tutorText.length,
-                                onPageChanged: (index) {
-                                  setState(() {
-                                    _currentPageOfTutorial = index;
-                                  });
-                                },
-                                itemBuilder: (context, index) => Padding(
-                                  padding: EdgeInsets.all(size.width * 0.02),
-                                  child: Column(
-                                    children: [
-                                      const Text(
-                                        'Calling your emergency contacts',
-                                        style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w500),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                      SizedBox(
-                                        height: size.height * 0.01,
-                                      ),
-                                      const Text(
-                                        "You have 1 minute to cancel ",
-                                        style: TextStyle(
-                                            color: Color.fromARGB(105, 0, 0, 0),
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w400),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              height: size.height * 0.01,
-                            ),
-                            SizedBox(
-                              width: size.width * 0.2,
-                              height: size.height * 0.04,
-                              child: MaterialButton(
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(
-                                        size.width * 0.02)),
-                                color: const Color.fromRGBO(110, 182, 255, 1),
-                                onPressed: () {
-                                  setState(() {
-                                    isOnEmeregencyCalling = false;
-                                  });
-                                },
-                                child: const Text(
-                                  'Cancel',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ),
-                            )
-                          ],
+    return FutureBuilder(
+      future: getTutorStatus(),
+      builder: (context, snapshot) => snapshot.connectionState ==
+              ConnectionState.waiting
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : Stack(
+              children: [
+                Scaffold(
+                  bottomNavigationBar: BottomNavigationBar(
+                    selectedItemColor: AppTheme
+                        .buttonStyleForFloatingActionBtn.backgroundColor,
+                    unselectedItemColor: Colors.grey,
+                    selectedLabelStyle:
+                        const TextStyle(fontWeight: FontWeight.bold),
+                    elevation: 30,
+                    // type: BottomNavigationBarType.shifting,
+                    currentIndex: _currentIndex,
+                    onTap: _onTabTapped,
+                    items: [
+                      BottomNavigationBarItem(
+                        icon: SvgPicture.asset(
+                          bottomNavBarHomeIcon,
+                          color: _currentIndex == 0
+                              ? const Color.fromARGB(255, 72, 162, 252)
+                              : Colors.grey,
                         ),
+                        label: 'Home',
                       ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        if (!isTutoreGiven)
-          Dialog(
-            backgroundColor: Colors.transparent,
-            child: SizedBox(
-              height: size.height * 0.58,
-              child: Stack(
-                children: [
-                  Positioned.fill(
-                    child: BackdropFilter(
-                      filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-                      child: Container(
-                        color: Colors.transparent,
+                      BottomNavigationBarItem(
+                        icon: SvgPicture.asset(
+                          bottomNavBarHealthIcon,
+                          color: _currentIndex == 1
+                              ? const Color.fromRGBO(110, 182, 255, 1)
+                              : Colors.grey,
+                        ),
+                        label: 'Health',
                       ),
-                    ),
+                      BottomNavigationBarItem(
+                        icon: SvgPicture.asset(
+                          bottomNavBarAssesmentIcon,
+                          color: _currentIndex == 2
+                              ? const Color.fromRGBO(110, 182, 255, 1)
+                              : Colors.grey,
+                        ),
+                        label: 'Assesment',
+                      ),
+                      BottomNavigationBarItem(
+                        icon: SvgPicture.asset(
+                          bottomNavBarChatIcon,
+                          color: _currentIndex == 3
+                              ? const Color.fromRGBO(110, 182, 255, 1)
+                              : Colors.grey,
+                        ),
+                        label: 'Chat',
+                      ),
+                      BottomNavigationBarItem(
+                        icon: SvgPicture.asset(
+                          bottomNavBarProfileIcon,
+                          color: _currentIndex == 4
+                              ? const Color.fromRGBO(110, 182, 255, 1)
+                              : Colors.grey,
+                        ),
+                        label: 'Profile',
+                      ),
+                    ],
                   ),
-                  Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: size.width * 0.03),
-                    child: Card(
-                      color: const Color.fromARGB(255, 255, 255, 255),
-                      child: Padding(
-                        padding:
-                            EdgeInsets.symmetric(vertical: size.height * 0.02),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SvgPicture.asset(chatBot),
-                            Container(
-                              decoration: BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.circular(size.width * 0.02),
-                              ),
-                              height: size.height * 0.2,
-                              width: size.width * 0.9,
-                              child: PageView.builder(
-                                controller: _pageControllerOfTutorial,
-                                itemCount: _tutorText.length,
-                                onPageChanged: (index) {
-                                  setState(() {
-                                    _currentPageOfTutorial = index;
-                                  });
-                                },
-                                itemBuilder: (context, index) => Padding(
-                                  padding: EdgeInsets.all(size.width * 0.02),
-                                  child: Column(
-                                    children: [
-                                      Text(
-                                        _tutorText[index]['title']!,
-                                        style: const TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w500),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                      SizedBox(
-                                        height: size.height * 0.02,
-                                      ),
-                                      Text(
-                                        _tutorText[index]['description']!,
-                                        style: const TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w400),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ],
-                                  ),
-                                ),
+                  body: SingleChildScrollView(
+                      child: SafeArea(
+                    child: pages[_currentIndex],
+                  )),
+                  floatingActionButton: _currentIndex == 0
+                      ? FloatingActionButton(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30.0),
+                          ),
+                          onPressed: () {},
+                          backgroundColor: AppTheme
+                              .buttonStyleForFloatingActionBtn.backgroundColor,
+                          foregroundColor: AppTheme
+                              .buttonStyleForFloatingActionBtn.foregroundColor,
+                          child: const Icon(LineIcons.robot),
+                        )
+                      : null,
+                ),
+                if (isOnEmeregencyCalling)
+                  Dialog(
+                    backgroundColor: Colors.transparent,
+                    child: SizedBox(
+                      height: size.height * 0.3,
+                      child: Stack(
+                        children: [
+                          Positioned.fill(
+                            child: BackdropFilter(
+                              filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+                              child: Container(
+                                color: Colors.transparent,
                               ),
                             ),
-                            _currentPageOfTutorial < _tutorText.length - 1
-                                ? SizedBox(
-                                    width: size.width * 0.2,
-                                    height: size.height * 0.04,
-                                    child: MaterialButton(
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                              size.width * 0.02)),
-                                      color: const Color.fromRGBO(
-                                          110, 182, 255, 1),
-                                      onPressed: () {
-                                        _currentPageOfTutorial++;
-                                        setState(() {
-                                          if (_currentPageOfTutorial <
-                                              _tutorText.length) {
-                                            _pageControllerOfTutorial.nextPage(
-                                                duration: const Duration(
-                                                    milliseconds: 300),
-                                                curve: Curves.bounceIn);
-                                          }
-                                        });
-                                      },
-                                      child: const Text(
-                                        'Next',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w500,
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: size.width * 0.03),
+                            child: Card(
+                              color: const Color.fromARGB(255, 255, 255, 255),
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: size.height * 0.02),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    SvgPicture.asset(triangeExclamationPic),
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(
+                                            size.width * 0.02),
+                                      ),
+                                      height: size.height * 0.1,
+                                      width: size.width * 0.9,
+                                      child: PageView.builder(
+                                        controller: _pageControllerOfTutorial,
+                                        itemCount: _tutorText.length,
+                                        onPageChanged: (index) {
+                                          setState(() {
+                                            _currentPageOfTutorial = index;
+                                          });
+                                        },
+                                        itemBuilder: (context, index) =>
+                                            Padding(
+                                          padding:
+                                              EdgeInsets.all(size.width * 0.02),
+                                          child: Column(
+                                            children: [
+                                              const Text(
+                                                'Calling your emergency contacts',
+                                                style: TextStyle(
+                                                    fontSize: 16,
+                                                    fontWeight:
+                                                        FontWeight.w500),
+                                                textAlign: TextAlign.center,
+                                              ),
+                                              SizedBox(
+                                                height: size.height * 0.01,
+                                              ),
+                                              const Text(
+                                                "You have 1 minute to cancel ",
+                                                style: TextStyle(
+                                                    color: Color.fromARGB(
+                                                        105, 0, 0, 0),
+                                                    fontSize: 14,
+                                                    fontWeight:
+                                                        FontWeight.w400),
+                                                textAlign: TextAlign.center,
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  )
-                                : SizedBox(
-                                    width: size.width * 0.3,
-                                    height: size.height * 0.04,
-                                    child: MaterialButton(
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                              size.width * 0.02)),
-                                      color: const Color.fromRGBO(
-                                          110, 182, 255, 1),
-                                      onPressed: () {
-                                        setState(() {
-                                          prefs.setBool('isTutorGiven', true);
-                                          isTutoreGiven = true;
-                                          _currentIndex = 4;
-                                        });
-                                      },
-                                      child: const Text(
-                                        'Finish Setup',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w500,
+                                    SizedBox(
+                                      height: size.height * 0.01,
+                                    ),
+                                    SizedBox(
+                                      width: size.width * 0.2,
+                                      height: size.height * 0.04,
+                                      child: MaterialButton(
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                                size.width * 0.02)),
+                                        color: const Color.fromRGBO(
+                                            110, 182, 255, 1),
+                                        onPressed: () {
+                                          setState(() {
+                                            isOnEmeregencyCalling = false;
+                                          });
+                                        },
+                                        child: const Text(
+                                          'Cancel',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w500,
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  ),
-                            SizedBox(
-                              width: size.width * 0.2,
-                              height: size.height * 0.04,
-                              child: MaterialButton(
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(
-                                        size.width * 0.02)),
-                                onPressed: () {
-                                  setState(() {
-                                    prefs.setBool('isTutorGiven', true);
-                                    isTutoreGiven = true;
-                                  });
-                                },
-                                child: const Text(
-                                  'Skip',
-                                  style: TextStyle(
-                                    color: Color.fromRGBO(42, 42, 42, 1),
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w500,
-                                  ),
+                                    )
+                                  ],
                                 ),
                               ),
                             ),
-                            SizedBox(
-                              height: size.height * 0.02,
-                            ),
-                            SmoothPageIndicator(
-                              controller: _pageControllerOfTutorial,
-                              count: _tutorText.length,
-                              effect: const ExpandingDotsEffect(
-                                  activeDotColor:
-                                      Color.fromRGBO(110, 182, 255, 1),
-                                  dotColor:
-                                      Color.fromRGBO(183, 216, 249, 0.839)),
-                            )
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                ],
-              ),
+                if (!isTutoreGiven)
+                  Dialog(
+                    backgroundColor: Colors.transparent,
+                    child: SizedBox(
+                      height: size.height * 0.58,
+                      child: Stack(
+                        children: [
+                          Positioned.fill(
+                            child: BackdropFilter(
+                              filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+                              child: Container(
+                                color: Colors.transparent,
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: size.width * 0.03),
+                            child: Card(
+                              color: const Color.fromARGB(255, 255, 255, 255),
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: size.height * 0.02),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    SvgPicture.asset(chatBot),
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(
+                                            size.width * 0.02),
+                                      ),
+                                      height: size.height * 0.2,
+                                      width: size.width * 0.9,
+                                      child: PageView.builder(
+                                        controller: _pageControllerOfTutorial,
+                                        itemCount: _tutorText.length,
+                                        onPageChanged: (index) {
+                                          setState(() {
+                                            _currentPageOfTutorial = index;
+                                          });
+                                        },
+                                        itemBuilder: (context, index) =>
+                                            Padding(
+                                          padding:
+                                              EdgeInsets.all(size.width * 0.02),
+                                          child: Column(
+                                            children: [
+                                              Text(
+                                                _tutorText[index]['title']!,
+                                                style: const TextStyle(
+                                                    fontSize: 16,
+                                                    fontWeight:
+                                                        FontWeight.w500),
+                                                textAlign: TextAlign.center,
+                                              ),
+                                              SizedBox(
+                                                height: size.height * 0.02,
+                                              ),
+                                              Text(
+                                                _tutorText[index]
+                                                    ['description']!,
+                                                style: const TextStyle(
+                                                    fontSize: 14,
+                                                    fontWeight:
+                                                        FontWeight.w400),
+                                                textAlign: TextAlign.center,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    _currentPageOfTutorial <
+                                            _tutorText.length - 1
+                                        ? SizedBox(
+                                            width: size.width * 0.2,
+                                            height: size.height * 0.04,
+                                            child: MaterialButton(
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          size.width * 0.02)),
+                                              color: const Color.fromRGBO(
+                                                  110, 182, 255, 1),
+                                              onPressed: () {
+                                                _currentPageOfTutorial++;
+                                                setState(() {
+                                                  if (_currentPageOfTutorial <
+                                                      _tutorText.length) {
+                                                    _pageControllerOfTutorial
+                                                        .nextPage(
+                                                            duration:
+                                                                const Duration(
+                                                                    milliseconds:
+                                                                        300),
+                                                            curve: Curves
+                                                                .bounceIn);
+                                                  }
+                                                });
+                                              },
+                                              child: const Text(
+                                                'Next',
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              ),
+                                            ),
+                                          )
+                                        : SizedBox(
+                                            width: size.width * 0.3,
+                                            height: size.height * 0.04,
+                                            child: MaterialButton(
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          size.width * 0.02)),
+                                              color: const Color.fromRGBO(
+                                                  110, 182, 255, 1),
+                                              onPressed: () {
+                                                setState(() {
+                                                  prefs.setBool(
+                                                      'isTutorGiven', true);
+                                                  isTutoreGiven = true;
+                                                  _currentIndex = 4;
+                                                });
+                                              },
+                                              child: const Text(
+                                                'Finish Setup',
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                    SizedBox(
+                                      width: size.width * 0.2,
+                                      height: size.height * 0.04,
+                                      child: MaterialButton(
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                                size.width * 0.02)),
+                                        onPressed: () {
+                                          setState(() {
+                                            prefs.setBool('isTutorGiven', true);
+                                            isTutoreGiven = true;
+                                          });
+                                        },
+                                        child: const Text(
+                                          'Skip',
+                                          style: TextStyle(
+                                            color:
+                                                Color.fromRGBO(42, 42, 42, 1),
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: size.height * 0.02,
+                                    ),
+                                    SmoothPageIndicator(
+                                      controller: _pageControllerOfTutorial,
+                                      count: _tutorText.length,
+                                      effect: const ExpandingDotsEffect(
+                                          activeDotColor:
+                                              Color.fromRGBO(110, 182, 255, 1),
+                                          dotColor: Color.fromRGBO(
+                                              183, 216, 249, 0.839)),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+              ],
             ),
-          )
-      ],
     );
   }
 }
