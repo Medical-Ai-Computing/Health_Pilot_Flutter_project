@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:healthpilot/screens/on_boarding_screens/terms_dialogBox.dart';
 
 class SignupAndLoginScreen extends StatefulWidget {
   static const routeName = '/SignupandLogin';
@@ -931,7 +932,17 @@ class TermsPolicyText extends StatelessWidget {
                   letterSpacing: -0.165,
                   height: 15 / 12,
                 ),
-                recognizer: TapGestureRecognizer()..onTap = () {}),
+                recognizer: TapGestureRecognizer()
+                  ..onTap = () {
+                    showDialog(
+                        context: context,
+                        builder: (context) {
+                          return Policy(
+                            mdFile: 'termsAndConditions.md',
+                            radius: 8,
+                          );
+                        });
+                  }),
             const TextSpan(
                 text: ' and ',
                 style: TextStyle(
@@ -952,7 +963,17 @@ class TermsPolicyText extends StatelessWidget {
                   letterSpacing: -0.165,
                   height: 15 / 12,
                 ),
-                recognizer: TapGestureRecognizer()..onTap = () {})
+                recognizer: TapGestureRecognizer()
+                  ..onTap = () {
+                    showDialog(
+                        context: context,
+                        builder: (context) {
+                          return Policy(
+                            mdFile: 'termsAndConditions.md',
+                            radius: 8,
+                          );
+                        });
+                  })
           ]),
     );
   }
