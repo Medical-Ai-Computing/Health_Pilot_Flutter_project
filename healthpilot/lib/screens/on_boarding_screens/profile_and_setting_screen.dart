@@ -4,9 +4,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:healthpilot/screens/meet_the_devs_screen/meet_the_devs.dart';
-
-import 'personal_information_screen.dart';
+import 'package:healthpilot/screens/on_boarding_screens/terms_dialogBox.dart';
 
 class ProfileAndSettingScreen extends StatefulWidget {
   const ProfileAndSettingScreen({super.key});
@@ -17,7 +15,7 @@ class ProfileAndSettingScreen extends StatefulWidget {
 }
 
 class _ProfileAndSettingScreenState extends State<ProfileAndSettingScreen> {
-  // int _currentIndex = 0;
+  int _currentIndex = 0;
   List<Widget> body = [];
 
   final bool _isPremium = false;
@@ -98,214 +96,221 @@ class _ProfileAndSettingScreenState extends State<ProfileAndSettingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(child: LayoutBuilder(builder: (context, constraints) {
-      final size = constraints.biggest;
-      final screenWidth = size.width;
-      // ignore: unused_local_variable
-      final screenHeight = size.height;
-      return SingleChildScrollView(
-          child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 40, left: 30),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(
-                      screenWidth * 0.1), // Adjust the borderRadius
-                  child: Image.asset(
-                    'assets/images/personel.png',
-                    width: screenWidth * 0.15, // Adjust the width
-                    height: screenWidth * 0.15, // Adjust the height
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(top: 58, left: 10),
-                    child: Text(
-                      "Mohammed Ibrahim",
-                      style: TextStyle(
-                        fontFamily: "PlusJakartaSans",
-                        fontSize: 16,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: -0.16,
-                      ),
+    return Scaffold(
+      body: SafeArea(child: LayoutBuilder(builder: (context, constraints) {
+        final size = constraints.biggest;
+        final screenWidth = size.width;
+        // ignore: unused_local_variable
+        final screenHeight = size.height;
+        return SingleChildScrollView(
+            child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 40, left: 30),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(
+                        screenWidth * 0.1), // Adjust the borderRadius
+                    child: Image.asset(
+                      'assets/images/personel.png',
+                      width: screenWidth * 0.15, // Adjust the width
+                      height: screenWidth * 0.15, // Adjust the height
+                      fit: BoxFit.cover,
                     ),
                   ),
-                  Padding(
-                    padding: EdgeInsets.only(top: 18, left: 10),
-                    child: _isPremium
-                        ? GradientButton(title: "premium")
-                        : GradientButton(title: "Free"),
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(top: 58, left: 10),
+                      child: Text(
+                        "Mohammed Ibrahim",
+                        style: TextStyle(
+                          fontFamily: "PlusJakartaSans",
+                          fontSize: 16,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: -0.16,
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(top: 18, left: 10),
+                      child: _isPremium
+                          ? GradientButton(title: "premium")
+                          : GradientButton(title: "Free"),
+                    ),
+                  ],
+                ),
+                const Padding(
+                  padding: EdgeInsets.only(top: 42, left: 55, right: 0),
+                  child: Button(),
+                )
+              ],
+            ),
+            const SettingsTitle(title: "Health Information"),
+            const Padding(
+              padding: EdgeInsets.only(top: 20),
+              child: Column(
+                children: [
+                  HealthInformationSettings(
+                    imageAdress: 'assets/Icons/HealthBackground.svg',
+                    settingAdress: 'Health Background',
+                    iconData: Icons.arrow_forward,
+                    onpressed: null,
+                  ),
+                  HealthInformationSettings(
+                    imageAdress: 'assets/Icons/Medication.svg',
+                    settingAdress: 'Medications',
+                    iconData: Icons.arrow_forward,
+                    onpressed: null,
+                  ),
+                  HealthInformationSettings(
+                    imageAdress: 'assets/Icons/Allergies.svg',
+                    settingAdress: 'Allergies',
+                    iconData: Icons.arrow_forward,
+                    onpressed: null,
                   ),
                 ],
               ),
-              const Padding(
-                padding: EdgeInsets.only(top: 42, left: 55, right: 0),
-                child: Button(),
-              )
-            ],
-          ),
-          const SettingsTitle(title: "Health Information"),
-          const Padding(
-            padding: EdgeInsets.only(top: 20),
-            child: Column(
-              children: [
-                HealthInformationSettings(
-                  imageAdress: 'assets/Icons/HealthBackground.svg',
-                  settingAdress: 'Health Background',
-                  iconData: Icons.arrow_forward,
-                  onpressed: null,
-                ),
-                HealthInformationSettings(
-                  imageAdress: 'assets/Icons/Medication.svg',
-                  settingAdress: 'Medications',
-                  iconData: Icons.arrow_forward,
-                  onpressed: null,
-                ),
-                HealthInformationSettings(
-                  imageAdress: 'assets/Icons/Allergies.svg',
-                  settingAdress: 'Allergies',
-                  iconData: Icons.arrow_forward,
-                  onpressed: null,
-                ),
-              ],
             ),
-          ),
-          const SettingsTitle(title: "Settings"),
-          Padding(
-            padding: const EdgeInsets.only(top: 20),
-            child: Column(
-              // ignore: duplicate_ignore
-              children: [
-                HealthInformationSettings(
-                  imageAdress: 'assets/Icons/Gadgets.svg',
-                  settingAdress: 'Gadgets',
-                  iconData: Icons.lock_outlined,
-                  onpressed: showAlertDialogue,
-                ),
-                const HealthInformationSettings(
-                  imageAdress: 'assets/Icons/Subscription.svg',
-                  settingAdress: 'Subscription',
-                  iconData: Icons.arrow_forward,
-                  onpressed: null,
-                ),
-                SettingsForDarkMode(
-                  imageAdress: 'assets/Icons/Notfication.svg',
-                  settingAdress: 'Notfication',
-                ),
-                SettingsForDarkMode(
-                  imageAdress: 'assets/Icons/DarkMode.svg',
-                  settingAdress: 'Dark Mode',
-                ),
-                HealthInformationSettings(
-                  imageAdress: 'assets/Icons/changePassword.svg',
-                  settingAdress: 'Change Password',
-                  iconData: Icons.arrow_forward,
-                  onpressed: null,
-                ),
-                HealthInformationSettings(
-                  imageAdress: 'assets/Icons/Language.svg',
-                  settingAdress: 'Language',
-                  iconData: Icons.arrow_forward,
-                  onpressed: null,
-                ),
-                HealthInformationSettings(
-                  imageAdress: 'assets/Icons/TermsAndPolicy.svg',
-                  settingAdress: 'Terms And Policy',
-                  onpressed: null,
-                  iconData: Icons.arrow_forward,
-                ),
-                HealthInformationSettings(
-                  imageAdress: 'assets/Icons/help.svg',
-                  settingAdress: 'Help',
-                  iconData: Icons.arrow_forward,
-                  onpressed: null,
-                ),
-                HealthInformationSettings(
-                  imageAdress: 'assets/Icons/FAQ.svg',
-                  settingAdress: 'FAQ',
-                  iconData: Icons.arrow_forward,
-                  onpressed: null,
-                ),
-                HealthInformationSettings(
-                  imageAdress: 'assets/Icons/MeettheDevelopers.svg',
-                  settingAdress: 'Meet the Developers',
-                  iconData: Icons.arrow_forward,
-                  onpressed: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: ((context) => MeetTheDevs())));
-                  },
-                ),
-              ],
+            const SettingsTitle(title: "Settings"),
+            Padding(
+              padding: const EdgeInsets.only(top: 20),
+              child: Column(
+                // ignore: duplicate_ignore
+                children: [
+                  HealthInformationSettings(
+                    imageAdress: 'assets/Icons/Gadgets.svg',
+                    settingAdress: 'Gadgets',
+                    iconData: Icons.lock_outlined,
+                    onpressed: showAlertDialogue,
+                  ),
+                  const HealthInformationSettings(
+                    imageAdress: 'assets/Icons/Subscription.svg',
+                    settingAdress: 'Subscription',
+                    iconData: Icons.arrow_forward,
+                    onpressed: null,
+                  ),
+                  SettingsForDarkMode(
+                    imageAdress: 'assets/Icons/Notfication.svg',
+                    settingAdress: 'Notfication',
+                  ),
+                  SettingsForDarkMode(
+                    imageAdress: 'assets/Icons/DarkMode.svg',
+                    settingAdress: 'Dark Mode',
+                  ),
+                  HealthInformationSettings(
+                    imageAdress: 'assets/Icons/changePassword.svg',
+                    settingAdress: 'Change Password',
+                    iconData: Icons.arrow_forward,
+                    onpressed: null,
+                  ),
+                  HealthInformationSettings(
+                    imageAdress: 'assets/Icons/Language.svg',
+                    settingAdress: 'Language',
+                    iconData: Icons.arrow_forward,
+                    onpressed: null,
+                  ),
+                  HealthInformationSettings(
+                    imageAdress: 'assets/Icons/TermsAndPolicy.svg',
+                    settingAdress: 'Terms And Policy',
+                    onpressed: () {
+                      showDialog(
+                          context: context,
+                          builder: (context) {
+                            return Policy(
+                              mdFile: 'privacy_policy.md',
+                              radius: 8,
+                            );
+                          });
+                    },
+                    iconData: Icons.arrow_forward,
+                  ),
+                  HealthInformationSettings(
+                    imageAdress: 'assets/Icons/help.svg',
+                    settingAdress: 'Help',
+                    iconData: Icons.arrow_forward,
+                    onpressed: null,
+                  ),
+                  HealthInformationSettings(
+                    imageAdress: 'assets/Icons/FAQ.svg',
+                    settingAdress: 'FAQ',
+                    iconData: Icons.arrow_forward,
+                    onpressed: null,
+                  ),
+                  HealthInformationSettings(
+                    imageAdress: 'assets/Icons/MeettheDevelopers.svg',
+                    settingAdress: 'Meet the Developers',
+                    iconData: Icons.arrow_forward,
+                    onpressed: null,
+                  ),
+                ],
+              ),
             ),
-          ),
+          ],
+        ));
+      })),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _currentIndex,
+        onTap: (int newIndex) {
+          setState(() {
+            _currentIndex = newIndex;
+          });
+        },
+        items: [
+          BottomNavigationBarItem(
+              label: "Home",
+              icon: SvgPicture.asset(
+                'assets/Icons/Home.svg',
+                // ignore: deprecated_member_use
+                color: _currentIndex == 0 ? Colors.blue : Colors.grey,
+              )),
+          BottomNavigationBarItem(
+              label: "Health",
+              icon: SvgPicture.asset(
+                'assets/Icons/Health.svg',
+                // ignore: deprecated_member_use
+                color: _currentIndex == 1 ? Colors.blue : Colors.grey,
+              )),
+          BottomNavigationBarItem(
+              label: "Assesment",
+              icon: SvgPicture.asset(
+                'assets/Icons/Assesment.svg',
+                // ignore: deprecated_member_use
+                color: _currentIndex == 2 ? Colors.blue : Colors.grey,
+              )),
+          BottomNavigationBarItem(
+              label: "Chat",
+              icon: SvgPicture.asset(
+                'assets/Icons/Chat.svg',
+                // ignore: deprecated_member_use
+                color: _currentIndex == 3 ? Colors.blue : Colors.grey,
+              )),
+          BottomNavigationBarItem(
+              label: "Profile",
+              icon: SvgPicture.asset(
+                'assets/Icons/profile.svg',
+                // ignore: deprecated_member_use
+                color: _currentIndex == 4 ? Colors.blue : Colors.grey,
+              ))
         ],
-      ));
-    })
-        // bottomNavigationBar: BottomNavigationBar(
-        //   currentIndex: _currentIndex,
-        //   onTap: (int newIndex) {
-        //     setState(() {
-        //       _currentIndex = newIndex;
-        //     });
-        //   },
-        //   items: [
-        //     BottomNavigationBarItem(
-        //         label: "Home",
-        //         icon: SvgPicture.asset(
-        //           'assets/Icons/Home.svg',
-        //           // ignore: deprecated_member_use
-        //           color: _currentIndex == 0 ? Colors.blue : Colors.grey,
-        //         )),
-        //     BottomNavigationBarItem(
-        //         label: "Health",
-        //         icon: SvgPicture.asset(
-        //           'assets/Icons/Health.svg',
-        //           // ignore: deprecated_member_use
-        //           color: _currentIndex == 1 ? Colors.blue : Colors.grey,
-        //         )),
-        //     BottomNavigationBarItem(
-        //         label: "Assesment",
-        //         icon: SvgPicture.asset(
-        //           'assets/Icons/Assesment.svg',
-        //           // ignore: deprecated_member_use
-        //           color: _currentIndex == 2 ? Colors.blue : Colors.grey,
-        //         )),
-        //     BottomNavigationBarItem(
-        //         label: "Chat",
-        //         icon: SvgPicture.asset(
-        //           'assets/Icons/Chat.svg',
-        //           // ignore: deprecated_member_use
-        //           color: _currentIndex == 3 ? Colors.blue : Colors.grey,
-        //         )),
-        //     BottomNavigationBarItem(
-        //         label: "Profile",
-        //         icon: SvgPicture.asset(
-        //           'assets/Icons/profile.svg',
-        //           // ignore: deprecated_member_use
-        //           color: _currentIndex == 4 ? Colors.blue : Colors.grey,
-        //         ))
-        //   ],
-        //   selectedItemColor: Colors.blue,
-        //   unselectedItemColor: Colors.grey,
-        //   selectedLabelStyle: const TextStyle(
-        //     fontSize: 14,
-        //     fontFamily: "Manrope",
-        //     fontWeight: FontWeight.bold,
-        //   ),
-        //   unselectedLabelStyle: const TextStyle(
-        //     fontSize: 14,
-        //     fontWeight: FontWeight.normal,
-        //   ),
-        // )
-        );
+        selectedItemColor: Colors.blue,
+        unselectedItemColor: Colors.grey,
+        selectedLabelStyle: const TextStyle(
+          fontSize: 14,
+          fontFamily: "Manrope",
+          fontWeight: FontWeight.bold,
+        ),
+        unselectedLabelStyle: const TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.normal,
+        ),
+      ),
+    );
   }
 }
 
@@ -365,10 +370,7 @@ class Button extends StatelessWidget {
           ), // Adjust the width as needed
           child: Center(
             child: TextButton(
-              onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (_) => PersonalInformationScreen()));
-              },
+              onPressed: () {},
               child: const Text(
                 "Edit",
                 style: TextStyle(
