@@ -15,6 +15,7 @@ const String brainIcon = 'assets/icons/brain.svg';
 const String height = 'assets/icons/height.svg';
 const String weight = 'assets/icons/weight.svg';
 const String doctor = 'assets/icons/online_doctor.svg';
+const String itemNotFound = 'assets/icons/item_not_found.svg';
 
 const String gynecologyConsultation =
     'assets/images/gynecology_consultation.svg';

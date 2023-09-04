@@ -19,6 +19,7 @@ class _InitialInfoSecondState extends State<InitialInfoSecond> {
   String diabetesAnswer = "";
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.transparent,
@@ -28,7 +29,7 @@ class _InitialInfoSecondState extends State<InitialInfoSecond> {
                 color: Color.fromRGBO(110, 182, 255, 1)),
             onPressed: () {
               // Define the action when the back button is pressed
-              // Navigator.pop(context);
+              Navigator.of(context).pop();
             },
             style: AppTheme.buttonStyleForAppBarBackButto,
           ),
@@ -77,122 +78,7 @@ class _InitialInfoSecondState extends State<InitialInfoSecond> {
                 child: buildQuestionWithRadioButtons(
                     "Do you suffer from diabetes?", "diabetes"),
               ),
-              const SizedBox(height: 16.0),
-              const Text(
-                "Summary of Answers:",
-                style: TextStyle(
-                    fontFamily: 'PlusJakartaSans',
-                    fontWeight: FontWeight.w600,
-                    fontSize: 18,
-                    color: Colors.black),
-                maxLines: 2,
-              ),
-              const SizedBox(height: 8.0),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text(
-                          "Hypertension:",
-                          style: TextStyle(
-                              fontFamily: 'PlusJakartaSans',
-                              fontWeight: FontWeight.w600,
-                              fontSize: 16,
-                              color: Colors.black),
-                          maxLines: 2,
-                        ),
-                        Text(
-                          hypertensionAnswer,
-                          style: const TextStyle(
-                              fontWeight: FontWeight.w400,
-                              fontSize: 14,
-                              color: Color.fromRGBO(110, 182, 255, 1)),
-                          maxLines: 2,
-                        ),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text(
-                          "Accidents: ",
-                          style: TextStyle(
-                              fontFamily: 'PlusJakartaSans',
-                              fontWeight: FontWeight.w600,
-                              fontSize: 16,
-                              color: Colors.black),
-                          maxLines: 2,
-                        ),
-                        Text(
-                          accidentsAnswer,
-                          style: const TextStyle(
-                              fontWeight: FontWeight.w400,
-                              fontSize: 14,
-                              color: Color.fromRGBO(110, 182, 255, 1)),
-                          maxLines: 2,
-                        ),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text(
-                          "Smoking: ",
-                          style: TextStyle(
-                              fontFamily: 'PlusJakartaSans',
-                              fontWeight: FontWeight.w600,
-                              fontSize: 16,
-                              color: Colors.black),
-                          maxLines: 2,
-                        ),
-                        Text(
-                          smokingAnswer,
-                          style: const TextStyle(
-                              fontWeight: FontWeight.w400,
-                              fontSize: 14,
-                              color: Color.fromRGBO(110, 182, 255, 1)),
-                          maxLines: 2,
-                        ),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text(
-                            "Diabetes:",
-                            style: TextStyle(
-                                fontFamily: 'PlusJakartaSans',
-                                fontWeight: FontWeight.w600,
-                                fontSize: 16,
-                                color: Colors.black),
-                            maxLines: 2,
-                          ),
-                          Text(
-                            diabetesAnswer,
-                            style: const TextStyle(
-                                fontWeight: FontWeight.w400,
-                                fontSize: 14,
-                                color: Color.fromRGBO(110, 182, 255, 1)),
-                            maxLines: 2,
-                          ),
-                        ],
-                      )),
-                ],
-              ),
+              SizedBox(height: size.height * 0.2),
               Padding(
                 padding: const EdgeInsets.only(top: 20.0),
                 child: Column(
@@ -204,10 +90,10 @@ class _InitialInfoSecondState extends State<InitialInfoSecond> {
                           fontWeight: FontWeight.w400,
                           fontSize: 16,
                           color: Colors.black54),
-                      maxLines: 2,
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(top: 8.0),
+                      padding: EdgeInsets.only(
+                          top: size.height * 0.01, bottom: size.height * 0.1),
                       child: ElevatedButton(
                         onPressed: () {
                           Navigator.push(
@@ -222,10 +108,9 @@ class _InitialInfoSecondState extends State<InitialInfoSecond> {
                                 const Color.fromRGBO(110, 182, 255, 1),
                             foregroundColor: Colors.white,
                             padding: EdgeInsets.symmetric(
-                                horizontal:
-                                    MediaQuery.of(context).size.width * 0.25,
-                                vertical:
-                                    MediaQuery.of(context).size.height * 0.02),
+                              horizontal: size.width * 0.25,
+                              vertical: size.height * 0.015,
+                            ),
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10))),
                         child: const Text('Next'),
@@ -238,6 +123,9 @@ class _InitialInfoSecondState extends State<InitialInfoSecond> {
           ),
         ));
   }
+
+  // afunction that return questions text widget and ansewrs with radio buttons
+  //  also take two parameters the question and the question key Strings
 
   Widget buildQuestionWithRadioButtons(String question, String questionKey) {
     final size = MediaQuery.of(context).size;
@@ -254,7 +142,7 @@ class _InitialInfoSecondState extends State<InitialInfoSecond> {
           maxLines: 2,
         ),
         SizedBox(
-          height: size.height * 0.02,
+          height: size.height * 0.025,
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -321,6 +209,9 @@ class _InitialInfoSecondState extends State<InitialInfoSecond> {
   }
 }
 
+//costumized radio button which takes value, group value and on change as parameter
+// through constructor
+
 class CustomRadioBtn extends StatefulWidget {
   final String value;
   final String groupValue;
@@ -358,8 +249,6 @@ class _CustomRadioBtnState extends State<CustomRadioBtn> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(size.height * 0.075),
                   color: const Color.fromRGBO(110, 182, 255, 1),
-                  // border:
-                  //     Border.all(color: const Color.fromARGB(23, 0, 0, 0), width: 2),
                 ),
               )
             : null,

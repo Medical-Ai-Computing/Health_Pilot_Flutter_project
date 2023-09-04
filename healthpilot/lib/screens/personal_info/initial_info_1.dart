@@ -448,7 +448,7 @@ class _InitialInfoFirstState extends State<InitialInfoFirst> {
                             context,
                             MaterialPageRoute(
                                 builder: (context) =>
-                                    InitialInfoSecond()), // Navigate to the DestinationPage
+                                    const InitialInfoSecond()), // Navigate to the DestinationPage
                           );
                         },
                         style: ElevatedButton.styleFrom(
