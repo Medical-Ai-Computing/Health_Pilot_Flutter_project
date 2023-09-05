@@ -40,7 +40,7 @@ dependencies:
   shared_preferences: ^2.2.0
 
   rulers: ^1.0.7
-  flutter_ruler_picker: ^1.0.3
+  flutter_ruler_picker: ^1.0.6
 
 
 

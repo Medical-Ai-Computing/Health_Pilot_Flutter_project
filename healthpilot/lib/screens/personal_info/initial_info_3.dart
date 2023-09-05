@@ -16,14 +16,40 @@ class _InitialInfoThird extends State<InitialInfoThird> {
   List<String> allergies = [];
   List<String> selectedAllergies = [];
   List<String> availableAllergies = [
-    "Peanuts",
-    "Milk",
-    "Eggs",
-    "Shellfish",
-    "Tree Nuts",
-    "Soy",
-    "Wheat",
+    "Pollen Allergy (Hay Fever)",
+    "Dust Mite Allergy",
+    "Pet Allergy (Cats)",
+    "Pet Allergy (Dogs)",
+    "Food Allergy (Peanuts)",
+    "Food Allergy (Tree nuts)",
+    "Food Allergy (Milk)",
+    "Food Allergy (Eggs)",
+    "Food Allergy (Wheat)",
+    "Food Allergy (Soy)",
+    "Food Allergy (Fish)",
+    "Food Allergy (Shellfish)",
+    "Insect Sting Allergy (Bee stings)",
+    "Insect Sting Allergy (Wasp stings)",
+    "Insect Sting Allergy (Hornet stings)",
+    "Insect Sting Allergy (Fire ant stings)",
+    "Latex Allergy",
+    "Medication Allergy (Penicillin)",
+    "Medication Allergy (NSAIDs)",
+    "Medication Allergy (Aspirin)",
+    "Medication Allergy (Chemotherapy drugs)",
+    "Mold Allergy",
+    "Cosmetic and Skin Allergies (Fragrances)",
+    "Cosmetic and Skin Allergies (Skin creams and lotions)",
+    "Anaphylaxis Trigger (Severe peanut allergies)",
+    "Environmental Allergies (Dust)",
+    "Environmental Allergies (Mold)",
+    "Environmental Allergies (Pollen)",
+    "Environmental Allergies (Animal dander)",
+    "Cold Weather Allergy (Cold urticaria)",
+    "Sun Allergy (Photosensitivity)",
+    // Add other allergies here
   ];
+
   TextEditingController searchController = TextEditingController();
   List<String> get filteredAllergies {
     final searchText = searchController.text.toLowerCase();
@@ -32,7 +58,7 @@ class _InitialInfoThird extends State<InitialInfoThird> {
         .toList();
   }
 
-  FocusNode _focusNode = FocusNode();
+  final _focusNode = FocusNode();
 
   @override
   void dispose() {
@@ -345,19 +371,15 @@ class _InitialInfoThird extends State<InitialInfoThird> {
                 padding: const EdgeInsets.only(top: 8.0),
                 child: ElevatedButton(
                   onPressed: () {
-                    selectedAllergies.isEmpty
-                        ? null
-                        : Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    const InitialInfoFinal()), // Navigate to the DestinationPage
-                          );
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              const InitialInfoFinal()), // Navigate to the DestinationPage
+                    );
                   },
                   style: ElevatedButton.styleFrom(
-                      backgroundColor: selectedAllergies.isEmpty
-                          ? const Color.fromARGB(255, 200, 224, 249)
-                          : const Color.fromRGBO(110, 182, 255, 1),
+                      backgroundColor: const Color.fromRGBO(110, 182, 255, 1),
                       foregroundColor: Colors.white,
                       padding: EdgeInsets.symmetric(
                           horizontal: MediaQuery.of(context).size.width * 0.25,
