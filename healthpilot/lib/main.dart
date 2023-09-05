@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:healthpilot/data/contants.dart';
 
+import 'screens/home_page_screen.dart/home_page_screen.dart';
+
 void main() {
   runApp(const HealthPilotApp());
 }
@@ -20,7 +22,7 @@ class HealthPilotApp extends StatelessWidget {
       // home: const SetupEmergencyContact(),
       // home: const PersonalInformation(),
       // home: const SetupPersonalDoctor(),
-      // home: const HomePageScreen(),
+      home: const HomePageScreen(),
       // home: const doctor.PersonalInformation(),
     );
   }
