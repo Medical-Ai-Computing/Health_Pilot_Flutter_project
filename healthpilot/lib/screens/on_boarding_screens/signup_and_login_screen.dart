@@ -574,6 +574,17 @@ class ForgotPasswordScreen extends StatelessWidget {
                       // horizontal: screenWidth * 0.015,
                       vertical: screenHeight * 0.11),
                   child: Button(
+
+                      screenWidth: screenWidth,
+                      screenHeight: screenHeight,
+                      buttonText: "Next",
+                      buttonAction: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) =>
+                              const ForgotPasswordCheckEmail(),
+                        ));
+                      }),
+
                     fontsize: 18,
                     textColor: Colors.white,
                     screenWidth: screenWidth,
@@ -586,6 +597,7 @@ class ForgotPasswordScreen extends StatelessWidget {
                     },
                     buttoncolor: const Color.fromRGBO(110, 182, 255, 1),
                   ),
+>
                 ),
                 Padding(
                     padding: EdgeInsets.only(
