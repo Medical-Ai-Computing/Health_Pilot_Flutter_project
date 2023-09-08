@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:healthpilot/data/contants.dart';
+
 import 'package:healthpilot/screens/health_section/health_profile_screen.dart';
 import 'package:healthpilot/screens/home_page_screen.dart/home_page_screen.dart';
+
+
+import 'screens/on_boarding_screens/physical_therapy_screen.dart';
+import 'screens/personal_info/initial_info_1.dart';
+
 
 void main() {
   runApp(const HealthPilotApp());
@@ -19,11 +25,12 @@ class HealthPilotApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         fontFamily: 'Roboto', // Example font family
       ),
-      // home: const SetupEmergencyContact(),
-      // home: const PersonalInformation(),
-      // home: const SetupPersonalDoctor(),
-      home: const HomePageScreen(),
-      // home: const doctor.PersonalInformation(),
+
+   
+
+   
+      home: const InitialInfoFirst(),
+
     );
   }
 }
@@ -41,7 +48,10 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       // Navigate to the next screen
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const HomePageScreen()),
+
+
+        MaterialPageRoute(builder: (context) => const PhysicalTherapyScreen()),
+
       );
     });
   }

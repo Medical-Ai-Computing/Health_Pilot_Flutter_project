@@ -8,6 +8,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:healthpilot/screens/health_section/health_profile_screen.dart';
 import 'package:healthpilot/screens/health_section/health_tracking_screen.dart';
 import 'package:healthpilot/screens/home_page_screen.dart/discover_healthpilot.dart';
+import 'package:healthpilot/screens/on_boarding_screens/language_translation.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import '../on_boarding_screens/profile_and_setting_screen.dart';
@@ -29,6 +30,13 @@ class HomePageScreen extends StatefulWidget {
 class _HomePageScreenState extends State<HomePageScreen> {
   final _pageControllerOfTutorial = PageController();
   var _currentPageOfTutorial = 0;
+
+  @override
+  void initState() {
+    getTutorStatus();
+    super.initState();
+  }
+
 
   final _tutorText = [
     {
@@ -181,16 +189,19 @@ class _HomePageScreenState extends State<HomePageScreen> {
     super.dispose();
   }
 
+
   @override
   void initState() {
     getTutorStatus();
     super.initState();
   }
 
+  late SharedPreferences prefs;
   late bool isTutoreGiven = false;
   late bool isOnEmeregencyCalling = false;
   Future getTutorStatus() async {
-    final prefs = await SharedPreferences.getInstance();
+    prefs = await SharedPreferences.getInstance();
+
     isTutoreGiven = prefs.getBool('isTutorGiven') ?? false;
   }
 
@@ -229,10 +240,14 @@ class _HomePageScreenState extends State<HomePageScreen> {
                   children: [
                     InkWell(
                         splashColor: const Color.fromARGB(100, 0, 0, 0),
-                        onTap: () => {},
-                        // Navigator.of(context).push(MaterialPageRoute(
-                        //   // builder: (context) => const LanguageTranslation(),
-                        // )),
+
+                    
+
+                        onTap: () =>
+                            Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => const LanguageTranslation(),
+                            )),
+
                         child: SvgPicture.asset(transalteIcon)),
                     InkWell(
                       splashColor: const Color.fromARGB(100, 0, 0, 0),
@@ -351,12 +366,14 @@ class _HomePageScreenState extends State<HomePageScreen> {
       const Center(
         child: Text('chat'),
       ),
+
       SingleChildScrollView(
         child: SizedBox(
           height: size.height * 0.9,
           child: const ProfileAndSettingScreen(),
         ),
       ),
+
     ];
 
     return FutureBuilder(
@@ -623,8 +640,10 @@ class _HomePageScreenState extends State<HomePageScreen> {
                                         color: const Color.fromRGBO(
                                             110, 182, 255, 1),
                                         onPressed: () {
+
+                                          _currentPageOfTutorial++;
                                           setState(() {
-                                            _currentPageOfTutorial++;
+
                                             if (_currentPageOfTutorial <
                                                 _tutorText.length) {
                                               _pageControllerOfTutorial
@@ -655,10 +674,9 @@ class _HomePageScreenState extends State<HomePageScreen> {
                                         color: const Color.fromRGBO(
                                             110, 182, 255, 1),
                                         onPressed: () {
-                                          setState(() async {
-                                            final prefs =
-                                                await SharedPreferences
-                                                    .getInstance();
+
+                                          setState(() {
+
                                             prefs.setBool('isTutorGiven', true);
                                             isTutoreGiven = true;
                                             _currentIndex = 4;
@@ -682,9 +700,13 @@ class _HomePageScreenState extends State<HomePageScreen> {
                                       borderRadius: BorderRadius.circular(
                                           size.width * 0.02)),
                                   onPressed: () {
+
                                     setState(() async {
                                       final prefs =
                                           await SharedPreferences.getInstance();
+
+                                    setState(() {
+
                                       prefs.setBool('isTutorGiven', true);
                                       isTutoreGiven = true;
                                     });
