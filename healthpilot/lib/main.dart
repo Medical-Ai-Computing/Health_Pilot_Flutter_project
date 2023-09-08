@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:healthpilot/data/contants.dart';
-
-import 'screens/home_page_screen.dart/home_page_screen.dart';
+import 'package:healthpilot/screens/health_section/health_profile_screen.dart';
+import 'package:healthpilot/screens/home_page_screen.dart/home_page_screen.dart';
 
 void main() {
   runApp(const HealthPilotApp());
@@ -39,10 +39,10 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   void goToNextScreen() {
     Future.delayed(const Duration(seconds: 2), () {
       // Navigate to the next screen
-      // Navigator.push(
-      //   context,
-      //   MaterialPageRoute(builder: (context) => HomePageScreen()),
-      // );
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const HomePageScreen()),
+      );
     });
   }
 

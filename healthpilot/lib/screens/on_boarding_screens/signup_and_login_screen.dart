@@ -564,7 +564,8 @@ class ForgotPasswordScreen extends StatelessWidget {
                       buttonText: "Next",
                       buttonAction: () {
                         Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => ForgotPasswordCheckEmail(),
+                          builder: (context) =>
+                              const ForgotPasswordCheckEmail(),
                         ));
                       }),
                 ),
