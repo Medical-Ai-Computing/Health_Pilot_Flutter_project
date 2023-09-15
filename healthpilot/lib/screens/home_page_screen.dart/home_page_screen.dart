@@ -6,7 +6,6 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:healthpilot/screens/health_section/health_profile_screen.dart';
-import 'package:healthpilot/screens/health_section/health_tracking_screen.dart';
 import 'package:healthpilot/screens/home_page_screen.dart/discover_healthpilot.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';

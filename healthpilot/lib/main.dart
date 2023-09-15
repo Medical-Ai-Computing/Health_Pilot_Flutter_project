@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:healthpilot/data/contants.dart';
-import 'package:healthpilot/screens/health_section/health_profile_screen.dart';
 import 'package:healthpilot/screens/home_page_screen.dart/home_page_screen.dart';
 
 void main() {
