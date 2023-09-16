@@ -5,7 +5,12 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+
 import 'package:healthpilot/screens/home_page_screen/discover_healthpilot.dart';
+
+import 'package:healthpilot/screens/health_section/health_profile_screen.dart';
+import 'package:healthpilot/screens/health_section/health_tracking_screen.dart';
+
 import 'package:healthpilot/screens/on_boarding_screens/language_translation.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -28,6 +33,7 @@ class HomePageScreen extends StatefulWidget {
 class _HomePageScreenState extends State<HomePageScreen> {
   final _pageControllerOfTutorial = PageController();
   var _currentPageOfTutorial = 0;
+
   @override
   void initState() {
     getTutorStatus();
@@ -190,6 +196,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
   late bool isOnEmeregencyCalling = false;
   Future getTutorStatus() async {
     prefs = await SharedPreferences.getInstance();
+
     isTutoreGiven = prefs.getBool('isTutorGiven') ?? false;
   }
 
@@ -338,8 +345,11 @@ class _HomePageScreenState extends State<HomePageScreen> {
           )
         ],
       ),
-      const Center(
-        child: Text('Health'),
+      SingleChildScrollView(
+        child: SizedBox(
+          height: size.height * 0.9,
+          child: const HealthProfile(),
+        ),
       ),
       const Center(
         child: Text('Assesment'),
@@ -347,7 +357,12 @@ class _HomePageScreenState extends State<HomePageScreen> {
       const Center(
         child: Text('chat'),
       ),
-      const ProfileAndSettingScreen(),
+      SingleChildScrollView(
+        child: SizedBox(
+          height: size.height * 0.9,
+          child: const ProfileAndSettingScreen(),
+        ),
+      ),
     ];
 
     return FutureBuilder(
@@ -670,9 +685,14 @@ class _HomePageScreenState extends State<HomePageScreen> {
                                       borderRadius: BorderRadius.circular(
                                           size.width * 0.02)),
                                   onPressed: () {
-                                    setState(() {
-                                      prefs.setBool('isTutorGiven', true);
-                                      isTutoreGiven = true;
+                                    setState(() async {
+                                      final prefs =
+                                          await SharedPreferences.getInstance();
+
+                                      setState(() {
+                                        prefs.setBool('isTutorGiven', true);
+                                        isTutoreGiven = true;
+                                      });
                                     });
                                   },
                                   child: const Text(

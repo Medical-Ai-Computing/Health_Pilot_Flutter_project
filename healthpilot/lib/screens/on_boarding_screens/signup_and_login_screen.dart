@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:healthpilot/screens/home_page_screen/home_page_screen.dart';
 import 'package:healthpilot/screens/on_boarding_screens/terms_dialogBox.dart';
 
 class SignupAndLoginScreen extends StatefulWidget {
@@ -186,7 +187,13 @@ class _SignupAndLoginScreenState extends State<SignupAndLoginScreen> {
                         screenHeight: screenHeight,
                         buttonText: _isLogin ? "Login" : "Sign Up",
                         buttonAction: _isLogin
-                            ? () {}
+                            ? () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) => const HomePageScreen(),
+                                  ),
+                                );
+                              }
                             : () {
                                 Navigator.of(context).push(MaterialPageRoute(
                                   builder: (context) =>
@@ -574,8 +581,6 @@ class ForgotPasswordScreen extends StatelessWidget {
                       // horizontal: screenWidth * 0.015,
                       vertical: screenHeight * 0.11),
                   child: Button(
-                    fontsize: 18,
-                    textColor: Colors.white,
                     screenWidth: screenWidth,
                     screenHeight: screenHeight,
                     buttonText: "Next",
@@ -584,6 +589,8 @@ class ForgotPasswordScreen extends StatelessWidget {
                         builder: (context) => const ForgotPasswordCheckEmail(),
                       ));
                     },
+                    fontsize: 18,
+                    textColor: Colors.white,
                     buttoncolor: const Color.fromRGBO(110, 182, 255, 1),
                   ),
                 ),

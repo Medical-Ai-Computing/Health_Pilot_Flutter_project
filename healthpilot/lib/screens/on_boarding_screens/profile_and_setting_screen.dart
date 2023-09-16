@@ -4,6 +4,8 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:healthpilot/screens/meet_the_devs_screen/meet_the_devs.dart';
+import 'package:healthpilot/screens/on_boarding_screens/language_translation.dart';
 import 'package:healthpilot/screens/on_boarding_screens/terms_dialogBox.dart';
 
 class ProfileAndSettingScreen extends StatefulWidget {
@@ -213,7 +215,10 @@ class _ProfileAndSettingScreenState extends State<ProfileAndSettingScreen> {
                     imageAdress: 'assets/Icons/Language.svg',
                     settingAdress: 'Language',
                     iconData: Icons.arrow_forward,
-                    onpressed: null,
+                    onpressed: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => LanguageTranslation()));
+                    },
                   ),
                   HealthInformationSettings(
                     imageAdress: 'assets/Icons/TermsAndPolicy.svg',
@@ -246,7 +251,10 @@ class _ProfileAndSettingScreenState extends State<ProfileAndSettingScreen> {
                     imageAdress: 'assets/Icons/MeettheDevelopers.svg',
                     settingAdress: 'Meet the Developers',
                     iconData: Icons.arrow_forward,
-                    onpressed: null,
+                    onpressed: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => MeetTheDevs()));
+                    },
                   ),
                 ],
               ),
@@ -254,62 +262,6 @@ class _ProfileAndSettingScreenState extends State<ProfileAndSettingScreen> {
           ],
         ));
       })),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: (int newIndex) {
-          setState(() {
-            _currentIndex = newIndex;
-          });
-        },
-        items: [
-          BottomNavigationBarItem(
-              label: "Home",
-              icon: SvgPicture.asset(
-                'assets/Icons/Home.svg',
-                // ignore: deprecated_member_use
-                color: _currentIndex == 0 ? Colors.blue : Colors.grey,
-              )),
-          BottomNavigationBarItem(
-              label: "Health",
-              icon: SvgPicture.asset(
-                'assets/Icons/Health.svg',
-                // ignore: deprecated_member_use
-                color: _currentIndex == 1 ? Colors.blue : Colors.grey,
-              )),
-          BottomNavigationBarItem(
-              label: "Assesment",
-              icon: SvgPicture.asset(
-                'assets/Icons/Assesment.svg',
-                // ignore: deprecated_member_use
-                color: _currentIndex == 2 ? Colors.blue : Colors.grey,
-              )),
-          BottomNavigationBarItem(
-              label: "Chat",
-              icon: SvgPicture.asset(
-                'assets/Icons/Chat.svg',
-                // ignore: deprecated_member_use
-                color: _currentIndex == 3 ? Colors.blue : Colors.grey,
-              )),
-          BottomNavigationBarItem(
-              label: "Profile",
-              icon: SvgPicture.asset(
-                'assets/Icons/profile.svg',
-                // ignore: deprecated_member_use
-                color: _currentIndex == 4 ? Colors.blue : Colors.grey,
-              ))
-        ],
-        selectedItemColor: Colors.blue,
-        unselectedItemColor: Colors.grey,
-        selectedLabelStyle: const TextStyle(
-          fontSize: 14,
-          fontFamily: "Manrope",
-          fontWeight: FontWeight.bold,
-        ),
-        unselectedLabelStyle: const TextStyle(
-          fontSize: 14,
-          fontWeight: FontWeight.normal,
-        ),
-      ),
     );
   }
 }
