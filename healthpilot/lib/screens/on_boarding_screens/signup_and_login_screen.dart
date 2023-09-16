@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:healthpilot/screens/on_boarding_screens/terms_dialogBox.dart';
 
 class SignupAndLoginScreen extends StatefulWidget {
   static const routeName = '/SignupandLogin';
@@ -60,7 +61,7 @@ class _SignupAndLoginScreenState extends State<SignupAndLoginScreen> {
                     ),
                     Padding(
                       padding: EdgeInsets.only(
-                          top: screenHeight * 0.013, left: screenWidth * 0.03),
+                          top: screenHeight * 0.013, left: screenWidth * 0.025),
                       child: SvgPicture.asset('assets/images/Vector.svg'),
                     ),
                   ],
@@ -73,6 +74,9 @@ class _SignupAndLoginScreenState extends State<SignupAndLoginScreen> {
                       ? "Glad to have you back"
                       : "Let’s get you all checked up",
                   screenWidth: screenWidth,
+                  screenHeight: screenHeight,
+                  padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
+                  letterHeight: 2,
                 ),
                 AccountMessageText(
                   text: _isLogin
@@ -80,6 +84,11 @@ class _SignupAndLoginScreenState extends State<SignupAndLoginScreen> {
                       : "By creating an account, unlock complete features and access Personal data",
                   screenHeight: screenHeight,
                   screenWidth: screenWidth,
+                  color: const Color.fromRGBO(42, 42, 42, 0.5),
+                  letterHeight: 1.3,
+                  padding: EdgeInsets.symmetric(
+                      horizontal: screenWidth * 0.1,
+                      vertical: screenHeight * 0.02),
                 ),
                 SizedBox(
                   height: screenHeight * 0.055,
@@ -171,6 +180,8 @@ class _SignupAndLoginScreenState extends State<SignupAndLoginScreen> {
                         height: screenHeight * 0.03,
                       ),
                       Button(
+                        fontsize: 18,
+                        textColor: Colors.white,
                         screenWidth: screenWidth,
                         screenHeight: screenHeight,
                         buttonText: _isLogin ? "Login" : "Sign Up",
@@ -182,6 +193,7 @@ class _SignupAndLoginScreenState extends State<SignupAndLoginScreen> {
                                       const ConfirmEmailScreen(),
                                 ));
                               },
+                        buttoncolor: const Color.fromRGBO(110, 182, 255, 1),
                       ),
                       SizedBox(
                         height: screenHeight * 0.03,
@@ -343,7 +355,7 @@ class ConfirmEmailScreen extends StatelessWidget {
                     Padding(
                       padding: EdgeInsets.only(
                         top: screenHeight * 0.04,
-                        left: screenWidth * 0.37,
+                        left: screenWidth * 0.32,
                       ),
                       child: SizedBox(
                         width: screenWidth * 0.04,
@@ -407,12 +419,15 @@ class ConfirmEmailScreen extends StatelessWidget {
                         padding:
                             EdgeInsets.symmetric(vertical: screenHeight * 0.03),
                         child: Button(
+                          fontsize: 18,
+                          textColor: Colors.white,
                           screenWidth: screenWidth,
                           screenHeight: screenHeight,
                           buttonText: "Return to login",
                           buttonAction: () {
                             Navigator.of(context).pop();
                           },
+                          buttoncolor: const Color.fromRGBO(110, 182, 255, 1),
                         ),
                       ),
                     ],
@@ -498,7 +513,7 @@ class ForgotPasswordScreen extends StatelessWidget {
                     Padding(
                       padding: EdgeInsets.only(
                         top: screenHeight * 0.04,
-                        left: screenWidth * 0.28,
+                        left: screenWidth * 0.24,
                       ),
                       child: SizedBox(
                         width: screenWidth * 0.04,
@@ -559,6 +574,7 @@ class ForgotPasswordScreen extends StatelessWidget {
                       // horizontal: screenWidth * 0.015,
                       vertical: screenHeight * 0.11),
                   child: Button(
+
                       screenWidth: screenWidth,
                       screenHeight: screenHeight,
                       buttonText: "Next",
@@ -567,7 +583,16 @@ class ForgotPasswordScreen extends StatelessWidget {
                           builder: (context) =>
                               const ForgotPasswordCheckEmail(),
                         ));
-                      }),
+                      },
+
+                    fontsize: 18,
+                    textColor: Colors.white,
+              
+    
+                  
+                    buttoncolor: const Color.fromRGBO(110, 182, 255, 1),
+                  ),
+
                 ),
                 Padding(
                     padding: EdgeInsets.only(
@@ -650,7 +675,7 @@ class ForgotPasswordCheckEmail extends StatelessWidget {
                       Padding(
                         padding: EdgeInsets.only(
                           top: screenHeight * 0.04,
-                          left: screenWidth * 0.37,
+                          left: screenWidth * 0.32,
                         ),
                         child: SizedBox(
                           width: screenWidth * 0.04,
@@ -713,6 +738,8 @@ class ForgotPasswordCheckEmail extends StatelessWidget {
                           padding: EdgeInsets.symmetric(
                               vertical: screenHeight * 0.03),
                           child: Button(
+                            fontsize: 18,
+                            textColor: Colors.white,
                             screenWidth: screenWidth,
                             screenHeight: screenHeight,
                             buttonText: "Return to login",
@@ -720,6 +747,7 @@ class ForgotPasswordCheckEmail extends StatelessWidget {
                               Navigator.of(context).pop();
                               Navigator.of(context).pop();
                             },
+                            buttoncolor: const Color.fromRGBO(110, 182, 255, 1),
                           ),
                         ),
                       ],
@@ -741,22 +769,31 @@ class ForgotPasswordCheckEmail extends StatelessWidget {
 class PageTitles extends StatelessWidget {
   final String title;
   final double screenWidth;
+  final double screenHeight;
+  final EdgeInsetsGeometry padding;
+  final double letterHeight;
 
-  const PageTitles({super.key, required this.title, required this.screenWidth});
+  const PageTitles(
+      {super.key,
+      required this.title,
+      required this.screenWidth,
+      required this.screenHeight,
+      required this.padding,
+      required this.letterHeight});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
+        padding: padding,
         child: Text(title,
             textAlign: TextAlign.center,
-            style: const TextStyle(
+            style: TextStyle(
               fontFamily: 'PlusJakartaSans',
-              color: Color.fromRGBO(42, 42, 42, 1),
+              color: const Color.fromRGBO(42, 42, 42, 1),
               fontSize: 22,
               fontWeight: FontWeight.w600,
               letterSpacing: -0.17,
-              height: 2,
+              height: letterHeight,
             )));
   }
 }
@@ -765,27 +802,32 @@ class AccountMessageText extends StatelessWidget {
   final String text;
   final double screenWidth;
   final double screenHeight;
+  final EdgeInsetsGeometry padding;
+  final double letterHeight;
+  final Color color;
 
   const AccountMessageText(
       {super.key,
       required this.text,
       required this.screenWidth,
-      required this.screenHeight});
+      required this.screenHeight,
+      required this.padding,
+      required this.letterHeight,
+      required this.color});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(
-          horizontal: screenWidth * 0.1, vertical: screenHeight * 0.02),
+      padding: padding,
       child: Text(text,
           textAlign: TextAlign.center,
-          style: const TextStyle(
+          style: TextStyle(
             fontFamily: 'PlusJakartaSans',
-            color: Color.fromRGBO(42, 42, 42, 0.5),
+            color: color,
             fontSize: 16.5,
             fontWeight: FontWeight.w400,
             letterSpacing: -0.17,
-            height: 1.3,
+            height: letterHeight,
           )),
     );
   }
@@ -897,7 +939,17 @@ class TermsPolicyText extends StatelessWidget {
                   letterSpacing: -0.165,
                   height: 15 / 12,
                 ),
-                recognizer: TapGestureRecognizer()..onTap = () {}),
+                recognizer: TapGestureRecognizer()
+                  ..onTap = () {
+                    showDialog(
+                        context: context,
+                        builder: (context) {
+                          return Policy(
+                            mdFile: 'termsAndConditions.md',
+                            radius: 8,
+                          );
+                        });
+                  }),
             const TextSpan(
                 text: ' and ',
                 style: TextStyle(
@@ -918,7 +970,17 @@ class TermsPolicyText extends StatelessWidget {
                   letterSpacing: -0.165,
                   height: 15 / 12,
                 ),
-                recognizer: TapGestureRecognizer()..onTap = () {})
+                recognizer: TapGestureRecognizer()
+                  ..onTap = () {
+                    showDialog(
+                        context: context,
+                        builder: (context) {
+                          return Policy(
+                            mdFile: 'termsAndConditions.md',
+                            radius: 8,
+                          );
+                        });
+                  })
           ]),
     );
   }
@@ -929,13 +991,19 @@ class Button extends StatelessWidget {
   final double screenWidth;
   final double screenHeight;
   final VoidCallback? buttonAction;
+  final Color buttoncolor;
+  final Color textColor;
+  final double fontsize;
   const Button(
       {Key? key,
       required this.screenWidth,
       required this.screenHeight,
       // ignore: non_constant_identifier_names
       required this.buttonText,
-      this.buttonAction})
+      this.buttonAction,
+      required this.buttoncolor,
+      required this.textColor,
+      required this.fontsize})
       : super(key: key);
 
   @override
@@ -947,16 +1015,16 @@ class Button extends StatelessWidget {
           child: Container(
             width: screenWidth * 0.48, // 23.1% of screen width
             height: screenHeight * 0.063, // 5% of screen height
-            decoration: const BoxDecoration(
-              color: Color.fromRGBO(110, 182, 255, 1),
+            decoration: BoxDecoration(
+              color: buttoncolor,
             ), // Adjust the width as needed
             child: Center(
               child: Text(
                 buttonText,
-                style: const TextStyle(
-                  color: Colors.white,
+                style: TextStyle(
+                  color: textColor,
                   fontFamily: "PlusJakartaSans",
-                  fontSize: 18,
+                  fontSize: fontsize,
                   fontWeight: FontWeight.w700,
                   letterSpacing: -0.16,
                 ),

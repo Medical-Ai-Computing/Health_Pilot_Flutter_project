@@ -5,13 +5,40 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c25fa8c4-cd86-44f0-863a-16739339b9f7" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/healthpilot/assets/images/brainfuck.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/healthpilot/assets/images/doctor.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/healthpilot/assets/images/female.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/healthpilot/assets/images/height.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/healthpilot/assets/images/male.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/healthpilot/assets/images/weight.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/healthpilot/lib/screens/on_boarding_screens/language_translation.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/healthpilot/lib/screens/personal_info/initial_info-1.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/healthpilot/lib/screens/personal_info/initial_info-2.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/healthpilot/lib/screens/personal_info/initial_info-3.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/healthpilot/lib/screens/personal_info/initial_info-4.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/flutter.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/flutter.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_SDK.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_SDK.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/healthpilot/lib/data/contants.dart" beforeDir="false" afterPath="$PROJECT_DIR$/healthpilot/lib/data/contants.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/healthpilot/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/healthpilot/lib/main.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/healthpilot/lib/screens/on_boarding_screens/signup_and_login_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/healthpilot/lib/screens/on_boarding_screens/signup_and_login_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/healthpilot/lib/screens/on_boarding_screens/subscription_and_payment_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/healthpilot/lib/screens/on_boarding_screens/subscription_and_payment_screen.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/healthpilot/lib/theme/app_theme.dart" beforeDir="false" afterPath="$PROJECT_DIR$/healthpilot/lib/theme/app_theme.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/healthpilot/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/healthpilot/pubspec.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/healthpilot/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/healthpilot/pubspec.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Dart File" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -20,22 +47,25 @@
     <option name="stateVersion" value="1" />
   </component>
   <component name="ProjectId" id="2SexBy9SndVkPSdn4rcKVTLyEaz" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/mark/Documents/health/Flutter_project&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;flutter.settings&quot;,
-    &quot;show.migrate.to.gradle.popup&quot;: &quot;false&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "cidr.known.project.marker": "true",
+    "dart.analysis.tool.window.visible": "false",
+    "last_opened_file_path": "D:/health_pilot2/Flutter_project",
+    "settings.editor.selected.configurable": "dart.settings",
+    "show.migrate.to.gradle.popup": "false"
   }
-}</component>
+}]]></component>
   <component name="RunManager">
     <configuration default="true" type="FlutterRunConfigurationType" factoryName="Flutter">
       <option name="filePath" value="$PROJECT_DIR$/healthpilot/lib/main.dart" />
@@ -67,5 +97,8 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
   </component>
 </project>

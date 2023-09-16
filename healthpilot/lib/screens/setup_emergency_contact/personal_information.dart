@@ -45,8 +45,7 @@ class _PersonalInformationState extends State<PersonalInformation> {
             Icons.arrow_back,
           ),
           onPressed: () {
-            // Define the action when the back button is pressed
-            // Navigator.pop(context);
+            Navigator.of(context).pop();
           },
           style: AppTheme.buttonStyleForAppBarBackButto,
         ),
@@ -90,28 +89,21 @@ class _PersonalInformationState extends State<PersonalInformation> {
                       Container(
                         margin: EdgeInsets.only(
                             top: size.width * 0.16, left: size.width * 0.13),
-                        child:
-                            // CircleAvatar(
-                            //   backgroundColor: Colors.white,
-                            //   radius: size.width * 0.025,
-                            //   child:
-                            Container(
-                                height: size.width * 0.04,
-                                width: size.width * 0.04,
-                                padding:
-                                    EdgeInsets.only(left: size.width * 0.01),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(
-                                    size.width * 0.02,
-                                  ),
-                                  color:
-                                      const Color.fromARGB(255, 255, 255, 255),
-                                ),
-                                child: Icon(
-                                  LineIcons.edit,
-                                  size: size.width * 0.03,
-                                  color: const Color.fromARGB(255, 73, 70, 70),
-                                )),
+                        child: Container(
+                            height: size.width * 0.04,
+                            width: size.width * 0.04,
+                            padding: EdgeInsets.only(left: size.width * 0.01),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(
+                                size.width * 0.02,
+                              ),
+                              color: const Color.fromARGB(255, 255, 255, 255),
+                            ),
+                            child: Icon(
+                              LineIcons.edit,
+                              size: size.width * 0.03,
+                              color: const Color.fromARGB(255, 73, 70, 70),
+                            )),
                       ),
                       // ),
                     ],

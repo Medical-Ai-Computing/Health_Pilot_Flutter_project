@@ -4,6 +4,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:healthpilot/screens/on_boarding_screens/terms_dialogBox.dart';
 
 class ProfileAndSettingScreen extends StatefulWidget {
   const ProfileAndSettingScreen({super.key});
@@ -217,7 +218,16 @@ class _ProfileAndSettingScreenState extends State<ProfileAndSettingScreen> {
                   HealthInformationSettings(
                     imageAdress: 'assets/Icons/TermsAndPolicy.svg',
                     settingAdress: 'Terms And Policy',
-                    onpressed: null,
+                    onpressed: () {
+                      showDialog(
+                          context: context,
+                          builder: (context) {
+                            return Policy(
+                              mdFile: 'privacy_policy.md',
+                              radius: 8,
+                            );
+                          });
+                    },
                     iconData: Icons.arrow_forward,
                   ),
                   HealthInformationSettings(

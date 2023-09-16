@@ -1,39 +1,30 @@
-// This Flutter screen allows users to enter and manage their personal information./// It includes fields for first name, last name, email, and phone number.
-/// Users can also set up emergency contacts, personal doctor, and nutrition tracking.
-// class PersonalInformationScreen extends StatefulWidget {
-//   // ... (widget constructor and state creation)
-// }
-
-// /// The state class for the PersonalInformationScreen widget.
-// class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
-//   // ... (state variables and UI building logic)
-// }
-
-// /// A reusable widget for input fields like first name, last name, and email.
-// class InputFields extends StatelessWidget {
-//   // ... (constructor and UI building logic for input fields)
-// }
-
-/// A reusable widget for the phone number input field using the IntlPhoneField package.
-// //class PhoneInputFields extends StatelessWidget {
-//   // ... (constructor and UI building logic for phone input fields)
-// }
-
-/// A custom card widget that displays subscription-related information.
-// c//lass SubscriptionCard extends StatefulWidget {
-//   // ... (constructor and state creation for subscription card)
-// }
-
-/// The state class for the SubscriptionCard widget.
-// class _SubscriptionCardState extends State<SubscriptionCard> {
-//   // ... (UI building logic for subscription card)
-// }
+/// PersonalInformationScreen
+///
+/// A screen for capturing and displaying personal information.
+///
+/// This screen allows users to enter and view their personal information
+/// including profile photo, first name, last name, email, and phone number.
+/// It also provides options for setting up emergency contacts, personal doctor,
+/// and food and nutrition tracking.
+///
+/// Properties:
+/// None
+///
+/// Usage:
+/// This screen is typically used as part of user onboarding or profile setup
+/// process. It collects various personal details and allows users to set up
+/// additional premium features.
 
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+
+import 'package:healthpilot/screens/on_boarding_screens/subscription_and_payment_screen.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
+import 'package:line_icons/line_icons.dart';
+// import '../setup_personal_doctor/personal_information.dart' as doctor;
+// import '../setup_emergency_contact/personal_information.dart' as emergency;
 
 class PersonalInformationScreen extends StatefulWidget {
   const PersonalInformationScreen({Key? key}) : super(key: key);
@@ -44,7 +35,7 @@ class PersonalInformationScreen extends StatefulWidget {
 }
 
 class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
-  bool _isPersonalDoctorSubscribed = false;
+  final bool _isPersonalDoctorSubscribed = false;
 
   bool _isNutritionTrackingSubscribed = false;
 
@@ -153,7 +144,9 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                                 BorderRadius.circular(screenWidth * 0.05),
                           ),
                           child: IconButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
                             icon: const Icon(Icons.arrow_back),
                             color: const Color.fromRGBO(110, 182, 255, 1),
                             iconSize: screenWidth * 0.055,
@@ -212,21 +205,20 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                         ),
                       ),
                       Positioned(
-                        bottom: 0,
-                        right: 0,
+                        bottom: screenWidth * 0.000,
+                        right: screenWidth * 0.03,
                         child: Container(
-                          width: screenWidth * 0.08,
-                          height: screenWidth * 0.08,
-                          decoration: BoxDecoration(
-                              borderRadius:
-                                  BorderRadius.circular(screenWidth * 0.04),
-                              color: Colors.white),
-                          child: const Icon(
-                            Icons.edit_square,
-                            color: Colors.black,
-                            size: 20,
-                          ),
-                        ),
+                            width: screenWidth * 0.05,
+                            height: screenWidth * 0.05,
+                            decoration: BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.circular(screenWidth * 0.025),
+                                color: Colors.white),
+                            child: Icon(
+                              LineIcons.edit,
+                              size: screenWidth * 0.03,
+                              color: const Color.fromARGB(255, 73, 70, 70),
+                            )),
                       ),
                     ],
                   ),
@@ -285,7 +277,12 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                         "Start setting up your personal doctor to send health reports and various features.",
                     icon: null,
                     buttontxt: "Start setup",
-                    subscription: showAlertDialogue,
+                    subscription: () {
+                      // Navigator.of(context).push(MaterialPageRoute(
+                      //     builder: (context) =>
+                      //         const emergency.PersonalInformation()
+                      // ));
+                    },
                   ),
                   SubscriptionCard(
                     screenWidth: screenWidth,
@@ -300,12 +297,17 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                         ? "Start setup"
                         : "Subscribe",
                     subscription: () {
-                      setState(() {
-                        _isPersonalDoctorSubscribed =
-                            !_isPersonalDoctorSubscribed;
-                        Navigator.of(context)
-                            .pushNamed(PaymentMethodScreen.routeName);
-                      });
+                      // _isPersonalDoctorSubscribed == true
+                      //     ? Navigator.of(context).push(MaterialPageRoute(
+                      //         builder: (context) =>
+                      //             const doctor.PersonalInformation()))
+                      //     : setState(() {
+                      //         _isPersonalDoctorSubscribed =
+                      //             !_isPersonalDoctorSubscribed;
+                      //         Navigator.of(context).push(MaterialPageRoute(
+                      //             builder: (context) =>
+                      //                 const PaymentMethodScreen()));
+                      //       });
                     },
                   ),
                   SubscriptionCard(
@@ -324,8 +326,9 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                       setState(() {
                         _isNutritionTrackingSubscribed =
                             !_isNutritionTrackingSubscribed;
-                        Navigator.of(context)
-                            .pushNamed(PaymentMethodScreen.routeName);
+                        Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => const PaymentMethodScreen(),
+                        ));
                       });
                     },
                   ),
@@ -359,6 +362,26 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
     );
   }
 }
+
+/// InputFields
+///
+/// A widget for capturing general text input with a label.
+///
+/// This widget provides an input field for capturing text input, such as names,
+/// addresses, or other general information. It includes a label displayed above
+/// the input field to provide context to the user.
+///
+/// Properties:
+/// - `label` (required): The label displayed above the input field.
+/// - `screenWidth` (required): The screen width to calculate layout adjustments.
+/// - `screenHeight` (required): The screen height to calculate layout adjustments.
+/// - `keyboardType` (required): The type of keyboard to be shown for input.
+///
+/// Usage:
+/// This widget is used to collect various types of textual information from users.
+/// It can be used in forms, registration screens, or any other context where text
+/// input is needed. The label above the input field helps users understand what
+/// information is expected.
 
 class InputFields extends StatelessWidget {
   final String label;
@@ -417,6 +440,24 @@ class InputFields extends StatelessWidget {
   }
 }
 
+/// PhoneInputFields
+///
+/// A widget for capturing phone number input with label.
+///
+/// This widget provides an input field for capturing phone numbers along with a label.
+/// It utilizes the `IntlPhoneField` package to display a dropdown selector for country
+/// codes and validates the phone number input.
+///
+/// Properties:
+/// - `label` (required): The label displayed above the input field.
+/// - `screenWidth` (required): The screen width to calculate layout adjustments.
+/// - `screenHeight` (required): The screen height to calculate layout adjustments.
+/// - `keyboardType` (required): The type of keyboard to be shown for input.
+///
+/// Usage:
+/// This widget is used whenever phone number input is required, such as during user
+/// registration or verification. It ensures that users enter valid phone numbers and
+/// provides a user-friendly way to select country codes.
 class PhoneInputFields extends StatelessWidget {
   final String label;
   final double screenWidth;
@@ -456,7 +497,7 @@ class PhoneInputFields extends StatelessWidget {
             height: 67, // Set a fixed height for the SizedBox
             child: IntlPhoneField(
               dropdownIconPosition: IconPosition.trailing,
-              disableLengthCheck: false,
+              disableLengthCheck: true,
               initialCountryCode: 'ET',
               decoration: InputDecoration(
                 border: OutlineInputBorder(
@@ -473,6 +514,26 @@ class PhoneInputFields extends StatelessWidget {
     );
   }
 }
+
+/// SubscriptionCard
+///
+/// A widget for displaying subscription plan information in a card format.
+///
+/// This widget provides a card layout to showcase subscription plans. It
+/// displays the plan's title, description, an icon, and a subscription button.
+///
+/// Properties:
+/// - `screenWidth` (required): The screen width to calculate the card width.
+/// - `title` (required): The title of the subscription plan.
+/// - `description` (required): The description of the subscription plan.
+/// - `icon` (required): The icon representing the subscription plan.
+/// - `buttontxt` (required): The text for the subscription button.
+/// - `subscription` (required): The callback function when the button is pressed.
+///
+/// Usage:
+/// This widget can be used in different parts of the app to display various
+/// subscription plans available to users. It provides a visual representation
+/// of the plan along with its details and a button for users to subscribe.
 
 class SubscriptionCard extends StatefulWidget {
   final double screenWidth;
@@ -517,7 +578,7 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
           ),
         ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Padding(
               padding: const EdgeInsets.only(top: 13, left: 9),
@@ -529,7 +590,7 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
                     textAlign: TextAlign.left,
                     style: const TextStyle(
                       fontFamily: "PlusJakartaSans",
-                      fontSize: 17,
+                      fontSize: 16,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -550,38 +611,31 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
                 widget.description,
                 style: const TextStyle(
                   fontFamily: "PlusJakartaSans",
-                  fontSize: 15,
+                  color: Color.fromARGB(132, 0, 0, 0),
+                  fontSize: 14,
                   fontWeight: FontWeight.w400,
                 ),
               ),
             ),
             const Spacer(),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 14.0),
-                child: SizedBox(
-                  width: 110,
-                  height: 28,
-                  child: ElevatedButton(
-                    onPressed: widget.subscription,
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(
-                          const Color.fromRGBO(110, 182, 255, 1)),
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                      ),
-                    ),
-                    child: Text(
-                      widget.buttontxt,
-                      style: const TextStyle(
-                        fontFamily: "PlusJakartaSans",
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
+            Container(
+              width: widget.screenWidth * 0.3,
+              height: widget.screenWidth * 0.08,
+              margin: EdgeInsets.only(bottom: widget.screenWidth * 0.02),
+              child: ElevatedButton(
+                onPressed: widget.subscription,
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromRGBO(110, 182, 255, 1),
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(horizontal: 25),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5))),
+                child: Text(
+                  widget.buttontxt,
+                  style: const TextStyle(
+                    fontFamily: "PlusJakartaSans",
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
               ),
@@ -595,6 +649,21 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
 
 //Payment Screen starts Here
 
+/// PaymentMethodScreen
+///
+/// A screen for selecting payment methods and entering payment information.
+///
+/// This screen provides a user interface for users to select payment methods,
+/// enter their card information, and proceed to the payment review screen.
+///
+/// Properties:
+/// - None
+///
+/// Usage:
+/// This screen can be navigated to from other parts of the app when users need
+/// to make a payment. It allows users to choose from different payment methods
+/// and enter their card details for processing the payment.
+
 class PaymentMethodScreen extends StatefulWidget {
   static const routeName = '/PaymentScreen';
 
@@ -605,10 +674,16 @@ class PaymentMethodScreen extends StatefulWidget {
 }
 
 class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
+  final _formKey = GlobalKey<FormState>();
   bool isChecked = false;
   bool isPaypalChecked = false;
   bool isChappaChecked = false;
   bool isPaymentChecked = false;
+  final TextEditingController _cardNumberController = TextEditingController();
+  final TextEditingController _cardHolderNameController =
+      TextEditingController();
+  final TextEditingController _expiryDateController = TextEditingController();
+  final TextEditingController _cvcController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -699,7 +774,9 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                         pngAssetPath: null,
                         checker: () {
                           setState(() {
-                            isPaymentChecked = !isPaymentChecked;
+                            isPaymentChecked = true;
+                            isPaypalChecked = false;
+                            isChappaChecked = false;
                           });
                         }),
                     PaymentMethodButtons(
@@ -710,7 +787,9 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                         pngAssetPath: null,
                         checker: () {
                           setState(() {
-                            isPaypalChecked = !isPaypalChecked;
+                            isPaymentChecked = false;
+                            isPaypalChecked = true;
+                            isChappaChecked = false;
                           });
                         }),
                     PaymentMethodButtons(
@@ -721,103 +800,118 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                         pngAssetPath: "assets/Icons/chapa.png",
                         checker: () {
                           setState(() {
-                            isChappaChecked = !isChappaChecked;
+                            isPaymentChecked = false;
+                            isPaypalChecked = false;
+                            isChappaChecked = true;
                           });
                         }),
                   ],
                 ),
-                PageTitlesInPayment(
-                  title: "Enter your card information",
-                  screenWidth: screenWidth,
-                  screenHeight: screenHeight,
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: screenHeight * 0.01),
-                  child: PaymentInputFields(
-                    screenWidth: screenWidth * 0.5,
-                    screenHeight: screenHeight,
-                    keyboardType: TextInputType.emailAddress,
-                    hintText: "Card number",
-                    suffixIcon: null,
-                    prefixIcon: null,
-                    inputActiom: TextInputAction.next,
-                    isobscured: false,
-                    controller: null,
-                    iconPressed: null,
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: screenHeight * 0.01),
-                  child: PaymentInputFields(
-                    screenWidth: screenWidth * 0.5,
-                    screenHeight: screenHeight,
-                    keyboardType: TextInputType.emailAddress,
-                    hintText: "Card holder’s name",
-                    suffixIcon: null,
-                    prefixIcon: null,
-                    inputActiom: TextInputAction.next,
-                    isobscured: false,
-                    controller: null,
-                    iconPressed: null,
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: screenHeight * 0.01),
-                  child: PaymentInputFields(
-                    screenWidth: screenWidth * 0.5,
-                    screenHeight: screenHeight,
-                    keyboardType: TextInputType.emailAddress,
-                    hintText: "Expiry date",
-                    suffixIcon: null,
-                    prefixIcon: null,
-                    inputActiom: TextInputAction.next,
-                    isobscured: false,
-                    controller: null,
-                    iconPressed: null,
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: screenHeight * 0.01),
-                  child: PaymentInputFields(
-                    screenWidth: screenWidth * 0.5,
-                    screenHeight: screenHeight,
-                    keyboardType: TextInputType.emailAddress,
-                    hintText: "CVC",
-                    suffixIcon: null,
-                    prefixIcon: null,
-                    inputActiom: TextInputAction.next,
-                    isobscured: false,
-                    controller: null,
-                    iconPressed: null,
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(
-                      horizontal: screenWidth * 0.05,
-                      vertical: screenHeight * 0.013),
-                  child: Row(
+                Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      CustomCheckBox(
-                        onChange: (value) {
-                          isChecked = value;
-                        },
-                        isChecked: isChecked,
+                      PageTitlesInPayment(
+                        title: "Enter your card information",
                         screenWidth: screenWidth,
+                        screenHeight: screenHeight,
                       ),
                       Padding(
-                        padding: EdgeInsets.only(left: screenWidth * 0.02),
-                        child: const Text(
-                          'Remember payment information',
-                          style: TextStyle(
-                            fontFamily: 'PlusJakartaSans',
-                            fontSize: 12,
-                            fontWeight: FontWeight.w400,
-                            height:
-                                1.25, // Calculated based on line height: 20 / 16
-                            letterSpacing: -0.165,
-                            color: Color.fromRGBO(42, 42, 42, 0.5),
-                          ),
-                          textAlign: TextAlign.left,
+                        padding:
+                            EdgeInsets.symmetric(vertical: screenHeight * 0.01),
+                        child: PaymentInputFields(
+                          screenWidth: screenWidth * 0.5,
+                          screenHeight: screenHeight,
+                          keyboardType: TextInputType.emailAddress,
+                          hintText: "Card number",
+                          suffixIcon: null,
+                          prefixIcon: null,
+                          inputActiom: TextInputAction.next,
+                          isobscured: false,
+                          controller: _cardNumberController,
+                          iconPressed: null,
+                        ),
+                      ),
+                      Padding(
+                        padding:
+                            EdgeInsets.symmetric(vertical: screenHeight * 0.01),
+                        child: PaymentInputFields(
+                          screenWidth: screenWidth * 0.5,
+                          screenHeight: screenHeight,
+                          keyboardType: TextInputType.emailAddress,
+                          hintText: "Card holder’s name",
+                          suffixIcon: null,
+                          prefixIcon: null,
+                          inputActiom: TextInputAction.next,
+                          isobscured: false,
+                          controller: _cardHolderNameController,
+                          iconPressed: null,
+                        ),
+                      ),
+                      Padding(
+                        padding:
+                            EdgeInsets.symmetric(vertical: screenHeight * 0.01),
+                        child: PaymentInputFields(
+                          screenWidth: screenWidth * 0.5,
+                          screenHeight: screenHeight,
+                          keyboardType: TextInputType.emailAddress,
+                          hintText: "Expiry date",
+                          suffixIcon: null,
+                          prefixIcon: null,
+                          inputActiom: TextInputAction.next,
+                          isobscured: false,
+                          controller: _expiryDateController,
+                          iconPressed: null,
+                        ),
+                      ),
+                      Padding(
+                        padding:
+                            EdgeInsets.symmetric(vertical: screenHeight * 0.01),
+                        child: PaymentInputFields(
+                          screenWidth: screenWidth * 0.5,
+                          screenHeight: screenHeight,
+                          keyboardType: TextInputType.emailAddress,
+                          hintText: "CVC",
+                          suffixIcon: null,
+                          prefixIcon: null,
+                          inputActiom: TextInputAction.next,
+                          isobscured: false,
+                          controller: _cvcController,
+                          iconPressed: null,
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: screenWidth * 0.05,
+                            vertical: screenHeight * 0.013),
+                        child: Row(
+                          children: [
+                            CustomCheckBox(
+                              onChange: (value) {
+                                isChecked = value;
+                              },
+                              isChecked: isChecked,
+                              screenWidth: screenWidth,
+                            ),
+                            Padding(
+                              padding:
+                                  EdgeInsets.only(left: screenWidth * 0.02),
+                              child: const Text(
+                                'Remember payment information',
+                                style: TextStyle(
+                                  fontFamily: 'PlusJakartaSans',
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w400,
+                                  height:
+                                      1.25, // Calculated based on line height: 20 / 16
+                                  letterSpacing: -0.165,
+                                  color: Color.fromRGBO(42, 42, 42, 0.5),
+                                ),
+                                textAlign: TextAlign.left,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],
@@ -829,9 +923,24 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                     padding:
                         EdgeInsets.symmetric(vertical: screenHeight * 0.06),
                     child: PaymentButton(
-                        screenWidth: screenWidth,
-                        screenHeight: screenHeight,
-                        buttonText: "Next"),
+                      screenWidth: screenWidth,
+                      screenHeight: screenHeight,
+                      buttonText: "Next",
+                      buttonAction: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => PaymentReviewScreen(
+                                  paymentInfo: PersonalPaymentInformations(
+                                      cardNumber: _cardNumberController.text,
+                                      cardholdersName:
+                                          _cardHolderNameController.text,
+                                      expirydate: _expiryDateController.text,
+                                      cvc: _cvcController.text,
+                                      isChappaChecked: isChappaChecked,
+                                      isPaymentChecked: isPaymentChecked,
+                                      isPaypalChecked: isPaypalChecked),
+                                )));
+                      },
+                    ),
                   ),
                 ),
                 Padding(
@@ -848,6 +957,30 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
 }
 
 //payment screen ends here
+
+/// PaymentInputFields
+///
+/// A custom input field widget for entering payment-related information.
+///
+/// This widget provides a styled input field for users to enter payment-related
+/// information, such as card numbers, names, CVV, etc. It supports customization
+/// of keyboard type, hint text, icons, and other properties.
+///
+/// Properties:
+/// - `screenWidth`: The screen width used for sizing.
+/// - `screenHeight`: The screen height used for sizing.
+/// - `keyboardType`: The type of keyboard to be used for input.
+/// - `hintText`: The hint text displayed inside the input field.
+/// - `suffixIcon`: An icon displayed at the end of the input field.
+/// - `prefixIcon`: An icon displayed at the start of the input field.
+/// - `inputAction`: The type of action triggered when pressing the keyboard's action key.
+/// - `isobscured`: Indicates whether the input should be obscured (e.g., for passwords).
+/// - `controller`: A TextEditingController for managing the input's value.
+/// - `iconPressed`: A callback function to be executed when the icon is pressed.
+///
+/// Usage:
+/// This widget can be used in various forms where payment-related information needs
+/// to be collected from users. It offers customization for different input scenarios.
 
 class PaymentInputFields extends StatelessWidget {
   final double screenWidth;
@@ -928,6 +1061,23 @@ class PaymentInputFields extends StatelessWidget {
   }
 }
 
+/// PaymentButton
+///
+/// A customizable button for payment-related actions.
+///
+/// This button is designed for triggering payment actions and displays
+/// the provided button text.
+///
+/// Properties:
+/// - `buttonText`: The text displayed on the button.
+/// - `screenWidth`: The width of the screen, used for responsive design.
+/// - `screenHeight`: The height of the screen, used for responsive design.
+/// - `buttonAction`: A callback function triggered when the button is pressed.
+///
+/// Usage:
+/// This widget can be used in various payment-related screens to provide a
+/// consistent button style for payment actions.
+
 class PaymentButton extends StatelessWidget {
   final String buttonText;
   final double screenWidth;
@@ -971,6 +1121,20 @@ class PaymentButton extends StatelessWidget {
   }
 }
 
+/// PageTitlesInPayment
+///
+/// A title component used in payment-related screens.
+///
+/// This component displays the provided title text with specified styling.
+///
+/// Properties:
+/// - `title`: The title text to be displayed.
+/// - `screenWidth`: The width of the screen, used for responsive design.
+/// - `screenHeight`: The height of the screen, used for responsive design.
+///
+/// Usage:
+/// This widget is often used to display section titles in payment-related screens.
+
 class PageTitlesInPayment extends StatelessWidget {
   final String title;
   final double screenWidth;
@@ -999,6 +1163,25 @@ class PageTitlesInPayment extends StatelessWidget {
             )));
   }
 }
+
+/// PaymentMethodButtons
+///
+/// A group of buttons for selecting payment methods.
+///
+/// This widget displays payment method icons or images as buttons and indicates
+/// the selected method with styling.
+///
+/// Properties:
+/// - `screenWidth`: The width of the screen, used for responsive design.
+/// - `screenHeight`: The height of the screen, used for responsive design.
+/// - `isChecked`: Indicates whether the payment method is selected.
+/// - `checker`: A callback function triggered when the button is pressed.
+/// - `icons`: An optional icon for the payment method.
+/// - `pngAssetPath`: An optional PNG image asset path for the payment method.
+///
+/// Usage:
+/// This widget is used to display and select payment methods, such as credit cards,
+/// PayPal, or other methods.
 
 class PaymentMethodButtons extends StatelessWidget {
   final double screenWidth;
@@ -1073,6 +1256,29 @@ class PaymentMethodButtons extends StatelessWidget {
   }
 }
 
+/// CustomCheckBox
+///
+/// A custom checkbox widget that allows users to toggle between checked and unchecked states.
+///
+/// This widget provides a customizable checkbox that users can interact with to toggle
+/// its state. It supports customization of colors, sizes, icons, and more.
+///
+/// Properties:
+/// - `size`: The size of the checkbox.
+/// - `iconSize`: The size of the checkbox icon.
+/// - `onChange`: A function that will be called when the checkbox state changes.
+/// - `backgroundColor`: The background color of the checkbox when checked.
+/// - `iconColor`: The color of the checkbox icon when checked.
+/// - `borderColor`: The border color of the checkbox when unchecked.
+/// - `icon`: The icon to be displayed when the checkbox is checked.
+/// - `isChecked`: Indicates whether the checkbox is currently checked.
+/// - `screenWidth`: The screen width used for sizing.
+///
+/// Usage:
+/// This widget can be used in various UI scenarios where the user's choice needs
+/// to be indicated using a checkbox. The `onChange` function is called whenever
+/// the checkbox is toggled.
+
 // ignore: must_be_immutable
 class CustomCheckBox extends StatefulWidget {
   double? size;
@@ -1143,4 +1349,45 @@ class _CustomCheckBoxState extends State<CustomCheckBox> {
               : null),
     );
   }
+}
+
+/// PersonalPaymentInformations
+///
+/// A class that holds payment-related information for the user.
+///
+/// This class encapsulates the payment information provided by the user during
+/// the subscription process. It includes card details, payment method choices,
+/// and associated properties.
+///
+/// Properties:
+/// - `cardNumber`: The card number entered by the user.
+/// - `cardholdersName`: The name of the cardholder.
+/// - `expirydate`: The expiration date of the card.
+/// - `cvc`: The card's security code (CVC).
+/// - `isPaypalChecked`: Indicates whether PayPal payment method is selected.
+/// - `isChappaChecked`: Indicates whether Chappa payment method is selected.
+/// - `isPaymentChecked`: Indicates whether a general payment method is selected.
+///
+/// Usage:
+/// This class is used to create an instance that holds the user's payment
+/// information. It is typically passed between screens during the subscription
+/// process and used to display and verify the user's payment choices.
+
+class PersonalPaymentInformations {
+  final String cardNumber;
+  String cardholdersName;
+  String expirydate;
+  String cvc;
+  bool isPaypalChecked;
+  bool isChappaChecked;
+  bool isPaymentChecked;
+
+  PersonalPaymentInformations(
+      {required this.cardNumber,
+      required this.cardholdersName,
+      required this.expirydate,
+      required this.cvc,
+      required this.isChappaChecked,
+      required this.isPaymentChecked,
+      required this.isPaypalChecked});
 }
