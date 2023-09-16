@@ -3,6 +3,7 @@ import 'package:healthpilot/data/contants.dart';
 
 import 'screens/on_boarding_screens/physical_therapy_screen.dart';
 import 'screens/personal_info/initial_info_1.dart';
+import 'screens/home_page_screen/home_page_screen.dart';
 
 void main() {
   runApp(const HealthPilotApp());
@@ -21,7 +22,7 @@ class HealthPilotApp extends StatelessWidget {
         fontFamily: 'Roboto', // Example font family
       ),
       // home: const WelcomeScreen(),
-      home: const InitialInfoFirst(),
+      home: const HomePageScreen(),
     );
   }
 }

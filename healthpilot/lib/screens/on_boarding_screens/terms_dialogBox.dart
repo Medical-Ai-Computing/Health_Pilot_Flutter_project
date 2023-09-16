@@ -53,7 +53,7 @@ class Policy extends StatelessWidget {
                 alignment: Alignment.center,
                 height: 50,
                 width: double.infinity,
-                child: Text(
+                child: const Text(
                   'Close',
                   style: TextStyle(
                       fontFamily: 'PlusJakartaSans',

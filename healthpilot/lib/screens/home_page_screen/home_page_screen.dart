@@ -5,12 +5,12 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:healthpilot/screens/home_page_screen.dart/discover_healthpilot.dart';
+import 'package:healthpilot/screens/home_page_screen/discover_healthpilot.dart';
 import 'package:healthpilot/screens/on_boarding_screens/language_translation.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import '../on_boarding_screens/profile_and_setting_screen.dart';
-import '/screens/home_page_screen.dart/overview_card.dart';
+import '/screens/home_page_screen/overview_card.dart';
 import 'package:healthpilot/theme/app_theme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
