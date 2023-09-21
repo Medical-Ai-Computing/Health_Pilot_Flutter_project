@@ -383,31 +383,33 @@ class HealthInformationSettings extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(top: 0, left: 30, right: 40),
-      child: Column(
-        children: [
-          ListTile(
-            contentPadding: EdgeInsets.zero,
-            leading: SvgPicture.asset(
-              imageAdress,
-            ),
-            title: Text(
-              settingAdress,
-              style: const TextStyle(
-                fontFamily: 'PlusJakartaSans',
-                fontSize: 12,
-                fontWeight: FontWeight.w400,
-                letterSpacing: -0.2,
+      child: SizedBox(
+        child: Column(
+          children: [
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              leading: SvgPicture.asset(
+                imageAdress,
               ),
+              title: Text(
+                settingAdress,
+                style: const TextStyle(
+                  fontFamily: 'PlusJakartaSans',
+                  fontSize: 12,
+                  fontWeight: FontWeight.w400,
+                  letterSpacing: -0.2,
+                ),
+              ),
+              horizontalTitleGap: 5,
+              trailing: Icon(iconData),
+              onTap: onpressed,
             ),
-            horizontalTitleGap: 5,
-            trailing: Icon(iconData),
-            onTap: onpressed,
-          ),
-          const Divider(
-            color: Colors.grey,
-            thickness: 0.5,
-          ),
-        ],
+            const Divider(
+              color: Colors.grey,
+              thickness: 0.5,
+            ),
+          ],
+        ),
       ),
     );
   }
