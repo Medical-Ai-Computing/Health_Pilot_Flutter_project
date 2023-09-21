@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:healthpilot/data/contants.dart';
-import 'package:healthpilot/screens/on_boarding_screens/medications._screen.dart';
+
+import 'package:healthpilot/screens/article_screen/article_screen.dart';
 
 import 'package:healthpilot/screens/on_boarding_screens/physical_therapy_screen.dart';
-import 'package:healthpilot/screens/on_boarding_screens/profile_and_setting_screen.dart';
-import 'package:healthpilot/screens/on_boarding_screens/signup_and_login_screen.dart';
 
 void main() {
   runApp(const HealthPilotApp());
@@ -22,7 +21,7 @@ class HealthPilotApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         fontFamily: 'Roboto', // Example font family
       ),
-      home: const SignupAndLoginScreen(),
+      home: ArticleScreen(),
     );
   }
 }

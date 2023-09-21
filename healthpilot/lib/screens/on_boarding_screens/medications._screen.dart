@@ -210,7 +210,7 @@ class _MedicationScreenState extends State<MedicationScreen> {
                     controller: _searchText,
                     inputAction: TextInputAction.search,
                     canONChangedUsed: true,
-                    hintText: '"Search Medications"',
+                    hintText: 'Search Medications',
                     onChanged: (query) {
                       _filterMedications(
                           query); // Call _filterMedications when the text changes
