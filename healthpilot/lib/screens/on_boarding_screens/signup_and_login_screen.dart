@@ -4,6 +4,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:healthpilot/screens/home_page_screen/home_page_screen.dart';
 import 'package:healthpilot/screens/on_boarding_screens/terms_dialogBox.dart';
 
+import '../personal_info/initial_info_1.dart';
+
 class SignupAndLoginScreen extends StatefulWidget {
   static const routeName = '/SignupandLogin';
   const SignupAndLoginScreen({super.key});
@@ -190,7 +192,8 @@ class _SignupAndLoginScreenState extends State<SignupAndLoginScreen> {
                             ? () {
                                 Navigator.of(context).push(
                                   MaterialPageRoute(
-                                    builder: (context) => const HomePageScreen(),
+                                    builder: (context) =>
+                                        const InitialInfoFirst(),
                                   ),
                                 );
                               }

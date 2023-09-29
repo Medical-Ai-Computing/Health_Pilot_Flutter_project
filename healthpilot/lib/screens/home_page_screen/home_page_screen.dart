@@ -5,6 +5,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:healthpilot/screens/article_screen/article_screen.dart';
 
 import 'package:healthpilot/screens/home_page_screen/discover_healthpilot.dart';
 
@@ -24,7 +25,8 @@ import 'ad_widget.dart';
 import 'blog_reccomendation._card.dart';
 
 class HomePageScreen extends StatefulWidget {
-  const HomePageScreen({super.key});
+  final bool isHelpPressed;
+  HomePageScreen({super.key, required this.isHelpPressed});
 
   @override
   State<HomePageScreen> createState() => _HomePageScreenState();
@@ -37,9 +39,11 @@ class _HomePageScreenState extends State<HomePageScreen> {
   @override
   void initState() {
     getTutorStatus();
+    isOnHelp = widget.isHelpPressed;
     super.initState();
   }
 
+// _tuturText holds the list of totur which displays only when the app runs for the 1st time :)
   final _tutorText = [
     {
       'title': 'Welcome to health pilot',
@@ -64,28 +68,35 @@ class _HomePageScreenState extends State<HomePageScreen> {
   ];
 
   final userName = "Mohammed";
+  // showAiAlert is true if the screen is only at home page
+
   bool showAiAlert = true;
+
   //list of blogs
   final _blogs = [
     [
       womanReading,
       'Read our articles',
-      'Get insights on the latest news and tips from our experts.'
+      'Get insights on the latest news and tips from our experts.',
+      'articles'
     ],
     [
       gynecologyConsultation,
       'Consult our doctors ',
-      'Talk to our doctors to get better insight about your health.'
+      'Talk to our doctors to get better insight about your health.',
+      'consult'
     ],
     [
       womanReading,
       'Read our articles',
-      'Get insights on the latest news and tips from our experts.'
+      'Get insights on the latest news and tips from our experts.',
+      'articles'
     ],
     [
       gynecologyConsultation,
       'Consult our doctors ',
-      'Talk to our doctors to get better insight about your health.'
+      'Talk to our doctors to get better insight about your health.',
+      'consult'
     ],
   ];
 
@@ -184,6 +195,8 @@ class _HomePageScreenState extends State<HomePageScreen> {
     super.didChangeDependencies();
   }
 
+
+
   @override
   void dispose() {
     ScaffoldMessenger.of(context).removeCurrentSnackBar();
@@ -192,12 +205,14 @@ class _HomePageScreenState extends State<HomePageScreen> {
   }
 
   late SharedPreferences prefs;
-  late bool isTutoreGiven = false;
+  late bool isTutorGiven = false;
   late bool isOnEmeregencyCalling = false;
+  late bool isOnHelp = false;
+
   Future getTutorStatus() async {
     prefs = await SharedPreferences.getInstance();
 
-    isTutoreGiven = prefs.getBool('isTutorGiven') ?? false;
+    isTutorGiven = prefs.getBool('isTutorGiven') ?? false;
   }
 
   void cancelEmergencyCall() {
@@ -336,9 +351,11 @@ class _HomePageScreenState extends State<HomePageScreen> {
               itemCount: _blogs.length,
               itemBuilder: (context, index) {
                 return BlogRecomendationCard(
-                    img: _blogs[index][0],
-                    title: _blogs[index][1],
-                    description: _blogs[index][2]);
+                  img: _blogs[index][0],
+                  title: _blogs[index][1],
+                  description: _blogs[index][2],
+                  blogType: _blogs[index][3],
+                );
               },
               scrollDirection: Axis.horizontal,
             ),
@@ -550,7 +567,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
                 ),
               ),
             ),
-          if (!isTutoreGiven)
+          if (!isTutorGiven || isOnHelp)
             Dialog(
               backgroundColor: Colors.transparent,
               child: SizedBox(
@@ -663,7 +680,9 @@ class _HomePageScreenState extends State<HomePageScreen> {
                                         onPressed: () {
                                           setState(() {
                                             prefs.setBool('isTutorGiven', true);
-                                            isTutoreGiven = true;
+                                            isTutorGiven = true;
+                                            isOnHelp = false;
+
                                             _currentIndex = 4;
                                           });
                                         },
@@ -691,7 +710,8 @@ class _HomePageScreenState extends State<HomePageScreen> {
 
                                       setState(() {
                                         prefs.setBool('isTutorGiven', true);
-                                        isTutoreGiven = true;
+                                        isTutorGiven = true;
+                                        isOnHelp = false;
                                       });
                                     });
                                   },

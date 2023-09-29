@@ -75,8 +75,9 @@ class _InitialInfoFinal extends State<InitialInfoFinal> {
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) =>
-                    const HomePageScreen()), // Navigate to the DestinationPage
+                builder: (context) => HomePageScreen(
+                      isHelpPressed: false,
+                    )), // Navigate to the DestinationPage
           );
         },
         child: Container(

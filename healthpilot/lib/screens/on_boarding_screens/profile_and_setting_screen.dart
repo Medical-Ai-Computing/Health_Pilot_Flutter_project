@@ -4,9 +4,17 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:healthpilot/screens/health_section/health_profile_screen.dart';
+import 'package:healthpilot/screens/home_page_screen/home_page_screen.dart';
 import 'package:healthpilot/screens/meet_the_devs_screen/meet_the_devs.dart';
 import 'package:healthpilot/screens/on_boarding_screens/language_translation.dart';
 import 'package:healthpilot/screens/on_boarding_screens/terms_dialogBox.dart';
+
+import '../personal_info/initial_info_3.dart';
+import 'medications._screen.dart';
+import 'personal_information_screen.dart';
+import 'signup_and_login_screen.dart';
+import 'subscription_and_payment_screen.dart';
 
 class ProfileAndSettingScreen extends StatefulWidget {
   const ProfileAndSettingScreen({super.key});
@@ -154,7 +162,7 @@ class _ProfileAndSettingScreenState extends State<ProfileAndSettingScreen> {
               ],
             ),
             const SettingsTitle(title: "Health Information"),
-            const Padding(
+            Padding(
               padding: EdgeInsets.only(top: 20),
               child: Column(
                 children: [
@@ -168,18 +176,24 @@ class _ProfileAndSettingScreenState extends State<ProfileAndSettingScreen> {
                     imageAdress: 'assets/Icons/Medication.svg',
                     settingAdress: 'Medications',
                     iconData: Icons.arrow_forward,
-                    onpressed: null,
+                    onpressed: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => MedicationScreen()));
+                    },
                   ),
                   HealthInformationSettings(
                     imageAdress: 'assets/Icons/Allergies.svg',
                     settingAdress: 'Allergies',
                     iconData: Icons.arrow_forward,
-                    onpressed: null,
+                    onpressed: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => InitialInfoThird()));
+                    },
                   ),
                 ],
               ),
             ),
-            const SettingsTitle(title: "Settings"),
+            SettingsTitle(title: "Settings"),
             Padding(
               padding: const EdgeInsets.only(top: 20),
               child: Column(
@@ -191,11 +205,15 @@ class _ProfileAndSettingScreenState extends State<ProfileAndSettingScreen> {
                     iconData: Icons.lock_outlined,
                     onpressed: showAlertDialogue,
                   ),
-                  const HealthInformationSettings(
+                  HealthInformationSettings(
                     imageAdress: 'assets/Icons/Subscription.svg',
                     settingAdress: 'Subscription',
                     iconData: Icons.arrow_forward,
-                    onpressed: null,
+                    onpressed: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) =>
+                              SubscriptionAndPaymentScreen()));
+                    },
                   ),
                   SettingsForDarkMode(
                     imageAdress: 'assets/Icons/Notfication.svg',
@@ -209,7 +227,10 @@ class _ProfileAndSettingScreenState extends State<ProfileAndSettingScreen> {
                     imageAdress: 'assets/Icons/changePassword.svg',
                     settingAdress: 'Change Password',
                     iconData: Icons.arrow_forward,
-                    onpressed: null,
+                    onpressed: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => ForgotPasswordScreen()));
+                    },
                   ),
                   HealthInformationSettings(
                     imageAdress: 'assets/Icons/Language.svg',
@@ -239,7 +260,12 @@ class _ProfileAndSettingScreenState extends State<ProfileAndSettingScreen> {
                     imageAdress: 'assets/Icons/help.svg',
                     settingAdress: 'Help',
                     iconData: Icons.arrow_forward,
-                    onpressed: null,
+                    onpressed: () {
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(
+                          builder: (context) => HomePageScreen(
+                                isHelpPressed: true,
+                              )));
+                    },
                   ),
                   HealthInformationSettings(
                     imageAdress: 'assets/Icons/FAQ.svg',
@@ -322,7 +348,10 @@ class Button extends StatelessWidget {
           ), // Adjust the width as needed
           child: Center(
             child: TextButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => PersonalInformationScreen()));
+              },
               child: const Text(
                 "Edit",
                 style: TextStyle(
