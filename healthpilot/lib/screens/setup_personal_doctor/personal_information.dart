@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:healthpilot/screens/home_page_screen/home_page_screen.dart';
 
 import 'package:healthpilot/theme/app_theme.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
@@ -39,8 +40,9 @@ class _PersonalInformationState extends State<PersonalInformation> {
           ),
           onPressed: () {
             Navigator.of(context).pushReplacement(MaterialPageRoute(
-              builder: (context) => const PersonalInformation(),
-            ));
+                builder: (context) => HomePageScreen(
+                      isHelpPressed: false,
+                    )));
           },
           style: AppTheme.buttonStyleForAppBarBackButto,
         ),
@@ -442,7 +444,11 @@ class _PersonalInformationState extends State<PersonalInformation> {
                       height: size.height * 0.07,
                     ),
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(
+                            builder: (context) =>
+                                HomePageScreen(isHelpPressed: false)));
+                      },
                       style: ElevatedButton.styleFrom(
                           backgroundColor:
                               const Color.fromRGBO(110, 182, 255, 1),

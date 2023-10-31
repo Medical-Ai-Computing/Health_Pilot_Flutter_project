@@ -69,6 +69,7 @@ class _ProfileAndSettingScreenState extends State<ProfileAndSettingScreen> {
                   child: ElevatedButton(
                     onPressed: () {
                       Navigator.of(context).pop();
+                      // Navigator.of(context).push(MaterialPageRoute(builder: (context)=>// go to gadget screen }));
                     },
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all(

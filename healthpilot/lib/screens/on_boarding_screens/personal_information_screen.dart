@@ -21,6 +21,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:healthpilot/screens/on_boarding_screens/subscription_and_payment_screen.dart';
+import 'package:healthpilot/screens/setup_emergency_contact/personal_information.dart';
+import 'package:healthpilot/screens/setup_personal_doctor/personal_information.dart'
+    as doctor;
+import 'package:healthpilot/screens/setup_emergency_contact/personal_information.dart'
+    as contact;
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:line_icons/line_icons.dart';
 // import '../setup_personal_doctor/personal_information.dart' as doctor;
@@ -282,6 +287,9 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                       //     builder: (context) =>
                       //         const emergency.PersonalInformation()
                       // ));
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) =>
+                              const contact.PersonalInformation()));
                     },
                   ),
                   SubscriptionCard(
@@ -308,6 +316,12 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                       //             builder: (context) =>
                       //                 const PaymentMethodScreen()));
                       //       });
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              const doctor.PersonalInformation(),
+                        ),
+                      );
                     },
                   ),
                   SubscriptionCard(
@@ -332,23 +346,28 @@ class _PersonalInformationScreenState extends State<PersonalInformationScreen> {
                       });
                     },
                   ),
-                  Container(
-                    width: 231,
-                    height: 47,
-                    margin: const EdgeInsets.only(
-                        top: 35, left: 23, bottom: 25, right: 2),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: const Color.fromRGBO(110, 182, 255, 1),
-                    ),
-                    child: const Center(
-                      child: Text(
-                        'Finish',
-                        style: TextStyle(
-                          fontFamily: "PlusJakartaSans",
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
+                  InkWell(
+                    onTap: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Container(
+                      width: 231,
+                      height: 47,
+                      margin: const EdgeInsets.only(
+                          top: 35, left: 23, bottom: 25, right: 2),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: const Color.fromRGBO(110, 182, 255, 1),
+                      ),
+                      child: const Center(
+                        child: Text(
+                          'Finish',
+                          style: TextStyle(
+                            fontFamily: "PlusJakartaSans",
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ),
