@@ -209,13 +209,11 @@ class _PhysicalTherapyScreenState extends State<PhysicalTherapyScreen> {
                       });
                     }
                     if (_currentPage == pages.length - 1) {
-<<<<<<< HEAD
                       Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) => const GetStartedScreen(),
                           ));
-=======
                       // setState(() {
                       //   _pageController.previousPage(
                       //     duration: const Duration(milliseconds: 300),
@@ -226,7 +224,6 @@ class _PhysicalTherapyScreenState extends State<PhysicalTherapyScreen> {
                       Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) => const SignupAndLoginScreen(),
                       ));
->>>>>>> c35a18fc84284442b498f48f68e35442e9b7928c
                     }
                   },
                   child: Container(

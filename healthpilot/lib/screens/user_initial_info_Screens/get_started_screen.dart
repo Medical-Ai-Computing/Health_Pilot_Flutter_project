@@ -210,9 +210,9 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
                 ),
                 child: RulerPicker(
                   controller: _rulerPickerController,
-                  beginValue: 0,
-                  endValue: 100,
-                  initValue: _rulerPickerController!.value,
+                  // beginValue: 0,
+                  // endValue: 100,
+                  // initValue: _rulerPickerController!.value,
 
                   rulerScaleTextStyle: const TextStyle(
                       fontStyle: FontStyle.normal,
@@ -236,14 +236,17 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
                         height: 10,
                         scale: -1)
                   ],
-                  onValueChange: (value) {
+                  onValueChanged: (value) {
                     setState(() {
-                      selectedAge = value;
+                      selectedAge = int.parse(value.toString());
                     });
                   },
                   width: MediaQuery.of(context).size.width * 1,
                   height: 40,
                   rulerMarginTop: 15,
+                  onBuildRulerScaleText: (int index, num rulerScaleValue) {
+                    return '';
+                  },
                 ),
               ),
               Padding(
@@ -320,9 +323,9 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
                 padding: const EdgeInsets.only(top: 10),
                 child: RulerPicker(
                   controller: _rulerPickerController,
-                  beginValue: 70,
-                  endValue: 200,
-                  initValue: _rulerPickerController!.value,
+                  // beginValue: 70,
+                  // endValue: 200,
+                  // initValue: _rulerPickerController!.value,
 
                   rulerScaleTextStyle: const TextStyle(
                       fontStyle: FontStyle.normal,
@@ -346,14 +349,17 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
                         height: 10,
                         scale: -1)
                   ],
-                  onValueChange: (value) {
+                  onValueChanged: (value) {
                     setState(() {
-                      selectedHeight = value;
+                      selectedHeight = int.parse(value.toString());
                     });
                   },
                   width: MediaQuery.of(context).size.width * 1,
                   height: 40,
                   rulerMarginTop: 15,
+                  onBuildRulerScaleText: (int index, num rulerScaleValue) {
+                    return '';
+                  },
                 ),
               ),
               Padding(
@@ -417,9 +423,9 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
                 margin: const EdgeInsets.only(top: 10),
                 child: RulerPicker(
                   controller: _rulerPickerController,
-                  beginValue: 70,
-                  endValue: 200,
-                  initValue: _rulerPickerController!.value,
+                  // beginValue: 70,
+                  // endValue: 200,
+                  // initValue: _rulerPickerController!.value,
 
                   rulerScaleTextStyle: const TextStyle(
                       fontStyle: FontStyle.normal,
@@ -443,15 +449,18 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
                         height: 10,
                         scale: -1)
                   ],
-                  onValueChange: (value) {
+                  onValueChanged: (value) {
                     setState(() {
-                      selectedHeight = value;
+                      selectedHeight = int.parse(value.toString());
                       _rulerPickerController!.addListener(() {});
                     });
                   },
                   width: MediaQuery.of(context).size.width * 1,
                   height: 40,
                   rulerMarginTop: 15,
+                  onBuildRulerScaleText: (int index, num rulerScaleValue) {
+                    return '';
+                  },
                 ),
               ),
               Padding(
