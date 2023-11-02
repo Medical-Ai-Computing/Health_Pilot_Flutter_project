@@ -2,6 +2,8 @@ import 'package:feather_icons/feather_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:healthpilot/data/constants.dart';
+import 'package:healthpilot/screens/chat_screen/widgets/custom_profile_tile.dart';
 
 class GeneralChatScreen extends StatefulWidget {
   const GeneralChatScreen({super.key});
@@ -36,9 +38,70 @@ class _GeneralChatScreenState extends State<GeneralChatScreen>
             _buildSearchBar(),
             const Expanded(
               child: TabBarView(children: [
-                Text('All'),
-                Text('People'),
-                Text('Groups'),
+                //All chats
+                Padding(
+                  padding: EdgeInsets.only(top: 24.0),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        CustomChatProfileTile(
+                            name: 'Dr. Darwin Nunez',
+                            profilePic: devsImage,
+                            chat: 'Hey, how is the medication going?'),
+                        CustomChatProfileTile(
+                            name: 'David Howard',
+                            isPro: true,
+                            unreadMessage: 3,
+                            profilePic: devsImage,
+                            chat: 'My symptoms also started a while back'),
+                      ],
+                    ),
+                  ),
+                ),
+                //People chats
+
+                Padding(
+                  padding: EdgeInsets.only(top: 24.0),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        CustomChatProfileTile(
+                            name: 'David Howard',
+                            profilePic: devsImage,
+                            chat: 'My symptoms also started a while back'),
+                        CustomChatProfileTile(
+                            name: 'David Howard',
+                            isPro: true,
+                            unreadMessage: 3,
+                            profilePic: devsImage,
+                            chat: 'My symptoms also started a while back'),
+                      ],
+                    ),
+                  ),
+                ),
+                // group chats
+                Padding(
+                  padding: EdgeInsets.only(top: 24.0),
+                  child: SingleChildScrollView(
+                    child: Column(children: [
+                      CustomChatProfileTile(
+                          name: 'Schizophrenia Support group',
+                          profilePic: devsImage,
+                          chat: 'We’ll have an in-person discussion the  '),
+                      CustomChatProfileTile(
+                          name: 'David Howard',
+                          isPro: true,
+                          unreadMessage: 2,
+                          profilePic: devsImage,
+                          chat: 'We’ll have an in-person discussion the ... '),
+                      CustomChatProfileTile(
+                          name: 'Schizophrenia Support group',
+                          unreadMessage: 50,
+                          profilePic: devsImage,
+                          chat: 'We’ll have an in-person discussion the ... '),
+                    ]),
+                  ),
+                )
               ]),
             )
           ]),
