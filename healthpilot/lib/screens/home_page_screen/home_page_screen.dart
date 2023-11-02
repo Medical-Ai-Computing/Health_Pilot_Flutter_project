@@ -6,6 +6,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:healthpilot/data/constants.dart';
+import 'package:healthpilot/screens/chat_screen/general_chat_screen.dart';
 
 import 'package:healthpilot/screens/home_page_screen/discover_healthpilot.dart';
 
@@ -368,9 +369,12 @@ class _HomePageScreenState extends State<HomePageScreen> {
       const Center(
         child: Text('Assesment'),
       ),
-      const Center(
-        child: Text('chat'),
-      ),
+      SingleChildScrollView(
+          child: SizedBox(
+              height: size.height * 0.9, child: const GeneralChatScreen())),
+      // const Center(
+      //   child: Text('chat'),
+      // ),
       SingleChildScrollView(
         child: SizedBox(
           height: size.height * 0.9,
