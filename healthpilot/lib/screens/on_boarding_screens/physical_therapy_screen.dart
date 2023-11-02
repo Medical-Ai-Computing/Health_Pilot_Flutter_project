@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:healthpilot/data/constants.dart';
 import 'package:healthpilot/screens/user_initial_info_Screens/get_started_screen.dart';
+import 'package:healthpilot/screens/on_boarding_screens/signup_and_login_screen.dart';
 import 'package:healthpilot/theme/app_theme.dart';
 
 class PhysicalTherapyScreen extends StatefulWidget {
@@ -208,11 +209,24 @@ class _PhysicalTherapyScreenState extends State<PhysicalTherapyScreen> {
                       });
                     }
                     if (_currentPage == pages.length - 1) {
+<<<<<<< HEAD
                       Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) => const GetStartedScreen(),
                           ));
+=======
+                      // setState(() {
+                      //   _pageController.previousPage(
+                      //     duration: const Duration(milliseconds: 300),
+                      //     curve: Curves.easeOut,
+                      //   );
+                      // });
+
+                      Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => const SignupAndLoginScreen(),
+                      ));
+>>>>>>> c35a18fc84284442b498f48f68e35442e9b7928c
                     }
                   },
                   child: Container(

@@ -2,6 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:healthpilot/data/constants.dart';
 import 'package:healthpilot/screens/on_boarding_screens/physical_therapy_screen.dart';
 
+import 'package:healthpilot/screens/health_section/health_profile_screen.dart';
+import 'package:healthpilot/screens/home_page_screen/home_page_screen.dart';
+
+import 'screens/on_boarding_screens/physical_therapy_screen.dart';
+
 void main() {
   runApp(const HealthPilotApp());
 }

@@ -1,0 +1,60 @@
+Index: healthpilot/lib/theme/app_theme.dart
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/healthpilot/lib/theme/app_theme.dart b/healthpilot/lib/theme/app_theme.dart
+--- a/healthpilot/lib/theme/app_theme.dart	
++++ b/healthpilot/lib/theme/app_theme.dart	
+@@ -2,13 +2,48 @@
+ 
+ class AppTheme {
+   static const TextStyle descriptionTextForSpecialistStyle = TextStyle(
+-      fontSize: 20,
++      fontSize: 24,
++      color: Color.fromRGBO(42, 42, 42, 1),
++      fontFamily: 'Plus Jakarta Sans',
++      fontWeight: FontWeight.w600);
++  static const TextStyle descriptionNormalTextForSpecialistStyle = TextStyle(
++      fontSize: 18,
+       color: Color.fromRGBO(42, 42, 42, 1),
+       fontFamily: 'Plus Jakarta Sans',
+       fontWeight: FontWeight.w600);
+   static const TextStyle helperTextForUserStyle = TextStyle(
++      fontSize: 20,
++      color: Color.fromRGBO(42, 42, 42, 0.5),
++      fontFamily: 'Plus Jakarta Sans',
++      fontWeight: FontWeight.w400);
++
++  static const TextStyle normalTextForUserStyle = TextStyle(
++      fontSize: 18,
++      color: Colors.black,
++      fontFamily: 'Plus Jakarta Sans',
++      fontWeight: FontWeight.w500);
++
++  static const TextStyle simplenormalTextForUserStyle = TextStyle(
+       fontSize: 14,
++      color: Colors.grey,
++      fontFamily: 'Plus Jakarta Sans',
++      fontWeight: FontWeight.w500);
++
++  static const TextStyle simpleblueTextForUserStyle = TextStyle(
++      fontSize: 14,
++      color: Colors.blue,
++      fontFamily: 'Plus Jakarta Sans',
++      fontWeight: FontWeight.w500);
++
++  static const TextStyle blueTextForUserStyle = TextStyle(
++      fontSize: 18,
++      color: Colors.blue,
++      fontFamily: 'Plus Jakarta Sans',
++      fontWeight: FontWeight.w500);
++
++  static const TextStyle orTextForUserStyle = TextStyle(
++      fontSize: 18,
+       color: Color.fromRGBO(42, 42, 42, 0.5),
+       fontFamily: 'Plus Jakarta Sans',
+       fontWeight: FontWeight.w400);
+-}
++}
+\ No newline at end of file
