@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:healthpilot/data/contants.dart';
+import 'package:healthpilot/data/constants.dart';
 import 'package:healthpilot/screens/home_page_screen/home_page_screen.dart';
 
 class InitialInfoFinal extends StatefulWidget {

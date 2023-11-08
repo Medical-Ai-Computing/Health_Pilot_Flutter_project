@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:healthpilot/data/constants.dart';
 
 import 'package:healthpilot/theme/app_theme.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
-
-import '../../data/contants.dart';
 
 class SetupPersonalDoctor extends StatefulWidget {
   final Function() add;
@@ -38,7 +37,7 @@ class _SetupPersonalDoctorState extends State<SetupPersonalDoctor> {
           maxLines: 2,
         ),
         actions: [
-          SvgPicture.asset(transalteIcon),
+          SvgPicture.asset(translateIcon),
           const SizedBox(
             width: 30,
           )

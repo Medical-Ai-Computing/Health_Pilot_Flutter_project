@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:healthpilot/data/constants.dart';
 import 'package:healthpilot/screens/home_page_screen/home_page_screen.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 
-import '../../data/contants.dart';
 import '../../theme/app_theme.dart';
 
 class SetupEmergencyContact extends StatelessWidget {
@@ -35,7 +35,7 @@ class SetupEmergencyContact extends StatelessWidget {
           ),
         ),
         actions: [
-          SvgPicture.asset(transalteIcon),
+          SvgPicture.asset(translateIcon),
           const SizedBox(
             width: 30,
           )

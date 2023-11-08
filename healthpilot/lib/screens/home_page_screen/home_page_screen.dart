@@ -5,12 +5,12 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:healthpilot/screens/article_screen/article_screen.dart';
+import 'package:healthpilot/data/constants.dart';
+import 'package:healthpilot/screens/chat_screen/general_chat_screen.dart';
 
 import 'package:healthpilot/screens/home_page_screen/discover_healthpilot.dart';
 
 import 'package:healthpilot/screens/health_section/health_profile_screen.dart';
-import 'package:healthpilot/screens/health_section/health_tracking_screen.dart';
 
 import 'package:healthpilot/screens/on_boarding_screens/language_translation.dart';
 import 'package:line_icons/line_icons.dart';
@@ -20,7 +20,7 @@ import '/screens/home_page_screen/overview_card.dart';
 import 'package:healthpilot/theme/app_theme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../data/contants.dart';
+// import '../../data/contants.dart';
 import 'ad_widget.dart';
 import 'blog_reccomendation._card.dart';
 
@@ -195,8 +195,6 @@ class _HomePageScreenState extends State<HomePageScreen> {
     super.didChangeDependencies();
   }
 
-
-
   @override
   void dispose() {
     ScaffoldMessenger.of(context).removeCurrentSnackBar();
@@ -254,7 +252,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
                             Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) => const LanguageTranslation(),
                             )),
-                        child: SvgPicture.asset(transalteIcon)),
+                        child: SvgPicture.asset(translateIcon)),
                     InkWell(
                       splashColor: const Color.fromARGB(100, 0, 0, 0),
                       onTap: () => cancelEmergencyCall(),
@@ -371,9 +369,12 @@ class _HomePageScreenState extends State<HomePageScreen> {
       const Center(
         child: Text('Assesment'),
       ),
-      const Center(
-        child: Text('chat'),
-      ),
+      SingleChildScrollView(
+          child: SizedBox(
+              height: size.height * 0.9, child: const GeneralChatScreen())),
+      // const Center(
+      //   child: Text('chat'),
+      // ),
       SingleChildScrollView(
         child: SizedBox(
           height: size.height * 0.9,
