@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:healthpilot/screens/home_page_screen/home_page_screen.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 
 import '../../data/contants.dart';
@@ -189,7 +190,9 @@ class SetupEmergencyContact extends StatelessWidget {
                   height: size.height * 0.28,
                 ),
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
                   style: ElevatedButton.styleFrom(
                       backgroundColor: const Color.fromRGBO(110, 182, 255, 1),
                       foregroundColor: Colors.white,

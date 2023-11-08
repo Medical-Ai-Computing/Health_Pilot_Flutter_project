@@ -278,10 +278,14 @@ class _SignupAndLoginScreenState extends State<SignupAndLoginScreen> {
                 SizedBox(
                   height: screenHeight * 0.012,
                 ),
-                const BottomActionTexts(
+                BottomActionTexts(
                   normalTexts: "Wanna give it a try? ",
                   commandTexts: "Skip",
-                  login: null,
+                  login: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) =>
+                            HomePageScreen(isHelpPressed: false)));
+                  },
                   fontSize: 15,
                 ),
                 Padding(

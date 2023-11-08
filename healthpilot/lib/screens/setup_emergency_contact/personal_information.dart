@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:healthpilot/screens/home_page_screen/home_page_screen.dart';
 import 'package:healthpilot/screens/setup_emergency_contact/setup_emergency_contact.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:line_icons/line_icons.dart';
@@ -546,7 +547,14 @@ class _PersonalInformationState extends State<PersonalInformation> {
                       height: size.height * 0.07,
                     ),
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                HomePageScreen(isHelpPressed: false),
+                          ),
+                        );
+                      },
                       style: ElevatedButton.styleFrom(
                           backgroundColor:
                               const Color.fromRGBO(110, 182, 255, 1),
