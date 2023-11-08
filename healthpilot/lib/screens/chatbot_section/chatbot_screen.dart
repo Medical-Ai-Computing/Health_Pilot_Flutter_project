@@ -1,6 +1,8 @@
 import 'package:bubble/bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:healthpilot/screens/chatbot_section/widgets/chat_bubble.dart';
+import 'package:healthpilot/screens/chatbot_section/widgets/question_bubble.dart';
 import 'package:line_icons/line_icons.dart';
 
 class ChatbotScreen extends StatefulWidget {
@@ -133,122 +135,19 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
                   children: [
                     Row(
                       children: [
-                        Expanded(
-                          child: Container(
-                                              padding: EdgeInsets.symmetric(vertical: 14, horizontal: 10),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5),
-                                gradient: LinearGradient(
-                              colors: [
-                                Color.fromRGBO(110, 182, 255, 0.30),
-                                Color.fromRGBO(110, 182, 255, 0.26),
-                                Color.fromRGBO(110, 182, 255, 0.08),
-                              ],
-                              stops: [
-                                0.17,
-                                0.75,
-                                1
-                              ]
-                            )),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text('What causes high BP', style: GoogleFonts.manrope(fontSize: 12, fontWeight: FontWeight.w600,),),
-                                Text('for people aged 25-30 eating low carbs usually', style: GoogleFonts.manrope(fontSize: 10, fontWeight: FontWeight.w400,),),
-                              ],
-                            ),
-                          ),
+                        Expanded(child: QuestionBubble(title: 'What causes high BP', body: 'for people aged 25-30 eating low carbs usually')),
+                        SizedBox(
+                          width: 12,
                         ),
-                        SizedBox(width: 12,),
                         Expanded(
-                          child: Container(
-                                              padding: EdgeInsets.symmetric(vertical: 14, horizontal: 10),
-                                              child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                Text('Tell me the sypmtoms', style: GoogleFonts.manrope(fontSize: 12, fontWeight: FontWeight.w600,),),
-                                Text('of malaria in children aged from 2-6', style: GoogleFonts.manrope(fontSize: 10, fontWeight: FontWeight.w400,),),
-                                                ],
-                                              ),
-                                              decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5),
-                            gradient: LinearGradient(
-                          colors: [
-                            Color.fromRGBO(110, 182, 255, 0.30),
-                            Color.fromRGBO(110, 182, 255, 0.26),
-                            Color.fromRGBO(110, 182, 255, 0.08),
-                          ],
-                          stops: [
-                            0.17,
-                            0.75,
-                            1
-                          ]
-                                              )),
-                                            ),
+                          child: QuestionBubble(title: 'Tell me the sypmtoms', body: 'of malaria in children aged from 2-6'),
                         ),
                       ],
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 36),
-                      child: Bubble(
-                        radius: Radius.circular(5),
-                        nip: BubbleNip.leftBottom,
-                        margin: BubbleEdges.all(0),
-                        padding: BubbleEdges.all(0),
-                        showNip: true,
-                        color: Color.fromRGBO(110, 182, 255, 0.30),
-                        shadowColor: Colors.transparent,
-                        child: Stack(
-                          children: [
-                            Container(
-                      padding: EdgeInsets.symmetric(vertical: 14, horizontal: 10),
-                              decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5),
-                                color: Colors.white,
-                              ),
-                              child: Column(
-                                children: [
-                                  Text('Hey there 👋, am always here to answer your questions. Write your personal questions or choose from the prompts', style: GoogleFonts.plusJakartaSans(color: Colors.transparent,fontSize: 12, fontWeight: FontWeight.w400),),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      Text('8:14',style: GoogleFonts.plusJakartaSans(fontSize: 8, fontWeight: FontWeight.w400),),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Container(
-                      padding: EdgeInsets.symmetric(vertical: 14, horizontal: 10),
-                              decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5),
-                                gradient: LinearGradient(
-                              colors: [
-                                Color.fromRGBO(110, 182, 255, 0.30),
-                                Color.fromRGBO(110, 182, 255, 0.26),
-                                Color.fromRGBO(110, 182, 255, 0.08),
-                              ],
-                              stops: [
-                                0.17,
-                                0.75,
-                                1
-                              ]
-                            )),
-                              child: Column(
-                                children: [
-                                  Text('Hey there 👋, am always here to answer your questions. Write your personal questions or choose from the prompts', style: GoogleFonts.plusJakartaSans(fontSize: 12, fontWeight: FontWeight.w400),),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      Text('8:14 am', style: GoogleFonts.plusJakartaSans(fontSize: 8, fontWeight: FontWeight.w400),),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                    ChatBubble(
+                      body:
+                          'Hey there 👋, am always here to answer your questions. Write your personal questions or choose from the prompts',
+                      time: '8:14',
                     ),
                   ],
                 ),
