@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:healthpilot/data/contants.dart';
-import 'package:healthpilot/screens/on_boarding_screens/signup_and_login_screen.dart';
-import 'package:healthpilot/theme/app_theme.dart';
+import '../../data/contants.dart';
+import '../../screens/on_boarding_screens/signup_and_login_screen.dart';
+import '../../theme/app_theme.dart';
 
 class PhysicalTherapyScreen extends StatefulWidget {
   const PhysicalTherapyScreen({super.key});
