@@ -32,7 +32,7 @@ dependencies:
     sdk: flutter
   flutter_svg: ^2.0.7
   line_icons: ^2.0.3
-  font_awesome_flutter: ^10.5.0
+  font_awesome_flutter: ^10.6.0
   smooth_page_indicator: ^1.1.0
   intl_phone_number_input: ^0.7.3+1
   dropdown_textfield: ^1.0.8
@@ -51,6 +51,8 @@ dependencies:
   flutter_markdown: ^0.6.17+2
   readmore: ^2.2.0
   get: ^4.6.5
+  flutter_screenutil: ^5.9.0
+  feather_icons: ^1.2.0
  
 
 dev_dependencies:

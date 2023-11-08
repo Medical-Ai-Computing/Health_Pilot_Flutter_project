@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_ruler_picker/flutter_ruler_picker.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:healthpilot/data/contants.dart';
+import 'package:healthpilot/data/constants.dart';
 import 'package:healthpilot/screens/personal_info/initial_info_2.dart';
 
 import '../../theme/app_theme.dart';
@@ -63,7 +63,7 @@ class _InitialInfoFirstState extends State<InitialInfoFirst> {
             maxLines: 2,
           ),
           actions: [
-            SvgPicture.asset(transalteIcon),
+            SvgPicture.asset(translateIcon),
             SizedBox(
               width: size.width * 0.06,
             )
