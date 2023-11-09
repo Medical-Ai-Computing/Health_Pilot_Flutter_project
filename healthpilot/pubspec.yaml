@@ -32,12 +32,16 @@ dependencies:
     sdk: flutter
   flutter_svg: ^2.0.7
   line_icons: ^2.0.3
-  font_awesome_flutter: ^10.5.0
+  font_awesome_flutter: ^10.6.0
   smooth_page_indicator: ^1.1.0
   intl_phone_number_input: ^0.7.3+1
   dropdown_textfield: ^1.0.8
+
+  shared_preferences: ^2.2.1
+  step_progress_indicator: ^1.0.2
   rulers: ^1.0.7
-  flutter_ruler_picker: ^1.0.3
+  flutter_ruler_picker: ^1.0.6
+
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -47,9 +51,9 @@ dependencies:
   flutter_markdown: ^0.6.17+2
   readmore: ^2.2.0
   get: ^4.6.5
-  gap: ^3.0.1
+  flutter_screenutil: ^5.9.0
+  feather_icons: ^1.2.0
  
-
 
 dev_dependencies:
   flutter_test:
@@ -76,7 +80,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/
-    
+    - assets/icons/
     - assets/Icons/
     - assets/PrivacyPolicy/
 
