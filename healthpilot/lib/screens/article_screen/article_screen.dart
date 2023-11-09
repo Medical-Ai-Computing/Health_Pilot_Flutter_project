@@ -130,9 +130,11 @@ class ArticleScreen extends StatelessWidget {
           );
         },
       )),
+      resizeToAvoidBottomInset: false,
     );
   }
 }
+
 // Data structure of an article
 class ArticleModel {
   final String title;
@@ -142,9 +144,6 @@ class ArticleModel {
   ArticleModel(
       {required this.title, required this.detil, required this.imageurl});
 }
-
-
-
 
 // thsi  is the article card widget  for all comments to have  one card for each
 class ArticleCard extends StatelessWidget {
@@ -380,7 +379,6 @@ class ArticleCard extends StatelessWidget {
     );
   }
 }
-
 
 // This is an input field which is used for inderting a comment
 class CommentInputField extends StatefulWidget {
