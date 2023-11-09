@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:healthpilot/data/constants.dart';
 import 'package:healthpilot/screens/home_page_screen/home_page_screen.dart';
 
 import 'package:healthpilot/theme/app_theme.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:line_icons/line_icons.dart';
 
-import '../../data/contants.dart';
 import 'setup_personal_doctor.dart';
 
 class PersonalInformation extends StatefulWidget {
@@ -52,7 +52,7 @@ class _PersonalInformationState extends State<PersonalInformation> {
           maxLines: 2,
         ),
         actions: [
-          SvgPicture.asset(transalteIcon),
+          SvgPicture.asset(translateIcon),
           const SizedBox(
             width: 30,
           )
@@ -78,7 +78,7 @@ class _PersonalInformationState extends State<PersonalInformation> {
                               BorderRadius.circular(size.height * 0.08),
                           child: Image.asset(
                             height: size.width * 0.25,
-                            personPicForprofile,
+                            personPicForProfile,
                             fit: BoxFit.cover,
                           ),
                         ),

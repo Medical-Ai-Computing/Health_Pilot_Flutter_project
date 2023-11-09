@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:healthpilot/data/constants.dart';
 import 'package:line_icons/line_icons.dart';
 
-import '../../data/contants.dart';
 import '../../theme/app_theme.dart';
 
 class DiscoverHealthpilot extends StatelessWidget {

@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
-import 'data/contants.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:healthpilot/data/constants.dart';
+import 'package:healthpilot/screens/on_boarding_screens/physical_therapy_screen.dart';
+
+import 'package:healthpilot/screens/health_section/health_profile_screen.dart';
+import 'package:healthpilot/screens/home_page_screen/home_page_screen.dart';
+
 import 'screens/on_boarding_screens/physical_therapy_screen.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const HealthPilotApp());
 }
 
@@ -11,6 +18,21 @@ class HealthPilotApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return ScreenUtilInit(
+        designSize: const Size(411, 852),
+        minTextAdapt: true,
+        splitScreenMode: true,
+        builder: (context, child) {
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            title: 'Health Pilot',
+            theme: ThemeData(
+              primarySwatch: Colors.blue,
+              fontFamily: 'Roboto', // Example font family
+            ),
+            home: const WelcomeScreen(),
+          );
+        });
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Health Pilot',
@@ -18,7 +40,7 @@ class HealthPilotApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         fontFamily: 'Roboto', // Example font family
       ),
-      home: const WelcomeScreen(),
+      home: const WelcomeScreen(), // commented before
     );
   }
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:healthpilot/data/contants.dart';
+import 'package:healthpilot/data/constants.dart';
 import 'package:healthpilot/screens/personal_info/initial_info_4.dart';
 
 import '../../theme/app_theme.dart';
@@ -104,7 +104,7 @@ class _InitialInfoThird extends State<InitialInfoThird> {
                 maxLines: 2,
               ),
               actions: [
-                SvgPicture.asset(transalteIcon),
+                SvgPicture.asset(translateIcon),
                 const SizedBox(
                   width: 30,
                 )

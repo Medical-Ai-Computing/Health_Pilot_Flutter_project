@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import '../../data/contants.dart';
-import '../../screens/on_boarding_screens/signup_and_login_screen.dart';
-import '../../theme/app_theme.dart';
+import 'package:healthpilot/data/constants.dart';
+import 'package:healthpilot/screens/user_initial_info_Screens/get_started_screen.dart';
+import 'package:healthpilot/screens/on_boarding_screens/signup_and_login_screen.dart';
+import 'package:healthpilot/theme/app_theme.dart';
 
 class PhysicalTherapyScreen extends StatefulWidget {
   const PhysicalTherapyScreen({super.key});
@@ -208,6 +209,11 @@ class _PhysicalTherapyScreenState extends State<PhysicalTherapyScreen> {
                       });
                     }
                     if (_currentPage == pages.length - 1) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const GetStartedScreen(),
+                          ));
                       // setState(() {
                       //   _pageController.previousPage(
                       //     duration: const Duration(milliseconds: 300),

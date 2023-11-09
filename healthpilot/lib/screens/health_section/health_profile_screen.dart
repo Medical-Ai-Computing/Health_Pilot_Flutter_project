@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:healthpilot/data/contants.dart';
+import 'package:healthpilot/data/constants.dart';
 import 'package:healthpilot/screens/health_section/health_tracking_screen.dart';
 
 import 'symptom_tracking_screen.dart';
@@ -101,7 +101,7 @@ class _HealthProfileState extends State<HealthProfile> {
                             // Navigator.of(context).push(MaterialPageRoute(
                             //   // builder: (context) => const LanguageTranslation(),
                             // )),
-                            child: SvgPicture.asset(transalteIcon)),
+                            child: SvgPicture.asset(translateIcon)),
                         InkWell(
                           splashColor: const Color.fromARGB(100, 0, 0, 0),
                           onTap: () {},
