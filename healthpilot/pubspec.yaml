@@ -47,6 +47,7 @@ dependencies:
   flutter_markdown: ^0.6.17+2
   readmore: ^2.2.0
   get: ^4.6.5
+  gap: ^3.0.1
  
 
 
