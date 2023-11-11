@@ -48,25 +48,8 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        /*AppBar(
-          automaticallyImplyLeading: true,
-          elevation: 0,
-          centerTitle: false,
-          backgroundColor: Colors.transparent,
-          title: CustomAppBarTitle(
-            title: letsStartAppBarTitle,
-            leadingIcon: Icons.arrow_back_rounded,
-            suffixIconImage: appBarTitleImage,
-            onPressed: () {},
-          ),
-        )*/
-        // appBar: CustomAppBar(
-        //     onPressed: () {},
-        //     suffixIconImage: appBarTitleImage,
-        //     title: letsStartAppBarTitle,
-        //     leadingIcon: Icons.arrow_back_rounded),
         appBar: PreferredSize(
-          preferredSize: Size(50, 60),
+          preferredSize: const Size(50, 60),
           child: CustomAppBar(
               onPressed: () {},
               suffixIconImage: appBarTitleImage,
