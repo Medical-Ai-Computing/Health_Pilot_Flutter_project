@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:healthpilot/data/constants.dart';
+import 'package:healthpilot/screens/chat_screen/similar_people_screen.dart';
 import 'package:healthpilot/screens/chat_screen/widgets/custom_update_button.dart';
 import 'package:healthpilot/widget/custom_app_bar_title.dart';
 
@@ -16,12 +17,12 @@ class PublicProfileScree extends StatelessWidget {
             child: CustomAppBar(
                 title: 'Public Profile',
                 leadingIcon: Icons.arrow_back_outlined)),
-        body: _buildBody(),
+        body: _buildBody(context),
       ),
     );
   }
 
-  Widget _buildBody() {
+  Widget _buildBody(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 34),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -40,7 +41,14 @@ class PublicProfileScree extends StatelessWidget {
         ),
         Align(
             child: CustomUpdateButton(
-                onPressed: () {}, title: 'Update Public Profile'))
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const SimilarPeopleScreen(),
+                      ));
+                },
+                title: 'Update Public Profile'))
       ]),
     );
   }

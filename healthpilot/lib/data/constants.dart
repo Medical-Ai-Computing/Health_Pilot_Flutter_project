@@ -57,3 +57,5 @@ const String initialInfoFinalTextDescription =
 const String initialInfoFinalTextTitle = 'Welcome aboard';
 const String publicProfileAboutMe =
     'Lorem ipsum dolor sit amet consectetur. Augue ut facilisis netus tortor urna. Semper suscipit sed lacus egestas bibendum aliquet nunc. Lacus iaculis duis sit mauris in diam sed aenean tellus. Blandit lobortis commodo auctor purus.Lorem ipsum dolor sit amet consectetur. Augue ut facilisis netus tortor urna. Semper suscipit sed lacus egestas bibendum aliquet nunc. Lacus iaculis duis sit mauris in diam sed aenean tellus. Blandit lobortis commodo auctor purus.Lorem ipsum dolor sit amet consectetur. Augue ut facilisis netus tortor urna. Semper suscipit sed lacus egestas bibendum aliquet nunc. Lacus iaculis duis sit mauris in diam sed aenean tellus. Blandit lobortis commodo auctor purus.';
+const String similarPeopleAbout =
+    'I am Amanda Haller, I am a 28 year old Barista  living in  Dublin, Ireland.  I was diagnosed with Schizophrenia at the age of 21. Living gracefully and peacefully. Ready to share your experience?';
