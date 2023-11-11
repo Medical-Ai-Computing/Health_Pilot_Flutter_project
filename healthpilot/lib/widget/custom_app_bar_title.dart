@@ -1,61 +1,48 @@
 import 'package:flutter/material.dart';
 
-class CustomAppBarTitle extends StatefulWidget {
+class CustomAppBar extends StatelessWidget {
+  final VoidCallback onPressed;
+  final String suffixIconImage;
   final String title;
   final IconData leadingIcon;
-  final String suffixIconImage;
-  final Function() onPressed;
-  const CustomAppBarTitle(
+  const CustomAppBar(
       {super.key,
-      required this.title,
-      required this.leadingIcon,
+      required this.onPressed,
       required this.suffixIconImage,
-      required this.onPressed});
+      required this.title,
+      required this.leadingIcon});
 
-  @override
-  State<CustomAppBarTitle> createState() => _CustomAppBarTitleState();
-}
-
-class _CustomAppBarTitleState extends State<CustomAppBarTitle> {
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Container(
-          width: size.width * 0.097,
-          height: size.height * 0.047,
-          decoration: const BoxDecoration(
-            shape: BoxShape.circle,
-            color: Color.fromRGBO(110, 182, 255, 0.25),
-          ),
+    return AppBar(
+      elevation: 0,
+      backgroundColor: Colors.white,
+      leading: Padding(
+        padding: const EdgeInsets.only(left: 10.0),
+        child: CircleAvatar(
+          maxRadius: 10,
+          backgroundColor: const Color.fromRGBO(110, 182, 255, 0.25),
           child: InkWell(
             child: Icon(
-              widget.leadingIcon,
+              leadingIcon,
               color: const Color.fromRGBO(110, 182, 255, 1),
             ),
             onTap: () => Navigator.pop(context),
           ),
         ),
-        SizedBox(
-          width: MediaQuery.of(context).size.width * 0.031,
-        ),
-        Text(
-          widget.title,
+      ),
+      title: Text(title,
           style: const TextStyle(
             fontFamily: 'Plus Jakarta Sans',
             fontWeight: FontWeight.w600,
             fontSize: 22,
             color: Color.fromRGBO(42, 42, 42, 1),
-          ),
-        ),
-        const Spacer(),
+          )),
+      actions: [
         GestureDetector(
-          onTap: widget.onPressed,
+          onTap: onPressed,
           child: Image(
-            image: AssetImage(widget.suffixIconImage),
+            image: AssetImage(suffixIconImage),
           ),
         ),
       ],

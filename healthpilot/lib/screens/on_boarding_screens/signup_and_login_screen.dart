@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:healthpilot/screens/home_page_screen/home_page_screen.dart';
 import 'package:healthpilot/screens/on_boarding_screens/terms_dialogBox.dart';
+import 'package:healthpilot/screens/user_initial_info_Screens/get_started_screen.dart';
 
 import '../personal_info/initial_info_1.dart';
 
@@ -193,7 +194,7 @@ class _SignupAndLoginScreenState extends State<SignupAndLoginScreen> {
                                 Navigator.of(context).push(
                                   MaterialPageRoute(
                                     builder: (context) =>
-                                        const InitialInfoFirst(),
+                                        const GetStartedScreen(),
                                   ),
                                 );
                               }
@@ -1073,7 +1074,8 @@ class IconContainor extends StatelessWidget {
           color: Colors.white,
           borderRadius: BorderRadius.circular(10),
           border: Border.all(color: const Color.fromRGBO(221, 218, 218, 1))),
-      child: Image.asset('assets/Icons/Google1.png'),
+      child: Image.asset(
+          'assets/Icons/google.png'), //D:\Coding\healthApp\Flutter_project\healthpilot\assets\Icons\Google1.png
     );
   }
 }
