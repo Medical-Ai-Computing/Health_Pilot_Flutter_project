@@ -5,6 +5,7 @@ import 'package:healthpilot/data/constants.dart';
 import '../../theme/app_theme.dart';
 import 'health_profile_screen.dart';
 
+// ignore: must_be_immutable
 class SymptomTrackingScreen extends StatefulWidget {
   late List<String> diseaseSymptoms;
   SymptomTrackingScreen({super.key, required this.diseaseSymptoms});
