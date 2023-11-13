@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_ruler_picker/flutter_ruler_picker.dart';
+import '../personal_info/initial_info_2.dart';
 import '/widget/custom_app_bar_title.dart';
 
 import '../../data/constants.dart';
@@ -28,7 +29,7 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
 
   List<RulerRange> rulerRanges = const [
     RulerRange(begin: 0, end: 10, scale: 0.1),
-    RulerRange(begin: 11, end: 100, scale: 1),
+    RulerRange(begin: 10, end: 100, scale: 1),
     RulerRange(begin: 100, end: 1000, scale: 10),
     RulerRange(begin: 1000, end: 10000, scale: 100),
     RulerRange(begin: 10000, end: 100000, scale: 1000)
@@ -490,11 +491,11 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
                     const EdgeInsets.symmetric(vertical: 40.0, horizontal: 80),
                 child: GestureDetector(
                   onTap: () {
-                    // Navigator.push(
-                    //     context,
-                    //     MaterialPageRoute(
-                    //       builder: (context) => const AllMostTheirScreen(),
-                    //     ));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const InitialInfoSecond(),
+                        ));
                   },
                   child: Container(
                     alignment: Alignment.center,
