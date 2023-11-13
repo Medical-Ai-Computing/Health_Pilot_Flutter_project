@@ -26,6 +26,13 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
   String selectedHeightUnit = 'cm';
   String selectedWeightUnit = 'kg';
 
+  List<RulerRange> rulerRanges = const [
+    RulerRange(begin: 0, end: 10, scale: 0.1),
+    RulerRange(begin: 11, end: 100, scale: 1),
+    RulerRange(begin: 100, end: 1000, scale: 10),
+    RulerRange(begin: 1000, end: 10000, scale: 100),
+    RulerRange(begin: 10000, end: 100000, scale: 1000)
+  ];
   List<String> heightUnits = [
     'cm',
     'in',
@@ -217,13 +224,7 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
                   // beginValue: 0,
                   // endValue: 100,
                   // initValue: _rulerPickerController!.value,
-                  ranges: const [
-                    RulerRange(begin: 0, end: 10, scale: 0.1),
-                    RulerRange(begin: 11, end: 100, scale: 1),
-                    RulerRange(begin: 100, end: 1000, scale: 10),
-                    RulerRange(begin: 1000, end: 10000, scale: 100),
-                    RulerRange(begin: 10000, end: 100000, scale: 1000)
-                  ],
+                  ranges: rulerRanges,
                   rulerScaleTextStyle: const TextStyle(
                       fontStyle: FontStyle.normal,
                       color: Color.fromRGBO(42, 42, 42, 1),
@@ -342,13 +343,7 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
                   // beginValue: 70,
                   // endValue: 200,
                   // initValue: _rulerPickerController!.value,
-                  ranges: const [
-                    RulerRange(begin: 0, end: 10, scale: 0.1),
-                    RulerRange(begin: 11, end: 100, scale: 1),
-                    RulerRange(begin: 100, end: 1000, scale: 10),
-                    RulerRange(begin: 1000, end: 10000, scale: 100),
-                    RulerRange(begin: 10000, end: 100000, scale: 1000)
-                  ],
+                  ranges: rulerRanges,
                   rulerScaleTextStyle: const TextStyle(
                       fontStyle: FontStyle.normal,
                       color: Color.fromRGBO(42, 42, 42, 1),
@@ -450,13 +445,7 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
                   // beginValue: 70,
                   // endValue: 200,
                   // initValue: _rulerPickerController!.value,
-                  ranges: const [
-                    RulerRange(begin: 0, end: 10, scale: 0.1),
-                    RulerRange(begin: 11, end: 100, scale: 1),
-                    RulerRange(begin: 100, end: 1000, scale: 10),
-                    RulerRange(begin: 1000, end: 10000, scale: 100),
-                    RulerRange(begin: 10000, end: 100000, scale: 1000)
-                  ],
+                  ranges: rulerRanges,
                   rulerScaleTextStyle: const TextStyle(
                       fontStyle: FontStyle.normal,
                       color: Color.fromRGBO(42, 42, 42, 1),
