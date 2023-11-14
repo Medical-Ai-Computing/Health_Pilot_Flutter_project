@@ -81,6 +81,7 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
+    - assets/Icons/
     - assets/PrivacyPolicy/
 
   #   - images/a_dot_ham.jpeg
