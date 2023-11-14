@@ -15,6 +15,7 @@ import 'package:healthpilot/screens/health_section/health_profile_screen.dart';
 import 'package:healthpilot/screens/on_boarding_screens/language_translation.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import '../chatbot_section/chatbot_screen.dart';
 import '../on_boarding_screens/profile_and_setting_screen.dart';
 import '/screens/home_page_screen/overview_card.dart';
 import 'package:healthpilot/theme/app_theme.dart';
@@ -454,7 +455,10 @@ class _HomePageScreenState extends State<HomePageScreen> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30.0),
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => ChatbotScreen()));
+                    },
                     backgroundColor: AppTheme
                         .buttonStyleForFloatingActionBtn.backgroundColor,
                     foregroundColor: AppTheme

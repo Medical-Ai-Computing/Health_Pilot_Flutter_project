@@ -3,7 +3,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
-import 'package:readmore/readmore.dart';
 import 'article_screen.dart';
 
 import 'article_detail_screen.dart';
@@ -377,25 +376,25 @@ class _CommentCardState extends State<CommentCard> {
                     horizontal: widget.screenWidth * 0.029),
 
                 // This readmore widget is used to render the detal of the  comment and have a feature to extend whe the show more button is pressed
-                child: ReadMoreText(
-                  widget.post,
-                  trimLines: 2,
-                  colorClickableText: Colors.blue,
-                  trimMode: TrimMode.Line,
-                  trimCollapsedText: 'Show more',
-                  trimExpandedText: 'Show less',
-                  moreStyle: const TextStyle(fontSize: 10, color: Colors.blue),
-                  lessStyle: const TextStyle(fontSize: 10, color: Colors.blue),
-                  textAlign: TextAlign.justify,
-                  style: const TextStyle(
-                    fontSize: 10,
-                    color: Colors.black,
-                    fontFamily: 'Plus Jakarta Sans',
-                    fontWeight: FontWeight.w400,
-                    height: 13 / 10,
-                    letterSpacing: 0,
-                  ),
-                ),
+                // child: ReadMoreText(
+                //   widget.post,
+                //   trimLines: 2,
+                //   colorClickableText: Colors.blue,
+                //   trimMode: TrimMode.Line,
+                //   trimCollapsedText: 'Show more',
+                //   trimExpandedText: 'Show less',
+                //   moreStyle: const TextStyle(fontSize: 10, color: Colors.blue),
+                //   lessStyle: const TextStyle(fontSize: 10, color: Colors.blue),
+                //   textAlign: TextAlign.justify,
+                //   style: const TextStyle(
+                //     fontSize: 10,
+                //     color: Colors.black,
+                //     fontFamily: 'Plus Jakarta Sans',
+                //     fontWeight: FontWeight.w400,
+                //     height: 13 / 10,
+                //     letterSpacing: 0,
+                //   ),
+                // ),
               ),
               SizedBox(
                 height: widget.screenHeight * 0.01,
@@ -550,25 +549,25 @@ class _ReplyCardState extends State<ReplyCard> {
               Padding(
                 padding: EdgeInsets.symmetric(
                     horizontal: widget.screenWidth * 0.029),
-                child: ReadMoreText(
-                  widget.reply,
-                  trimLines: 1,
-                  colorClickableText: Colors.blue,
-                  trimMode: TrimMode.Line,
-                  trimCollapsedText: 'Show more',
-                  trimExpandedText: 'Show less',
-                  moreStyle: const TextStyle(fontSize: 10, color: Colors.blue),
-                  lessStyle: const TextStyle(fontSize: 10, color: Colors.blue),
-                  textAlign: TextAlign.justify,
-                  style: const TextStyle(
-                    fontSize: 10,
-                    color: Colors.black,
-                    fontFamily: 'Plus Jakarta Sans',
-                    fontWeight: FontWeight.w400,
-                    height: 13 / 10,
-                    letterSpacing: 0,
-                  ),
-                ),
+                // child: ReadMoreText(
+                //   widget.reply,
+                //   trimLines: 1,
+                //   colorClickableText: Colors.blue,
+                //   trimMode: TrimMode.Line,
+                //   trimCollapsedText: 'Show more',
+                //   trimExpandedText: 'Show less',
+                //   moreStyle: const TextStyle(fontSize: 10, color: Colors.blue),
+                //   lessStyle: const TextStyle(fontSize: 10, color: Colors.blue),
+                //   textAlign: TextAlign.justify,
+                //   style: const TextStyle(
+                //     fontSize: 10,
+                //     color: Colors.black,
+                //     fontFamily: 'Plus Jakarta Sans',
+                //     fontWeight: FontWeight.w400,
+                //     height: 13 / 10,
+                //     letterSpacing: 0,
+                //   ),
+                // ),
               ),
               SizedBox(
                 height: widget.screenHeight * 0.01,
