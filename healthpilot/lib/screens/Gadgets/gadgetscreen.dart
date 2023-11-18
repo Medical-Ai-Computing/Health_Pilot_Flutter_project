@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
+// import 'package:gap/gap.dart';
 import 'package:healthpilot/screens/Gadgets/addgadgetScreen.dart';
 
 class GadgetScreen extends StatelessWidget {
@@ -13,16 +13,16 @@ class GadgetScreen extends StatelessWidget {
           child: Column(
         children: [
           CustomAppBar(screenWidth: size.width, screenHeight: size.height),
-          Gap(size.width * 0.2),
+          // Gap(size.width * 0.2),
           WatchImage(screenWidth: size.width, screenHeight: size.height),
-          Gap(size.width * 0.05),
+          // Gap(size.width * 0.05),
           const Text1(),
-          Gap(size.width * 0.05),
+          // Gap(size.width * 0.05),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: size.width * 0.1),
             child: const Text2(),
           ),
-          Gap(size.width * 0.3),
+          // Gap(size.width * 0.3),
           Button(
             screenWidth: size.width,
             screenHeight: size.height,
@@ -40,6 +40,8 @@ class GadgetScreen extends StatelessWidget {
     );
   }
 }
+
+class Gap {}
 
 class CustomAppBar extends StatelessWidget {
   final double screenWidth;
