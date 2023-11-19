@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:healthpilot/data/constants.dart';
+import 'package:healthpilot/screens/chat_screen/public_profile_screen.dart';
 import 'package:healthpilot/screens/chat_screen/widgets/custom_profile_tile.dart';
 
 class GeneralChatScreen extends StatefulWidget {
@@ -36,19 +37,29 @@ class _GeneralChatScreenState extends State<GeneralChatScreen>
           floatingActionButton: _buildFloatingActionButton(),
           body: Column(children: [
             _buildSearchBar(),
-            const Expanded(
+            Expanded(
               child: TabBarView(children: [
                 //All chats
                 Padding(
-                  padding: EdgeInsets.only(top: 24.0),
+                  padding: const EdgeInsets.only(top: 24.0),
                   child: SingleChildScrollView(
                     child: Column(
                       children: [
-                        CustomChatProfileTile(
-                            name: 'Dr. Darwin Nunez',
-                            profilePic: devsImage,
-                            chat: 'Hey, how is the medication going?'),
-                        CustomChatProfileTile(
+                        InkWell(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const PublicProfileScree(),
+                                ));
+                          },
+                          child: const CustomChatProfileTile(
+                              name: 'Dr. Darwin Nunez',
+                              profilePic: devsImage,
+                              chat: 'Hey, how is the medication going?'),
+                        ),
+                        const CustomChatProfileTile(
                             name: 'David Howard',
                             isPro: true,
                             unreadMessage: 3,
@@ -60,7 +71,7 @@ class _GeneralChatScreenState extends State<GeneralChatScreen>
                 ),
                 //People chats
 
-                Padding(
+                const Padding(
                   padding: EdgeInsets.only(top: 24.0),
                   child: SingleChildScrollView(
                     child: Column(
@@ -80,7 +91,7 @@ class _GeneralChatScreenState extends State<GeneralChatScreen>
                   ),
                 ),
                 // group chats
-                Padding(
+                const Padding(
                   padding: EdgeInsets.only(top: 24.0),
                   child: SingleChildScrollView(
                     child: Column(children: [

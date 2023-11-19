@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_ruler_picker/flutter_ruler_picker.dart';
+import '../personal_info/initial_info_2.dart';
 import '/widget/custom_app_bar_title.dart';
 
 import '../../data/constants.dart';
@@ -20,10 +21,19 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
   int selectedAge = 18;
   int selectedWeight = 18;
   int selectedHeight = 18;
-  RulerPickerController? _rulerPickerController;
+  RulerPickerController? _ageRulerPickerController;
+  RulerPickerController? _heightRulerPickerController;
+  RulerPickerController? _weightRulerPickerController;
   String selectedHeightUnit = 'cm';
   String selectedWeightUnit = 'kg';
 
+  List<RulerRange> rulerRanges = const [
+    RulerRange(begin: 0, end: 10, scale: 0.1),
+    RulerRange(begin: 10, end: 100, scale: 1),
+    RulerRange(begin: 100, end: 1000, scale: 10),
+    RulerRange(begin: 1000, end: 10000, scale: 100),
+    RulerRange(begin: 10000, end: 100000, scale: 1000)
+  ];
   List<String> heightUnits = [
     'cm',
     'in',
@@ -37,23 +47,22 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
   @override
   void initState() {
     super.initState();
-    _rulerPickerController = RulerPickerController(value: 0);
+    _ageRulerPickerController = RulerPickerController(value: 0);
+    _heightRulerPickerController = RulerPickerController(value: 0);
+    _weightRulerPickerController = RulerPickerController(value: 0);
   }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          elevation: 0,
-          backgroundColor: Colors.transparent,
-          title: CustomAppBarTitle(
-            title: letsStartAppBarTitle,
-            leadingIcon: Icons.arrow_back_rounded,
-            suffixIconImage: appBarTitleImage,
-            onPressed: () {},
-          ),
+        appBar: PreferredSize(
+          preferredSize: const Size(50, 60),
+          child: CustomAppBar(
+              onPressed: () {},
+              suffixIconImage: appBarTitleImage,
+              title: letsStartAppBarTitle,
+              leadingIcon: Icons.arrow_back_rounded),
         ),
         body: SingleChildScrollView(
           child: Column(
@@ -127,6 +136,7 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
                     ),
                   ),
                 ),
+                //female
                 GestureDetector(
                   onTap: () {
                     setState(() {
@@ -181,11 +191,11 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
               const SizedBox(
                 height: 20,
               ),
-              Padding(
-                padding: const EdgeInsets.only(left: 24.0, top: 30),
+              const Padding(
+                padding: EdgeInsets.only(left: 24.0, top: 30),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
-                  children: const [
+                  children: [
                     Image(
                       fit: BoxFit.contain,
                       image: AssetImage('assets/images/age_icon.png'),
@@ -209,11 +219,13 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
                   top: 10,
                 ),
                 child: RulerPicker(
-                  controller: _rulerPickerController,
+                  controller: _ageRulerPickerController,
+                  rulerBackgroundColor: Colors.transparent,
+
                   // beginValue: 0,
                   // endValue: 100,
                   // initValue: _rulerPickerController!.value,
-
+                  ranges: rulerRanges,
                   rulerScaleTextStyle: const TextStyle(
                       fontStyle: FontStyle.normal,
                       color: Color.fromRGBO(42, 42, 42, 1),
@@ -238,14 +250,18 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
                   ],
                   onValueChanged: (value) {
                     setState(() {
-                      selectedAge = int.parse(value.toString());
+                      selectedAge = value.toInt();
                     });
                   },
                   width: MediaQuery.of(context).size.width * 1,
                   height: 40,
                   rulerMarginTop: 15,
                   onBuildRulerScaleText: (int index, num rulerScaleValue) {
-                    return '';
+                    try {
+                      return rulerScaleValue.toStringAsFixed(0);
+                    } catch (e) {
+                      return 'Invalid Value';
+                    }
                   },
                 ),
               ),
@@ -254,8 +270,8 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Stack(
-                      children: const [
+                    const Stack(
+                      children: [
                         Positioned(
                           right: 9,
                           child: Image(
@@ -310,9 +326,11 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
                             .toList(),
                         value: selectedHeightUnit,
                         onChanged: (String? value) {
-                          setState(() {
-                            selectedHeightUnit = value!;
-                          });
+                          if (value != null) {
+                            setState(() {
+                              selectedHeightUnit = value;
+                            });
+                          }
                         },
                       ),
                     )
@@ -322,11 +340,11 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
               Container(
                 padding: const EdgeInsets.only(top: 10),
                 child: RulerPicker(
-                  controller: _rulerPickerController,
+                  controller: _heightRulerPickerController,
                   // beginValue: 70,
                   // endValue: 200,
                   // initValue: _rulerPickerController!.value,
-
+                  ranges: rulerRanges,
                   rulerScaleTextStyle: const TextStyle(
                       fontStyle: FontStyle.normal,
                       color: Color.fromRGBO(42, 42, 42, 1),
@@ -351,14 +369,14 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
                   ],
                   onValueChanged: (value) {
                     setState(() {
-                      selectedHeight = int.parse(value.toString());
+                      selectedHeight = value.toInt();
                     });
                   },
                   width: MediaQuery.of(context).size.width * 1,
                   height: 40,
                   rulerMarginTop: 15,
                   onBuildRulerScaleText: (int index, num rulerScaleValue) {
-                    return '';
+                    return rulerScaleValue.toInt().toString();
                   },
                 ),
               ),
@@ -410,9 +428,11 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
                             .toList(),
                         value: selectedWeightUnit,
                         onChanged: (String? value) {
-                          setState(() {
-                            selectedWeightUnit = value!;
-                          });
+                          if (value != null) {
+                            setState(() {
+                              selectedWeightUnit = value;
+                            });
+                          }
                         },
                       ),
                     )
@@ -422,11 +442,11 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
               Container(
                 margin: const EdgeInsets.only(top: 10),
                 child: RulerPicker(
-                  controller: _rulerPickerController,
+                  controller: _weightRulerPickerController,
                   // beginValue: 70,
                   // endValue: 200,
                   // initValue: _rulerPickerController!.value,
-
+                  ranges: rulerRanges,
                   rulerScaleTextStyle: const TextStyle(
                       fontStyle: FontStyle.normal,
                       color: Color.fromRGBO(42, 42, 42, 1),
@@ -451,15 +471,18 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
                   ],
                   onValueChanged: (value) {
                     setState(() {
-                      selectedHeight = int.parse(value.toString());
-                      _rulerPickerController!.addListener(() {});
+                      selectedHeight = value.toInt();
                     });
                   },
                   width: MediaQuery.of(context).size.width * 1,
                   height: 40,
                   rulerMarginTop: 15,
                   onBuildRulerScaleText: (int index, num rulerScaleValue) {
-                    return '';
+                    try {
+                      return rulerScaleValue.toInt().toString();
+                    } catch (e) {
+                      return 'Invalid Value';
+                    }
                   },
                 ),
               ),
@@ -468,11 +491,11 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
                     const EdgeInsets.symmetric(vertical: 40.0, horizontal: 80),
                 child: GestureDetector(
                   onTap: () {
-                    // Navigator.push(
-                    //     context,
-                    //     MaterialPageRoute(
-                    //       builder: (context) => const AllMostTheirScreen(),
-                    //     ));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const InitialInfoSecond(),
+                        ));
                   },
                   child: Container(
                     alignment: Alignment.center,

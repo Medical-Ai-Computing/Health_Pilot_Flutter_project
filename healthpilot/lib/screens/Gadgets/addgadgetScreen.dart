@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:gap/gap.dart';
 import 'package:healthpilot/screens/Gadgets/gadgetscreen.dart';
 
 class Gadget {
@@ -38,7 +37,7 @@ class _AddGadgetScreenState extends State<AddGadgetScreen> {
         child: Column(
           children: [
             CustomAppBar(screenWidth: size.width, screenHeight: size.height),
-            Gap(size.width * 0.1),
+            // Gap(size.width * 0.1),
             Container(
               height: size.height * 0.73,
               width: double.infinity,
