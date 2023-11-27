@@ -704,9 +704,9 @@ class PaymentButton extends StatelessWidget {
 
 /// PageTitlesInPayment
 ///
-/// A title component used in payment-related screens.
+/// A title Components used in payment-related screens.
 ///
-/// This component displays the provided title text with specified styling.
+/// This Components displays the provided title text with specified styling.
 ///
 /// Properties:
 /// - `title`: The title text to be displayed.
@@ -839,9 +839,9 @@ class PaymentMethodButtons extends StatelessWidget {
 
 /// PaymentInformations
 ///
-/// A component for displaying payment information titles.
+/// A Components for displaying payment information titles.
 ///
-/// This component displays the provided payment information title with specified styling.
+/// This Components displays the provided payment information title with specified styling.
 ///
 /// Properties:
 /// - `screenHeight`: The height of the screen, used for responsive design.
@@ -890,9 +890,9 @@ class PaymentInformations extends StatelessWidget {
 
 /// PersonalpayInfo
 ///
-/// A component for displaying personalized payment information.
+/// A Components for displaying personalized payment information.
 ///
-/// This component displays the provided payment information with specified styling.
+/// This Components displays the provided payment information with specified styling.
 ///
 /// Properties:
 /// - `screenWidth`: The width of the screen, used for responsive design.

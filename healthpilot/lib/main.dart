@@ -33,15 +33,6 @@ class HealthPilotApp extends StatelessWidget {
             home: const WelcomeScreen(),
           );
         });
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Health Pilot',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        fontFamily: 'Roboto', // Example font family
-      ),
-      home: const WelcomeScreen(), // commented before
-    );
   }
 }
 

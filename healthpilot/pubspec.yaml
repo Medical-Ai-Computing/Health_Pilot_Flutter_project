@@ -57,8 +57,9 @@ dependencies:
 
   flutter_screenutil: ^5.9.0
   feather_icons: ^1.2.0
-
- 
+  grouped_list: ^5.1.2
+  flutter_chat_bubble: ^2.0.2
+  intl: ^0.18.1
 
 dev_dependencies:
   flutter_test:

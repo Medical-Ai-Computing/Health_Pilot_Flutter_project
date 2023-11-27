@@ -1,9 +1,11 @@
-import 'package:feather_icons/feather_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
+import 'package:grouped_list/grouped_list.dart';
 import 'package:healthpilot/data/constants.dart';
-import 'package:healthpilot/screens/chat_screen/public_profile_screen.dart';
+import 'package:healthpilot/screens/chat_screen/chat_screen.dart';
+import 'package:healthpilot/screens/chat_screen/group_chat_screen.dart';
+import 'package:healthpilot/screens/chat_screen/similar_people_screen.dart';
 import 'package:healthpilot/screens/chat_screen/widgets/custom_profile_tile.dart';
 
 class GeneralChatScreen extends StatefulWidget {
@@ -16,11 +18,73 @@ class GeneralChatScreen extends StatefulWidget {
 class _GeneralChatScreenState extends State<GeneralChatScreen>
     with TickerProviderStateMixin {
   late TabController _tabController;
+  List<User> userList = [];
+  List<GroupChat> groupChat = [];
+
+  List<AllChat> allChatData = [];
+  List<AllChat> chatData = [
+    AllChat(
+      id: '1',
+      name: 'John Doe',
+      lastMessage: 'How are you today?',
+      isPro: true,
+      isGroupChat: false,
+    ),
+    AllChat(
+      id: '2',
+      name: 'Emma Smith',
+      lastMessage: 'Are you free for a call later?',
+      isPro: false,
+      isGroupChat: false,
+    ),
+    AllChat(
+      id: '3',
+      name: 'Alice Johnson',
+      lastMessage: 'Nice to meet you!',
+      isPro: true,
+      isGroupChat: false,
+    ),
+    // Add more individual chats as needed
+
+    // Group Chats
+    AllChat(
+      id: 'g1',
+      name: 'Schizophrenia Support',
+      lastMessage: 'By the way, have you seen the latest movie?',
+      isPro: true,
+      isGroupChat: true,
+    ),
+    AllChat(
+      id: 'g2',
+      name: 'Schizophrenia Support',
+      lastMessage: 'By the way, have you seen the latest movie?',
+      isPro: false,
+      isGroupChat: true,
+    ),
+    AllChat(
+      id: 'g3',
+      name: 'Schizophrenia Support',
+      lastMessage: 'By the way, have you seen the latest movie?',
+      isPro: false,
+      isGroupChat: true,
+    ),
+    // Add more group chats as needed
+  ];
+
   @override
   void initState() {
+    userList = Users.users;
+    groupChat = GroupChats.groupChats;
     _tabController = TabController(length: 3, initialIndex: 0, vsync: this);
+    allChatData = chatData;
     super.initState();
   }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+  }
+  // All chat list
 
   @override
   Widget build(BuildContext context) {
@@ -30,89 +94,162 @@ class _GeneralChatScreenState extends State<GeneralChatScreen>
         length: 3,
         child: Scaffold(
           appBar: AppBar(
-              toolbarHeight: 70,
-              elevation: 0,
-              backgroundColor: Colors.white,
-              title: _buildTabBar()),
+            automaticallyImplyLeading: false,
+            toolbarHeight: 70,
+            elevation: 0,
+            backgroundColor: Colors.white,
+            title: _buildTabBar(),
+            centerTitle: true,
+          ),
           floatingActionButton: _buildFloatingActionButton(),
           body: Column(children: [
-            _buildSearchBar(),
+            _buildSearchBar(context),
             Expanded(
               child: TabBarView(children: [
                 //All chats
                 Padding(
                   padding: const EdgeInsets.only(top: 24.0),
-                  child: SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
                     child: Column(
                       children: [
-                        InkWell(
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      const PublicProfileScree(),
-                                ));
-                          },
-                          child: const CustomChatProfileTile(
-                              name: 'Dr. Darwin Nunez',
-                              profilePic: devsImage,
-                              chat: 'Hey, how is the medication going?'),
+                        Flexible(
+                          child: GroupedListView(
+                            elements: allChatData,
+                            groupBy: (chatData) => chatData.isPro.toString(),
+                            order: GroupedListOrder.DESC,
+                            itemBuilder: (context, chatData) {
+                              return CustomChatProfileTile(
+                                name: chatData.name,
+                                isPro: chatData.isPro,
+                                unreadMessage: 3,
+                                profilePic: devsImage,
+                                chat: chatData.lastMessage,
+                                onPressed: () {
+                                  if (!chatData.isGroupChat) {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (context) => ChatScreen(
+                                            senderId: chatData.id,
+                                            userId: '123'),
+                                      ),
+                                    );
+                                  } else {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (context) => GroupChatScreen(
+                                            groupId: chatData.id, userId: '1'),
+                                      ),
+                                    );
+                                  }
+                                },
+                              );
+                            },
+                            // useStickyGroupSeparators: true,
+                            groupHeaderBuilder: (element) => Container(
+                              height: size.height * 0.05,
+                            ),
+                            itemComparator: (item1, item2) =>
+                                item1.name.compareTo(item2.name),
+                            groupComparator: (value1, value2) =>
+                                value1.compareTo(value2),
+                            groupSeparatorBuilder: (value) => SizedBox(
+                              height: size.height * 0.2,
+                            ),
+                          ),
                         ),
-                        const CustomChatProfileTile(
-                            name: 'David Howard',
-                            isPro: true,
-                            unreadMessage: 3,
-                            profilePic: devsImage,
-                            chat: 'My symptoms also started a while back'),
                       ],
                     ),
                   ),
                 ),
-                //People chats
 
-                const Padding(
-                  padding: EdgeInsets.only(top: 24.0),
-                  child: SingleChildScrollView(
+                //People chats
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: GroupedListView(
+                    elements: userList,
+                    groupBy: (user) => user.isPro.toString(),
+                    order: GroupedListOrder.DESC,
+                    itemBuilder: (context, user) {
+                      return CustomChatProfileTile(
+                        name: user.displayName,
+                        isPro: user.isPro,
+                        unreadMessage: user.chatHistory.length,
+                        profilePic: devsImage,
+                        chat: user.chatHistory.isNotEmpty
+                            ? user.chatHistory.last.content
+                            : '',
+                        onPressed: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => ChatScreen(
+                                  senderId: user.userId, userId: '123'),
+                            ),
+                          );
+                        },
+                      );
+                    },
+
+                    // useStickyGroupSeparators: true,
+                    groupHeaderBuilder: (element) => Container(
+                      height: size.height * 0.05,
+                    ),
+                    itemComparator: (item1, item2) =>
+                        item1.displayName.compareTo(item2.displayName),
+                    groupComparator: (value1, value2) =>
+                        value1.toString().compareTo(value2.toString()),
+                    groupSeparatorBuilder: (value) => SizedBox(
+                      height: size.height * 0.2,
+                    ),
+                  ),
+                ),
+
+                // group chats
+                Padding(
+                  padding: const EdgeInsets.only(top: 24.0),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
                     child: Column(
                       children: [
-                        CustomChatProfileTile(
-                            name: 'David Howard',
-                            profilePic: devsImage,
-                            chat: 'My symptoms also started a while back'),
-                        CustomChatProfileTile(
-                            name: 'David Howard',
-                            isPro: true,
-                            unreadMessage: 3,
-                            profilePic: devsImage,
-                            chat: 'My symptoms also started a while back'),
+                        Flexible(
+                          child: GroupedListView(
+                            elements: groupChat,
+                            groupBy: (chatData) => chatData.isPro.toString(),
+                            order: GroupedListOrder.DESC,
+                            itemBuilder: (context, groupChatData) {
+                              return CustomChatProfileTile(
+                                name: groupChatData.groupName,
+                                isPro: groupChatData.isPro,
+                                unreadMessage:
+                                    groupChatData.groupChatHistory.length,
+                                profilePic: devsImage,
+                                chat:
+                                    groupChatData.groupChatHistory.last.content,
+                                onPressed: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) => GroupChatScreen(
+                                          groupId: groupChatData.groupId,
+                                          userId: '1')));
+                                },
+                              );
+                            },
+                            // useStickyGroupSeparators: true,
+                            groupHeaderBuilder: (element) => Container(
+                              height: size.height * 0.05,
+                            ),
+                            itemComparator: (item1, item2) =>
+                                item1.groupName.compareTo(item2.groupName),
+                            groupComparator: (value1, value2) =>
+                                value1.compareTo(value2),
+                            groupSeparatorBuilder: (value) => SizedBox(
+                              height: size.height * 0.2,
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ),
                 ),
-                // group chats
-                const Padding(
-                  padding: EdgeInsets.only(top: 24.0),
-                  child: SingleChildScrollView(
-                    child: Column(children: [
-                      CustomChatProfileTile(
-                          name: 'Schizophrenia Support group',
-                          profilePic: devsImage,
-                          chat: 'We’ll have an in-person discussion the  '),
-                      CustomChatProfileTile(
-                          name: 'David Howard',
-                          isPro: true,
-                          unreadMessage: 2,
-                          profilePic: devsImage,
-                          chat: 'We’ll have an in-person discussion the ... '),
-                      CustomChatProfileTile(
-                          name: 'Schizophrenia Support group',
-                          unreadMessage: 50,
-                          profilePic: devsImage,
-                          chat: 'We’ll have an in-person discussion the ... '),
-                    ]),
-                  ),
-                )
               ]),
             )
           ]),
@@ -121,34 +258,59 @@ class _GeneralChatScreenState extends State<GeneralChatScreen>
     );
   }
 
-  Widget _buildSearchBar() {
+  Widget _buildSearchBar(BuildContext ctx) {
     return Padding(
-      padding: EdgeInsets.only(left: 29.0.w, right: 23.w, top: 37),
-      child: TextFormField(
-        decoration: InputDecoration(
-            prefixIcon: const Icon(
-              Icons.search,
-              size: 40,
-            ),
-            hintText: 'Search Chats',
-            hintStyle: TextStyle(
-              color: const Color.fromRGBO(193, 193, 193, 1),
-              fontFamily: 'Plus Jakarta Sans',
-              fontSize: 14.sp,
-              fontStyle: FontStyle.normal,
-              fontWeight: FontWeight.w400,
-            ),
-            border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide: const BorderSide(
-                    width: 1, color: Color.fromRGBO(217, 217, 217, 1)))),
+      padding: EdgeInsets.only(left: 29.0.w, right: 23.w, top: 17),
+      child: SizedBox(
+        height: 44,
+        child: TextFormField(
+          onChanged: (value) {
+            setState(() {
+              userList = Users.users
+                  .where((element) => element.displayName
+                      .toLowerCase()
+                      .contains(value.toLowerCase()))
+                  .toList();
+              allChatData = chatData
+                  .where((element) =>
+                      element.name.toLowerCase().contains(value.toLowerCase()))
+                  .toList();
+              groupChat = GroupChats.groupChats
+                  .where((element) => element.groupName
+                      .toLowerCase()
+                      .contains(value.toLowerCase()))
+                  .toList();
+            });
+            // search logic
+          },
+          decoration: InputDecoration(
+              prefixIcon: const Icon(
+                Icons.search,
+                size: 20,
+              ),
+              hintText: 'Search Chats',
+              hintStyle: const TextStyle(
+                color: Color.fromRGBO(193, 193, 193, 1),
+                fontFamily: 'Plus Jakarta Sans',
+                fontSize: 14,
+                fontStyle: FontStyle.normal,
+                fontWeight: FontWeight.w400,
+              ),
+              border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: const BorderSide(
+                      width: 1, color: Color.fromRGBO(217, 217, 217, 1)))),
+        ),
       ),
     );
   }
 
   Widget _buildFloatingActionButton() {
     return FloatingActionButton(
-      onPressed: () {},
+      onPressed: () {
+        Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) => SimilarPeopleScreen()));
+      },
       backgroundColor: const Color.fromRGBO(110, 182, 255, 1),
       child: const Icon(
         Icons.person_search_outlined,
@@ -159,6 +321,7 @@ class _GeneralChatScreenState extends State<GeneralChatScreen>
 
   TabBar _buildTabBar() {
     return TabBar(
+        tabAlignment: TabAlignment.center,
         indicatorSize: TabBarIndicatorSize.label,
         labelColor: Colors.black,
         unselectedLabelStyle: TextStyle(
@@ -191,4 +354,21 @@ class _GeneralChatScreenState extends State<GeneralChatScreen>
           ),
         ]);
   }
+}
+
+// dummy data
+class AllChat {
+  final String id;
+  final String name;
+  final String lastMessage;
+  final bool isPro;
+  final bool isGroupChat;
+
+  AllChat({
+    required this.isGroupChat,
+    required this.id,
+    required this.name,
+    required this.lastMessage,
+    required this.isPro,
+  });
 }

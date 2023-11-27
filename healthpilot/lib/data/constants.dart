@@ -38,6 +38,22 @@ const String bottomNavBarChatIcon = 'assets/icons/Chat.svg';
 const String bottomNavBarHomeIcon = 'assets/icons/Home.svg';
 const String bottomNavBarProfileIcon = 'assets/icons/profile.svg';
 const String bottomNavBarHealthIcon = 'assets/icons/Health.svg';
+const String chatIcon = 'assets/icons/chat-icon.svg';
+const String closeIcon = 'assets/icons/close-icon.svg';
+const String handShakeIcon = 'assets/icons/hand-shake-icon.svg';
+const String callIcon = 'assets/icons/call-icon.svg';
+const String moreIcon = 'assets/icons/more-icon.svg';
+const String voiceChatIcon = 'assets/icons/voice-chat-icon.svg';
+const String muteIcon = 'assets/icons/mute-icon.svg';
+const String profileChatIcon = 'assets/icons/profile-chats-icon.svg';
+const String videoCallIcon = 'assets/icons/video-call-icon.svg';
+const String voiceIcon = 'assets/icons/voice-icon.svg';
+const String expandIcon = 'assets/icons/expand-icon.svg';
+const String cameraRotateIcon = 'assets/icons/camera-rotate-icon.svg';
+const String audioCallBackImg = 'assets/images/audio-call-background-pic.png';
+const String videoCallBackImg = 'assets/images/video-call-icon.png';
+const String videoCallerBackImg = 'assets/images/video-caller-img.png';
+
 const String helperTextForUser =
     'Get access to our ranged health professionals and start feeling better.';
 const String expertAssistanceDescription =
