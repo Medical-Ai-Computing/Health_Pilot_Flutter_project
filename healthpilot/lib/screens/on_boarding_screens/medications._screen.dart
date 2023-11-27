@@ -328,7 +328,7 @@ class _MedicationScreenState extends State<MedicationScreen> {
 /// - `edit`: An optional callback for editing medication details (e.g., tapping the edit icon).
 ///
 /// Usage:
-/// The `MedicationListTile` widget is a versatile component for rendering medication
+/// The `MedicationListTile` widget is a versatile Components for rendering medication
 /// information within lists or similar layouts. It provides the ability to display
 /// medication names, perform actions, and adapt to different screen sizes.
 ///
@@ -478,7 +478,7 @@ class Texts extends StatelessWidget {
 /// - `label`: The text label to be displayed.
 ///
 /// Usage:
-/// The `InputLabels` widget is a simple and reusable component that enhances the
+/// The `InputLabels` widget is a simple and reusable Components that enhances the
 /// readability and user-friendliness of forms and content sections. It allows you to
 /// provide descriptive labels for input fields, helping users understand the purpose
 /// of the associated elements.
