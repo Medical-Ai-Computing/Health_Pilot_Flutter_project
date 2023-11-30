@@ -271,7 +271,7 @@ class ChatList extends StatelessWidget {
                     margin: const BubbleEdges.symmetric(vertical: 5),
                     padding: const BubbleEdges.all(0),
                     showNip: true,
-                    color: int.parse(chat.senderId) != 1
+                    color: int.parse(chat.senderId) == 1
                         ? const Color.fromRGBO(110, 182, 255, 0.30)
                         : const Color.fromRGBO(110, 182, 255, 0.08),
                     // color: Color.fromRGBO(110, 182, 255, 0.30),
@@ -295,6 +295,9 @@ class ChatList extends StatelessWidget {
                                               42, 42, 42, 1),
                                           fontSize: 12,
                                           fontWeight: FontWeight.w400),
+                                    ),
+                                    const SizedBox(
+                                      width: 10,
                                     ),
                                     Text(
                                       DateFormat('hh:mm a')
@@ -321,6 +324,9 @@ class ChatList extends StatelessWidget {
                                       style: GoogleFonts.plusJakartaSans(
                                           fontSize: 8,
                                           fontWeight: FontWeight.w400),
+                                    ),
+                                    const SizedBox(
+                                      width: 10,
                                     ),
                                     Expanded(
                                       child: Wrap(
@@ -372,6 +378,9 @@ class ChatList extends StatelessWidget {
                                         ],
                                       ),
                                     ),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
                                     Text(
                                       DateFormat('hh:mm a')
                                           .format(chat.timestamp),
@@ -410,6 +419,9 @@ class ChatList extends StatelessWidget {
                                     // SizedBox(
                                     //   width: size.width * 0.02,
                                     // ),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
                                     Wrap(
                                       children: [
                                         Text(
