@@ -159,10 +159,10 @@ class _PhysicalTherapyScreenState extends State<PhysicalTherapyScreen> {
 
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          title: const Text('Health Pilot'),
-        ),
+        // appBar: AppBar(
+        //   centerTitle: true,
+        //   title: const Text('Health Pilot'),
+        // ),
         body: PageView.builder(
             controller: _pageController,
             itemCount: pages.length,

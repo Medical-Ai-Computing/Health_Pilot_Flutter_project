@@ -456,8 +456,12 @@ class _HomePageScreenState extends State<HomePageScreen> {
                       borderRadius: BorderRadius.circular(30.0),
                     ),
                     onPressed: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => ChatbotScreen()));
+                      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const ChatbotScreen(),
+                        ),
+                      );
                     },
                     backgroundColor: AppTheme
                         .buttonStyleForFloatingActionBtn.backgroundColor,
@@ -576,7 +580,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
             Dialog(
               backgroundColor: Colors.transparent,
               child: SizedBox(
-                height: size.height * 0.58,
+                height: size.height * 0.6,
                 child: Stack(
                   children: [
                     Positioned.fill(

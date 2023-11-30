@@ -120,7 +120,7 @@ class _ProfileAndSettingScreenState extends State<ProfileAndSettingScreen> {
             Row(
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(top: 40, left: 30),
+                  padding: const EdgeInsets.only(top: 40, left: 20),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(
                         screenWidth * 0.1), // Adjust the borderRadius
@@ -137,7 +137,10 @@ class _ProfileAndSettingScreenState extends State<ProfileAndSettingScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Padding(
-                      padding: EdgeInsets.only(top: 58, left: 10),
+                      padding: EdgeInsets.only(
+                        top: 58,
+                        left: 0,
+                      ),
                       child: Text(
                         "Mohammed Ibrahim",
                         style: TextStyle(

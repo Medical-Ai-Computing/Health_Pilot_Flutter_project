@@ -288,7 +288,7 @@ class PremiumTags extends StatelessWidget {
             ],
           ),
           height: size.height * 0.08,
-          width: size.width * 0.25,
+          width: size.width * 0.28,
           alignment: const Alignment(0, 0),
           child: const Text(
             "Subscribed",
@@ -300,10 +300,10 @@ class PremiumTags extends StatelessWidget {
             filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
             child: Container(
               height: size.height * 0.08,
-              width: size.width * 0.25,
+              width: size.width * 0.28,
               alignment: const Alignment(0, 0),
               child: MaterialButton(
-                minWidth: size.width * 0.25,
+                minWidth: size.width * 0.28,
                 height: size.height * 0.03,
                 elevation: 0,
                 color: const Color.fromRGBO(110, 182, 255, 1),

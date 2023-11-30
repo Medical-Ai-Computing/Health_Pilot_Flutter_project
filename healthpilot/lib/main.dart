@@ -33,7 +33,6 @@ class HealthPilotApp extends StatelessWidget {
             home: const WelcomeScreen(),
           );
         });
-
   }
 }
 
@@ -48,7 +47,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   void goToNextScreen() {
     Future.delayed(const Duration(seconds: 2), () {
       // Navigate to the next screen
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const PhysicalTherapyScreen()),
       );
@@ -63,13 +62,13 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
+    return const SafeArea(
       child: Scaffold(
-          appBar: AppBar(
-            centerTitle: true,
-            title: const Text('Health Pilot'),
-          ),
-          body: const Center(child: Image(image: AssetImage(welcomeLogo)))),
+          // appBar: AppBar(
+          //   centerTitle: true,
+          //   title: const Text('Health Pilot'),
+          // ),
+          body: Center(child: Image(image: AssetImage(welcomeLogo)))),
     );
   }
 }
