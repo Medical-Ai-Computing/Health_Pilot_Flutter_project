@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:healthpilot/screens/chat_screen/similar_people_screen.dart';
 import 'package:healthpilot/screens/chat_screen/vidoe_call_screen.dart';
 
 import '../../data/constants.dart';
@@ -15,7 +13,7 @@ class AudioCallScreen extends StatelessWidget {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         elevation: 0,
-        shape: CircleBorder(),
+        shape: const CircleBorder(),
         padding: EdgeInsets.all(15),
         backgroundColor: Color.fromRGBO(110, 182, 255, 1),
       ),
