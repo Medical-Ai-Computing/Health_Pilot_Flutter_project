@@ -82,33 +82,63 @@ class _InitialInfoThird extends State<InitialInfoThird> {
 
     return Scaffold(
       appBar: (!textFieldIsOnfocused)
-          ? AppBar(
-              backgroundColor: Colors.transparent,
-              elevation: 0,
-              leading: IconButton(
-                icon: const Icon(Icons.arrow_back,
-                    color: Color.fromRGBO(110, 182, 255, 1)),
-                onPressed: () {
-                  // Define the action when the back button is pressed
-                  Navigator.of(context).pop();
-                },
-                style: AppTheme.buttonStyleForAppBarBackButto,
+          ? PreferredSize(
+              preferredSize: Size(double.infinity, size.height * 0.1),
+              child: Padding(
+                padding: const EdgeInsets.only(
+                  left: 20,
+                  right: 20,
+                  top: 30,
+                  bottom: 10,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          width: size.width * 0.1,
+                          height: size.width * 0.1,
+                          decoration: BoxDecoration(
+                            color: const Color.fromRGBO(110, 182, 255, 0.25),
+                            borderRadius:
+                                BorderRadius.circular(size.width * 0.05),
+                          ),
+                          child: IconButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            icon: const Icon(Icons.arrow_back),
+                            color: const Color.fromRGBO(110, 182, 255, 1),
+                            iconSize: size.width * 0.055,
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(
+                            size.width * 0.05,
+                            0,
+                            0,
+                            0,
+                          ),
+                          child: Text(
+                            "One Last Step",
+                            style: TextStyle(
+                              fontSize: size.width * 0.05,
+                              fontWeight: FontWeight.w600,
+                              fontFamily: "PlusJakartaSans",
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SvgPicture.asset(
+                      'assets/images/Vector.svg',
+                      fit: BoxFit.cover,
+                    ),
+                  ],
+                ),
               ),
-              title: const Text(
-                "One Last Step",
-                style: TextStyle(
-                    fontFamily: 'PlusJakartaSans',
-                    fontWeight: FontWeight.w600,
-                    fontSize: 22,
-                    color: Colors.black),
-                maxLines: 2,
-              ),
-              actions: [
-                SvgPicture.asset(translateIcon),
-                const SizedBox(
-                  width: 30,
-                )
-              ],
             )
           : null,
       body: SingleChildScrollView(

@@ -11,8 +11,19 @@ class DevsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    return Card(
-      color: AppTheme.cardThemeForDevs.color,
+    return Container(
+      decoration: BoxDecoration(
+          gradient: const LinearGradient(colors: [
+            Color.fromRGBO(110, 182, 255, 0.3),
+            Color.fromRGBO(110, 182, 255, 0.15),
+            Color.fromRGBO(110, 182, 255, 0.08),
+          ]),
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(size.width * 0.04),
+            topRight: Radius.circular(size.width * 0.04),
+            bottomLeft: Radius.circular(size.width * 0.015),
+            bottomRight: Radius.circular(size.width * 0.015),
+          )),
       margin: EdgeInsets.all(size.width * 0.03),
       child: SizedBox(
         height: size.height * 0.5,

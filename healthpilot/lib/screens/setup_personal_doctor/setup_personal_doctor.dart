@@ -20,36 +20,63 @@ class _SetupPersonalDoctorState extends State<SetupPersonalDoctor> {
     final size = MediaQuery.of(context).size;
 
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back,
-          ),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          style: AppTheme.buttonStyleForAppBarBackButto,
-        ),
-        title: const Text(
-          'Setup Personal Doctor',
-          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 22),
-          maxLines: 2,
-        ),
-        actions: [
-          SvgPicture.asset(translateIcon),
-          const SizedBox(
-            width: 30,
-          )
-        ],
-      ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.symmetric(
-              horizontal: size.width * 0.08, vertical: size.width * 0.08),
+          padding:
+              EdgeInsets.symmetric(horizontal: 20, vertical: size.width * 0.08),
           child: Form(
             child: Column(
               children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          width: size.width * 0.1,
+                          height: size.width * 0.1,
+                          decoration: BoxDecoration(
+                            color: const Color.fromRGBO(110, 182, 255, 0.25),
+                            borderRadius:
+                                BorderRadius.circular(size.width * 0.05),
+                          ),
+                          child: IconButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            icon: const Icon(Icons.arrow_back),
+                            color: const Color.fromRGBO(110, 182, 255, 1),
+                            iconSize: size.width * 0.055,
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(
+                            size.width * 0.05,
+                            0,
+                            0,
+                            0,
+                          ),
+                          child: Text(
+                            "Setup Personal Doctor",
+                            style: TextStyle(
+                              fontSize: size.width * 0.05,
+                              fontWeight: FontWeight.w600,
+                              fontFamily: "PlusJakartaSans",
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SvgPicture.asset(
+                      'assets/images/Vector.svg',
+                      fit: BoxFit.cover,
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: size.height * 0.05,
+                ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

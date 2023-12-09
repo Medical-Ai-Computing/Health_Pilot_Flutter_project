@@ -646,7 +646,8 @@ class _SubscriptionCardState extends State<SubscriptionCard> {
                 style: ElevatedButton.styleFrom(
                     backgroundColor: const Color.fromRGBO(110, 182, 255, 1),
                     foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(horizontal: 25),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: widget.screenWidth * 0.01),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(5))),
                 child: Text(

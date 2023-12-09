@@ -173,9 +173,10 @@ class _SignupAndLoginScreenState extends State<SignupAndLoginScreen> {
                                     isChecked: _isChecked!,
                                     screenWidth: screenWidth,
                                   ),
-                                  const Padding(
-                                    padding: EdgeInsets.only(left: 5),
-                                    child: TermsPolicyText(),
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                        left: screenWidth * 0.01),
+                                    child: const TermsPolicyText(),
                                   ),
                                 ],
                               ),
@@ -447,7 +448,7 @@ class ConfirmEmailScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-                )
+                ),
               ],
             ),
           );
@@ -931,7 +932,7 @@ class TermsPolicyText extends StatelessWidget {
           style: const TextStyle(
             color: Color.fromRGBO(42, 42, 42, 0.5),
             fontFamily: 'PlusJakartasSans',
-            fontSize: 12,
+            fontSize: 11,
             fontWeight: FontWeight.w400,
             letterSpacing: -0.165,
             height: 15 / 12,

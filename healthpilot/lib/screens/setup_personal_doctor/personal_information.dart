@@ -32,31 +32,62 @@ class _PersonalInformationState extends State<PersonalInformation> {
     final size = MediaQuery.of(context).size;
 
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back,
+      appBar: PreferredSize(
+        preferredSize: Size(double.infinity, size.height * 0.1),
+        child: Padding(
+          padding: const EdgeInsets.only(
+            left: 20,
+            right: 20,
+            top: 30,
+            bottom: 10,
           ),
-          onPressed: () {
-            Navigator.of(context).pushReplacement(MaterialPageRoute(
-                builder: (context) => HomePageScreen(
-                      isHelpPressed: false,
-                    )));
-          },
-          style: AppTheme.buttonStyleForAppBarBackButto,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    width: size.width * 0.1,
+                    height: size.width * 0.1,
+                    decoration: BoxDecoration(
+                      color: const Color.fromRGBO(110, 182, 255, 0.25),
+                      borderRadius: BorderRadius.circular(size.width * 0.05),
+                    ),
+                    child: IconButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      icon: const Icon(Icons.arrow_back),
+                      color: const Color.fromRGBO(110, 182, 255, 1),
+                      iconSize: size.width * 0.055,
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(
+                      size.width * 0.05,
+                      0,
+                      0,
+                      0,
+                    ),
+                    child: Text(
+                      "Personal Information",
+                      style: TextStyle(
+                        fontSize: size.width * 0.05,
+                        fontWeight: FontWeight.w600,
+                        fontFamily: "PlusJakartaSans",
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              SvgPicture.asset(
+                'assets/images/Vector.svg',
+                fit: BoxFit.cover,
+              ),
+            ],
+          ),
         ),
-        title: const Text(
-          'Personal Information',
-          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 22),
-          maxLines: 2,
-        ),
-        actions: [
-          SvgPicture.asset(translateIcon),
-          const SizedBox(
-            width: 30,
-          )
-        ],
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -378,47 +409,60 @@ class _PersonalInformationState extends State<PersonalInformation> {
                     SizedBox(
                       height: size.height * 0.05,
                     ),
-                    Card(
-                      child: Container(
-                        decoration: BoxDecoration(
-                            borderRadius:
-                                BorderRadius.circular(size.width * 0.02),
-                            gradient: const LinearGradient(
-                              colors: [
-                                Color.fromRGBO(183, 216, 249, 0.786),
-                                Color.fromRGBO(255, 255, 255, 1)
-                              ],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                            )),
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          // crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const SizedBox(
-                              width: double.infinity,
-                              child: Text(
-                                'Set up food and nutrition tracking',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w500,
-                                    fontFamily: 'Plus Jakarta Sans',
-                                    fontSize: 16),
-                                textAlign: TextAlign.left,
-                              ),
-                            ),
-                            SizedBox(
-                              height: size.height * 0.01,
-                            ),
-                            const Text(
-                              'Start setting up your food and nutrition tracking to keep hold of your data on what u eat and drink.',
+                    Container(
+                      decoration: BoxDecoration(
+                          borderRadius:
+                              BorderRadius.circular(size.width * 0.02),
+                          gradient: const LinearGradient(
+                            colors: [
+                              Color.fromRGBO(183, 216, 249, 0.786),
+                              Color.fromRGBO(255, 255, 255, 1)
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          )),
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(20.0),
+                      child: Column(
+                        // crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(
+                            width: double.infinity,
+                            child: Text(
+                              'Set up food and nutrition tracking',
                               style: TextStyle(
-                                  fontWeight: FontWeight.w400,
-                                  fontFamily: 'Plus Jakarta Sans',
-                                  fontSize: 14),
+                                fontWeight: FontWeight.w400,
+                                color: Color.fromRGBO(42, 42, 42, 1),
+                                fontFamily: 'Plus Jakarta Sans',
+                                fontSize: 16,
+                                height: 0.2,
+                                letterSpacing: -0.17,
+                              ),
                               textAlign: TextAlign.left,
                             ),
-                            ElevatedButton(
+                          ),
+                          SizedBox(
+                            height: size.height * 0.02,
+                          ),
+                          const Text(
+                            'Start setting up your food and nutrition tracking to keep hold of your data on what u eat and drink.',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w300,
+                              fontFamily: 'Plus Jakarta Sans',
+                              color: Color.fromRGBO(42, 42, 42, 0.75),
+                              fontSize: 13,
+                              height: 1.3,
+                              letterSpacing: -0.17,
+                            ),
+                            textAlign: TextAlign.justify,
+                          ),
+                          SizedBox(
+                            height: size.height * 0.03,
+                          ),
+                          SizedBox(
+                            height: size.height * 0.045,
+                            width: size.width * 0.35,
+                            child: ElevatedButton(
                               onPressed: () {},
                               style: ElevatedButton.styleFrom(
                                   backgroundColor:
@@ -428,7 +472,7 @@ class _PersonalInformationState extends State<PersonalInformation> {
                                     horizontal: 25,
                                   ),
                                   shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10))),
+                                      borderRadius: BorderRadius.circular(3))),
                               child: const Text('Start Setup',
                                   style: TextStyle(
                                     fontWeight: FontWeight.w500,
@@ -436,8 +480,8 @@ class _PersonalInformationState extends State<PersonalInformation> {
                                     fontFamily: 'Plus Jakarta Sans',
                                   )),
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
                     SizedBox(
