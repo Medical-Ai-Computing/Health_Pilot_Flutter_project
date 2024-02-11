@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:healthpilot/data/constants.dart';
+import 'package:healthpilot/screens/food_and_nutration/tracking.dart';
 import 'package:healthpilot/screens/on_boarding_screens/physical_therapy_screen.dart';
 
 import 'package:healthpilot/screens/health_section/health_profile_screen.dart';
@@ -28,7 +29,7 @@ class HealthPilotApp extends StatelessWidget {
             title: 'Health Pilot',
             theme: ThemeData(
               primarySwatch: Colors.blue,
-              fontFamily: 'Roboto', // Example font family
+              fontFamily: 'Roboto',
             ),
             home: const WelcomeScreen(),
           );
@@ -49,7 +50,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       // Navigate to the next screen
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const PhysicalTherapyScreen()),
+        MaterialPageRoute(builder: (context) => const FoodAndNutritionTracking()),
       );
     });
   }
