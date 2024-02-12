@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class FoodAndNutritionTracking extends StatelessWidget {
   const FoodAndNutritionTracking({Key? key});
@@ -62,7 +63,7 @@ class FoodAndNutritionTracking extends StatelessWidget {
                       ),
                     ],
                   ),
-                  // SvgPicture.asset('assets/images/Vector.svg', fit: BoxFit.cover,),
+                   SvgPicture.asset('assets/images/Vector.svg', fit: BoxFit.cover),
                 ],
               ),
             ),
