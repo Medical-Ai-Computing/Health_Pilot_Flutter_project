@@ -9,7 +9,7 @@ class IdentityScreen extends StatelessWidget {
     Size size = MediaQuery.of(context).size;
 
     return MaterialApp(
-       debugShowCheckedModeBanner: false,
+
       home: Scaffold(
         appBar: AppBar(
   backgroundColor: Colors.white,
