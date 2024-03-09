@@ -9,7 +9,7 @@ class Allergies extends StatelessWidget {
     Size size = MediaQuery.of(context).size;
 
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
+
       home: Scaffold(
         appBar: AppBar(
   backgroundColor: Colors.white,
@@ -83,17 +83,17 @@ class Allergies extends StatelessWidget {
                 child: TextField(
                   decoration: InputDecoration(
                     hintText: "Search Symptoms",
-                    fillColor: Colors.grey[200], // Grey background color
+                    fillColor: Colors.grey[200],
                     filled: true,
                     contentPadding:
-                        const EdgeInsets.all(10), // Padding inside the box
+                        const EdgeInsets.all(10),
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15), // Border radius
-                      borderSide: BorderSide.none, // Remove the black line
+                      borderRadius: BorderRadius.circular(15),
+                      borderSide: BorderSide.none,
                     ),
                     prefixIcon: const Padding(
                       padding: EdgeInsets.only(right: 10),
-                      child: Icon(Icons.search), // Search icon
+                      child: Icon(Icons.search),
                     ),
                   ),
                 ),
@@ -112,7 +112,7 @@ class Allergies extends StatelessWidget {
                     foregroundColor: Colors.white,
                     backgroundColor: const Color.fromRGBO(110, 182, 255, 1),
                     side: const BorderSide(
-                      color: const Color.fromRGBO(110, 182, 255, 1),
+                      color: Color.fromRGBO(110, 182, 255, 1),
                     ),
                   ),
                   child: const Text("Skip"),
@@ -120,25 +120,25 @@ class Allergies extends StatelessWidget {
               ),
               const SizedBox(
                   height:
-                      50),// Adjust the spacing between the box and the dots
+                      50),
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      const SizedBox(width: 16), // Add left padding to Option 1
+                      const SizedBox(width: 16),
                       Container(
-                        width: 25, // Adjust the size of the dot
-                        height: 25, // Adjust the size of the dot
+                        width: 25,
+                        height: 25,
                         decoration: const BoxDecoration(
                           shape: BoxShape.circle,
-                          color: const Color.fromRGBO(110, 182, 255, 1),
+                          color: Color.fromRGBO(110, 182, 255, 1),
                         ),
                       ),
                       const SizedBox(
                           width:
-                              4), // Adjust the spacing between the dot and text
+                              4),
                       const Text("Don't understand? Here is a discrption",
                           style: TextStyle(color: Colors.black54)),
                     ],
@@ -153,7 +153,7 @@ class Allergies extends StatelessWidget {
                         height: 25,
                         decoration: const BoxDecoration(
                           shape: BoxShape.circle,
-                          color: const Color.fromRGBO(110, 182, 255, 1),
+                          color: Color.fromRGBO(110, 182, 255, 1),
                         ),
                       ),
                       const SizedBox(width: 4),

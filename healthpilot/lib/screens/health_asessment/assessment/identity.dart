@@ -83,7 +83,7 @@ class IdentityScreen extends StatelessWidget {
                     foregroundColor: Colors.black54,
                     backgroundColor: Colors.white,
                     side: const BorderSide(
-                      color: const Color.fromRGBO(110, 182, 255, 1),
+                      color: Color.fromRGBO(110, 182, 255, 1),
                     ),
                   ),
                   child: const Text("Myself"),
@@ -101,29 +101,29 @@ class IdentityScreen extends StatelessWidget {
                     foregroundColor: Colors.black54,
                     backgroundColor: Colors.white,
                     side: const BorderSide(
-                      color: const Color.fromRGBO(110, 182, 255, 1),
+                      color: Color.fromRGBO(110, 182, 255, 1),
                     ),
                   ),
                   child: const Text("Someone else"),
                 ),
               ),
-              const SizedBox(height: 300), // Adjust the spacing between the box and the dots
+              const SizedBox(height: 300),
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      const SizedBox(width: 16), // Add left padding to Option 1
+                      const SizedBox(width: 16),
                       Container(
-                        width: 25, // Adjust the size of the dot
-                        height: 25, // Adjust the size of the dot
+                        width: 25,
+                        height: 25,
                         decoration: const BoxDecoration(
                           shape: BoxShape.circle,
-                          color: const Color.fromRGBO(110, 182, 255, 1),
+                          color: Color.fromRGBO(110, 182, 255, 1),
                         ),
                       ),
-                      const SizedBox(width: 4), // Adjust the spacing between the dot and text
+                      const SizedBox(width: 4),
                       const Text("Don't understand? Here is a discrption", style: TextStyle(color: Colors.black54)),
                     ],
                   ),
@@ -137,7 +137,7 @@ class IdentityScreen extends StatelessWidget {
                         height: 25,
                         decoration: const BoxDecoration(
                           shape: BoxShape.circle,
-                          color: const Color.fromRGBO(110, 182, 255, 1),
+                          color: Color.fromRGBO(110, 182, 255, 1),
                         ),
                       ),
                       const SizedBox(width: 4),

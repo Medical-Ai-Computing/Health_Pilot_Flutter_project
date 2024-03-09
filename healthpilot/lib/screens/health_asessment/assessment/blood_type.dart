@@ -161,23 +161,23 @@ class BloodType extends StatelessWidget {
                   child: const Text("Skip"),
                 ),
               ),
-              const SizedBox(height: 100), // Adjust the spacing between the box and the dots
+              const SizedBox(height: 100),
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      const SizedBox(width: 16), // Add left padding to Option 1
+                      const SizedBox(width: 16),
                       Container(
-                        width: 25, // Adjust the size of the dot
-                        height: 25, // Adjust the size of the dot
+                        width: 25,
+                        height: 25,
                         decoration: const BoxDecoration(
                           shape: BoxShape.circle,
                           color: Color.fromRGBO(110, 182, 255, 1),
                         ),
                       ),
-                      const SizedBox(width: 4), // Adjust the spacing between the dot and text
+                      const SizedBox(width: 4),
                       const Text("Don't understand? Here is a discrption", style: TextStyle(color: Colors.black54)),
                     ],
                   ),
