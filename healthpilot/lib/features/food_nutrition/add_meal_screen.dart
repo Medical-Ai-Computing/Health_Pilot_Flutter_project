@@ -226,8 +226,11 @@ class _EntryRow extends StatelessWidget {
             optionsBuilder: (value) async {
               final q = value.text.trim();
               // Keep the plain-text name in sync for save, even without a pick.
+              // Do NOT clear `selected` here: Autocomplete re-runs optionsBuilder
+              // immediately after onSelected (with the option's name), which would
+              // otherwise wipe the pick and lose its macros. A genuine user edit
+              // invalidates the pick via the field's onChanged below.
               controllers.food.text = value.text;
-              controllers.selected = null;
               if (q.length < 2) return const Iterable<FoodItem>.empty();
               try {
                 return await context.read<NutritionProvider>().searchFoods(q);

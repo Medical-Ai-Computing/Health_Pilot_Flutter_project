@@ -53,11 +53,13 @@ class ChatMessage {
             : OutgoingDeliveryStatus.notApplicable,
       );
 
-  /// GET /api/v1/chat/ai/history/ item: {id, role, content, timestamp}.
+  /// GET /api/v1/chat/ai/history/ item: {role, content, timestamp} (no `id`).
   factory ChatMessage.fromApiHistoryJson(Map<String, dynamic> json) {
     final fromUser = json['role'] == 'user';
     return ChatMessage(
-      id: json['id'].toString(),
+      // The endpoint omits `id`; fall back to role+timestamp so items stay
+      // distinct instead of all collapsing to the string "null".
+      id: (json['id'] ?? '${json['role']}_${json['timestamp']}').toString(),
       fromUser: fromUser,
       body: json['content'] as String,
       sentAt: DateTime.parse(json['timestamp'] as String),

@@ -484,19 +484,23 @@ class _HomePageScreenState extends State<HomePageScreen> {
                     // SizedBox(width: 12),
                     Builder(builder: (context) {
                       final p = context.watch<ProfileProvider>().profile;
-                      final bmi = p.bmi?.toStringAsFixed(1) ?? '21.6';
+                      // Real BMI when the profile has height + weight; otherwise
+                      // a placeholder — never a fabricated value.
+                      final bmi = p.bmi?.toStringAsFixed(1) ?? '—';
                       return OverviewCard(
                         icon: LineIcons.weight,
                         overviewResult: bmi,
                         overviewUnit: 'BMI',
                       );
                     }),
-                    const SizedBox(width: 12),
-                    OverviewCard(
-                      icon: LineIcons.bed,
-                      overviewResult: '6.5',
-                      overviewUnit: 'hours',
-                    ),
+                    // Sleep card — hidden until sleep-tracking integration
+                    // (no data source yet; matches the hidden BPM card above).
+                    // const SizedBox(width: 12),
+                    // OverviewCard(
+                    //   icon: LineIcons.bed,
+                    //   overviewResult: '6.5',
+                    //   overviewUnit: 'hours',
+                    // ),
                   ],
                 ),
               ),
@@ -721,7 +725,16 @@ class _HomePageScreenState extends State<HomePageScreen> {
                 ),
               ],
             ),
-            body: SafeArea(child: pages[_currentIndex]),
+            // IndexedStack keeps all tab subtrees mounted (offstage) so their
+            // scroll positions and in-progress input survive tab switches;
+            // only the active one is shown.
+            body: SafeArea(
+              child: IndexedStack(
+                index: _currentIndex,
+                sizing: StackFit.expand,
+                children: pages,
+              ),
+            ),
             floatingActionButton: _currentIndex == 0
                 ? FloatingActionButton(
                     shape: RoundedRectangleBorder(

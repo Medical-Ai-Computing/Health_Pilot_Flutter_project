@@ -30,6 +30,10 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   Timer? _pollTimer;
 
+  /// True once the first fetch settles. Background (15s) polls must not blank
+  /// the conversation with a spinner — only the initial load shows one.
+  bool _initialLoadDone = false;
+
   @override
   void initState() {
     super.initState();
@@ -49,6 +53,7 @@ class _ChatScreenState extends State<ChatScreen> {
     final provider = context.read<ChatProvider>();
     await provider.fetchPrivateMessages(widget.senderId);
     if (!mounted) return;
+    if (!_initialLoadDone) setState(() => _initialLoadDone = true);
     provider.markRead(widget.senderId);
   }
 
@@ -93,9 +98,18 @@ class _ChatScreenState extends State<ChatScreen> {
                   builder: (context) => AudioCallScreen(id: widget.senderId)));
             },
             more: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('User details coming soon')),
-              );
+              // Same destination as tapping the avatar — open the peer's details.
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (_) => UserDetailScreen(
+                  peer: SuggestedPeer(
+                    id: int.tryParse(user.userId) ?? 0,
+                    fullName: user.displayName,
+                    age: 0,
+                    score: 0,
+                    reason: '',
+                  ),
+                ),
+              ));
             },
             senderId: user.userId,
           )),
@@ -105,7 +119,8 @@ class _ChatScreenState extends State<ChatScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           child: Column(
             children: [
-              if (provider.isLoadingThread(widget.senderId))
+              if (provider.isLoadingThread(widget.senderId) &&
+                  !_initialLoadDone)
                 const Expanded(
                   child: Center(child: CircularProgressIndicator()),
                 )

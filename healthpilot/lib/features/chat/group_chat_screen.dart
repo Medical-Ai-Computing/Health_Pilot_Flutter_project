@@ -29,6 +29,10 @@ class GroupChatScreen extends StatefulWidget {
 class _GroupChatScreenState extends State<GroupChatScreen> {
   Timer? _pollTimer;
 
+  /// True once the first fetch settles. Background (15s) polls must not blank
+  /// the conversation with a spinner — only the initial load shows one.
+  bool _initialLoadDone = false;
+
   @override
   void initState() {
     super.initState();
@@ -47,6 +51,7 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
     final provider = context.read<ChatProvider>();
     await provider.fetchGroupMessages(widget.groupId);
     if (!mounted) return;
+    if (!_initialLoadDone) setState(() => _initialLoadDone = true);
     provider.markRead(widget.groupId);
   }
 
@@ -97,7 +102,8 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           child: Column(
             children: [
-              if (provider.isLoadingThread(widget.groupId))
+              if (provider.isLoadingThread(widget.groupId) &&
+                  !_initialLoadDone)
                 const Expanded(
                   child: Center(child: CircularProgressIndicator()),
                 )

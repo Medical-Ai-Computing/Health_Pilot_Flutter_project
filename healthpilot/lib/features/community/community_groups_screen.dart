@@ -142,6 +142,11 @@ Future<void> showCreateCommunityGroupDialog(BuildContext context) async {
         ),
       ),
     );
+
+    // The dialog has been dismissed; dispose its controllers so they don't leak.
+    nameCtrl.dispose();
+    slugCtrl.dispose();
+    descCtrl.dispose();
   }
 
 class CommunityGroupCard extends StatelessWidget {
