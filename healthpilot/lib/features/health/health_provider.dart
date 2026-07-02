@@ -46,7 +46,7 @@ class HealthProvider extends ChangeNotifier {
       } catch (_) {
         _conditions = [];
       }
-      _symptoms = await _repo.fetchSymptoms();
+      _symptoms = await _safe(_repo.fetchSymptoms, const <HealthSymptom>[]);
       // Vitals, goals, summary and dashboard are independent and best-effort:
       // a failure in one shouldn't blank the whole health screen.
       _vitals = await _safe(_repo.fetchVitals, const <VitalLog>[]);

@@ -142,18 +142,84 @@ defect · **P2** = polish/minor. `(PLAUSIBLE)` = strong suspicion, confirm on-de
 
 ---
 
+# Round 2 — remaining feature areas (audit 2026-07-02)
+
+Deep read of the previously-deferred areas (done inline, no subagents). Health/medication providers
+and the vitals/goals form screens are solid (proper dispose, validation, mounted guards, loading/error
+states). Medication search works (controller listener filters the list). Findings below are **not yet
+fixed** — ordered by priority.
+
+## Progress (round 2)
+
+| # | Priority | Area | Item | Status |
+|---|---|---|---|---|
+| 13 | P1 | Subscription | Screen never loads live data (`load()` uncalled) | ✅ |
+| 14 | P1 | Subscription | Main "Next" button is dead (no action) | ✅ |
+| 15 | P2 | Subscription | Payment-method buttons non-selectable (`checker: null`) | ⏳ Deferred (payment gateway) |
+| 16 | P2 | Subscription | Checkout totals hardcoded, not from plan | ⏳ Deferred (payment gateway) |
+| 17 | P2 | Subscription | `SubscriptionFinishScreen.routeName` mislabeled | ✅ |
+| 18 | P3 | Profile | Dead `GestureDetector(onTap: (){})` around a field | ✅ |
+| 19 | P3 | Health | `fetchSymptoms()` not wrapped in `_safe` in `load()` | ✅ |
+
+> **Context:** the payment *gateway* flow was explicitly deferred earlier (GAP_FIX_PLAN Branch 3e).
+> Items 15–16 are part of that deferral; 13, 14, 17 are distinct defects independent of the gateway.
+
+### 13. Subscription screen never loads live data
+- [x] **Fixed** — converted `SubscriptionAndPaymentScreen` to a `StatefulWidget` and call
+  `SubscriptionProvider.load()` in a post-frame callback on mount (idempotent), so `premiumPlan`/price
+  now come from the backend (hardcoded value remains only as a pre-load fallback). `flutter analyze` clean.
+- **Where:** `lib/features/subscription/subscription_and_payment_screen.dart`
+
+### 14. Subscription main "Next" button is dead
+- [x] **Fixed** — the bottom "Next" `Button` now has a `buttonAction`: it selects the premium plan
+  (`premiumPlan?.id ?? 'premium'`) and pushes `PaymentMethodScreen`, matching the price button.
+  `flutter analyze` clean.
+- **Where:** `lib/features/subscription/subscription_and_payment_screen.dart`
+
+### 15. Payment-method buttons non-selectable
+- [ ] ⏳ **Deferred** — part of the payment-gateway flow (GAP_FIX_PLAN Branch 3e). Needs real
+  payment-method selection state before wiring `checker`.
+- **Where:** `subscription_and_payment_screen.dart` — all three `PaymentMethodButtons` pass
+  `checker: null`; `isChecked` is read-only from `paymentInfo`.
+
+### 16. Checkout totals are hardcoded
+- [ ] ⏳ **Deferred** — part of the payment-gateway flow. Totals should derive from the selected
+  plan/payment amount once the gateway is implemented.
+- **Where:** `subscription_and_payment_screen.dart` — Subtotal `24.42$`, TAX `1.57$`, Total `25.99$`
+  are literals.
+
+### 17. `SubscriptionFinishScreen.routeName` mislabeled
+- [x] **Fixed** — renamed `routeName` from `"/ForgotPasswordEmailCheck"` to `"/subscription-finish"`
+  (it was unused by named routing; navigation is via `MaterialPageRoute`). `flutter analyze` clean.
+- **Where:** `subscription_and_payment_screen.dart`
+
+### 18. Dead GestureDetector around a profile field
+- [x] **Fixed** — removed the no-op `GestureDetector(onTap: () {})` wrapper; the `TextFormField`
+  (which handles its own taps) is now a direct child of the `SizedBox`. `flutter analyze` clean.
+- **Where:** `lib/features/profile/personal_information_screen.dart`
+
+### 19. `fetchSymptoms()` not best-effort in HealthProvider.load
+- [x] **Fixed** — `fetchSymptoms()` is now wrapped in `_safe(...)` like the other loads, so a
+  non-`ApiException` no longer escapes `load()` and leaves `_loadStarted` stuck true. `flutter analyze` clean.
+- **Where:** `lib/features/health/health_provider.dart`
+
+---
+
 ## Coverage & remaining areas
 
-Directly reviewed in this sweep: **home, health-assessment flow, private chat, group chat, chatbot,
-community (groups + provider), nutrition add-meal**. `ChatProvider` optimistic-send and community peer
-flows looked sound.
+Round 1 — directly reviewed: **home, health-assessment flow, private chat, group chat, chatbot,
+community (groups + provider), nutrition add-meal**.
 
-**Not yet deep-read** (a parallel 16-agent audit was aborted by a session limit before covering them):
-- [ ] `lib/features/profile/*` (profile, settings, allergies, personal info)
-- [ ] `lib/features/health/*` (vitals, goals, dashboard, symptom tracking, log-vital, add-goal)
-- [ ] `lib/features/medication/*` (medications, reminders, history)
-- [ ] `lib/features/auth/*`, `lib/features/onboarding/*`, `lib/features/forgot_password/*`
-- [ ] `lib/features/subscription/subscription_and_payment_screen.dart`, `lib/features/ads/*`
+Round 2 — reviewed:
+- [x] `lib/features/subscription/*` (provider + full payment screen) — findings 13–17
+- [x] `lib/features/health/*` providers + `log_vital`/`add_goal` forms — clean (finding 19 minor)
+- [x] `lib/features/medication/*` provider + list/search — clean (search works via controller listener)
+- [x] `lib/features/profile/contacts_provider.dart` — clean; spot-checks on profile screens (finding 18)
+
+**Still not line-by-line read** (grep-swept for dead controls/TODO/coming-soon — none found beyond the
+above): `profile/personal_information_screen.dart`, `emergency_contact`/`personal_doctor` detail
+screens, `auth/onboarding/forgot_password` (partly validated in commit `62b703e`),
+`health/health_dashboard_screen.dart`, `symptom_tracking_screen.dart`, `ads/*`.
 
 Cross-cutting checks a follow-up pass should also run: dark-mode/theming, ScreenUtil vs
 `MediaQuery` sizing consistency, error-toast consistency, list keys/perf, image caching.

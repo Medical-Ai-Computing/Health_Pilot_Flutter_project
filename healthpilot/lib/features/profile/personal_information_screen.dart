@@ -556,21 +556,18 @@ class InputFields extends StatelessWidget {
               ),
             ],
           ),
-          GestureDetector(
-            onTap: () {},
-            child: SizedBox(
-              height: 45,
-              child: TextFormField(
-                controller: controller,
-                keyboardType: keyboardType,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5),
-                      borderSide: const BorderSide()),
-                  contentPadding: EdgeInsets.symmetric(
-                    vertical: 0,
-                    horizontal: screenWidth * 0.04,
-                  ),
+          SizedBox(
+            height: 45,
+            child: TextFormField(
+              controller: controller,
+              keyboardType: keyboardType,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(5),
+                    borderSide: const BorderSide()),
+                contentPadding: EdgeInsets.symmetric(
+                  vertical: 0,
+                  horizontal: screenWidth * 0.04,
                 ),
               ),
             ),

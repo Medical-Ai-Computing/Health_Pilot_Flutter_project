@@ -35,8 +35,26 @@ import 'package:healthpilot/features/profile/personal_doctor_personal_informatio
 import 'package:healthpilot/data/constants.dart';
 import 'package:healthpilot/features/profile/language_translation.dart';
 
-class SubscriptionAndPaymentScreen extends StatelessWidget {
+class SubscriptionAndPaymentScreen extends StatefulWidget {
   const SubscriptionAndPaymentScreen({super.key});
+
+  @override
+  State<SubscriptionAndPaymentScreen> createState() =>
+      _SubscriptionAndPaymentScreenState();
+}
+
+class _SubscriptionAndPaymentScreenState
+    extends State<SubscriptionAndPaymentScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // Fetch live plans/status so the price and premium plan id come from the
+    // backend instead of the hardcoded fallback. (load() is idempotent.)
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      context.read<SubscriptionProvider>().load();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -105,7 +123,15 @@ class SubscriptionAndPaymentScreen extends StatelessWidget {
                         buttonText: "Next",
                         buttoncolor: cs.primary,
                         textColor: cs.onPrimary,
-                        fontsize: 18),
+                        fontsize: 18,
+                        buttonAction: () {
+                          // Proceed with the recommended (premium) plan.
+                          context
+                              .read<SubscriptionProvider>()
+                              .selectPlan(premiumPlan?.id ?? 'premium');
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (_) => const PaymentMethodScreen()));
+                        }),
                   )
                 ],
               ),
@@ -1036,7 +1062,7 @@ class PersonalpayInfo extends StatelessWidget {
 /// process. It provides a confirmation message and allows users to finish the process.
 
 class SubscriptionFinishScreen extends StatelessWidget {
-  static const routeName = "/ForgotPasswordEmailCheck";
+  static const routeName = "/subscription-finish";
   const SubscriptionFinishScreen({
     super.key,
   });
