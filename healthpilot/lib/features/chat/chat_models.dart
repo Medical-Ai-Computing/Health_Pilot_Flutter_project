@@ -152,6 +152,10 @@ class ChatGroup {
   final int participantCount;
   final List<DirectMessage> groupChatHistory;
 
+  /// Preview text from the API's `last_message` on the group list, shown until
+  /// the full [groupChatHistory] is fetched. Null when the group has no messages.
+  final String? lastMessagePreview;
+
   ChatGroup({
     required this.groupId,
     required this.groupName,
@@ -162,6 +166,7 @@ class ChatGroup {
     this.membersId = const [],
     this.participantCount = 0,
     this.groupChatHistory = const [],
+    this.lastMessagePreview,
   });
 
   /// Best available member count: the API's `participant_count` when present,
@@ -177,6 +182,7 @@ class ChatGroup {
     bool? isMuted,
     bool? isPro,
     bool? isJoined,
+    String? lastMessagePreview,
   }) =>
       ChatGroup(
         groupId: groupId,
@@ -188,6 +194,7 @@ class ChatGroup {
         membersId: membersId ?? this.membersId,
         participantCount: participantCount ?? this.participantCount,
         groupChatHistory: groupChatHistory ?? this.groupChatHistory,
+        lastMessagePreview: lastMessagePreview ?? this.lastMessagePreview,
       );
 
   factory ChatGroup.fromJson(Map<String, dynamic> json) {
@@ -219,6 +226,9 @@ class ChatGroup {
       groupChatHistory: (json['group_chat_history'] as List<dynamic>? ?? [])
           .map((e) => DirectMessage.fromJson(e as Map<String, dynamic>))
           .toList(),
+      lastMessagePreview: json['last_message'] is Map<String, dynamic>
+          ? (json['last_message'] as Map<String, dynamic>)['content'] as String?
+          : null,
     );
   }
 }

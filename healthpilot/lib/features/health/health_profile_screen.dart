@@ -615,7 +615,9 @@ class HealthProfileModel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    return Row(
+    return InkWell(
+      onTap: () => onTap(),
+      child: Row(
       children: [
         Stack(
           alignment: Alignment.center,
@@ -693,6 +695,7 @@ class HealthProfileModel extends StatelessWidget {
           ),
         ),
       ],
+      ),
     );
   }
 }

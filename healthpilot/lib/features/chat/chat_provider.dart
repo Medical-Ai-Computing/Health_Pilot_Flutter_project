@@ -132,7 +132,7 @@ class ChatProvider extends ChangeNotifier {
               name: g.groupName,
               lastMessage: g.groupChatHistory.isNotEmpty
                   ? g.groupChatHistory.last.content
-                  : '',
+                  : (g.lastMessagePreview ?? ''),
               isPro: g.isPro,
               isGroupChat: true,
             )),

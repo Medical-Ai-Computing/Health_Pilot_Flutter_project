@@ -9,22 +9,6 @@ import 'package:healthpilot/features/articles/article_provider.dart';
 import 'article_detail_screen.dart';
 import 'article_screen.dart';
 
-class Reply {
-  Reply({
-    required this.isUSer,
-    required this.replier,
-    required this.reply,
-    required this.replyDate,
-    required this.replierImage,
-  });
-
-  final String replier;
-  final String reply;
-  final String replyDate;
-  final String replierImage;
-  final bool isUSer;
-}
-
 class ArticleCommentScreen extends StatefulWidget {
   const ArticleCommentScreen({
     super.key,
@@ -146,7 +130,7 @@ class _ArticleCommentScreenState extends State<ArticleCommentScreen> {
                     height: screenHeight * 0.4,
                     decoration: BoxDecoration(
                         image: DecorationImage(
-                            image: AssetImage(article.imageUrl),
+                            image: article.imageProvider,
                             fit: BoxFit.cover)),
                     child: SafeArea(
                       child: Column(
@@ -346,7 +330,6 @@ class _ArticleCommentScreenState extends State<ArticleCommentScreen> {
                                       post: c.text,
                                       postedDate: _formatDate(c.createdAt),
                                       poster: c.authorName,
-                                      replies: const [],
                                     );
                                   },
                                 ),
@@ -409,7 +392,6 @@ class CommentCard extends StatefulWidget {
   final String post;
 
   final String imageUrl;
-  final List<Reply> replies;
 
   const CommentCard({
     super.key,
@@ -419,7 +401,6 @@ class CommentCard extends StatefulWidget {
     required this.postedDate,
     required this.post,
     required this.imageUrl,
-    required this.replies,
   });
 
   @override
@@ -499,138 +480,6 @@ class _CommentCardState extends State<CommentCard> {
                       });
                     },
                   )),
-
-              // is used to show the replies for  a comment
-              if (showReplies && widget.replies.isNotEmpty) ...[
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      for (var reply in widget.replies)
-                        ReplyCard(
-                          screenWidth: widget.screenWidth,
-                          screenHeight: widget.screenHeight,
-                          replier: reply.replier,
-                          repliedDate: reply.replyDate,
-                          reply: reply.reply,
-                          imageUrl: reply.replierImage,
-                          isUser: reply.isUSer,
-                          replies: const [],
-                        ),
-                    ],
-                  ),
-                ),
-              ],
-            ],
-          ),
-        )
-      ],
-    );
-  }
-}
-
-// Mostly the same to comment card but for the current user it will prvide a remove option on the reaction secton of this ReplyCard
-class ReplyCard extends StatefulWidget {
-  final double screenWidth;
-  final double screenHeight;
-  final String replier;
-  final String repliedDate;
-  final String reply;
-  final bool isUser;
-  final String imageUrl;
-  final List<Reply> replies;
-
-  const ReplyCard({
-    super.key,
-    required this.screenWidth,
-    required this.screenHeight,
-    required this.replier,
-    required this.repliedDate,
-    required this.reply,
-    required this.imageUrl,
-    required this.replies,
-    required this.isUser,
-  });
-
-  @override
-  State<ReplyCard> createState() => _ReplyCardState();
-}
-
-class _ReplyCardState extends State<ReplyCard> {
-  bool showReplies = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        ListTile(
-          leading: CircleAvatar(
-            maxRadius: widget.screenWidth * 0.04,
-            backgroundImage: AssetImage(widget.imageUrl),
-            // child: Image.asset(
-            //   imageUrl,
-            //   fit: BoxFit.cover,
-            // ),
-          ),
-          title: Text(
-            widget.replier,
-            style: const TextStyle(
-              fontFamily: 'PlusJakartaSans',
-              fontSize: 12.0,
-              fontWeight: FontWeight.w600,
-              height: 25.0 / 20.0,
-              letterSpacing: -0.165,
-            ),
-          ),
-          trailing: Padding(
-            padding: EdgeInsets.only(right: widget.screenWidth * 0.12),
-            child: Text(widget.repliedDate,
-                style: const TextStyle(
-                    fontFamily: 'PlusJakartaSans',
-                    fontWeight: FontWeight.w400,
-                    fontSize: 10)),
-          ),
-        ),
-        SizedBox(
-          height: widget.screenHeight * 0.01,
-        ),
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: widget.screenWidth * 0.024),
-          child: Column(
-            children: [
-              Padding(
-                padding: EdgeInsets.symmetric(
-                    horizontal: widget.screenWidth * 0.029),
-                child: Text(
-                  widget.reply,
-                  textAlign: TextAlign.justify,
-                  style: const TextStyle(
-                    fontSize: 10,
-                    color: Colors.black,
-                    fontFamily: 'Plus Jakarta Sans',
-                    fontWeight: FontWeight.w400,
-                    height: 13 / 10,
-                    letterSpacing: 0,
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: widget.screenHeight * 0.01,
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(
-                    horizontal: widget.screenWidth * 0.024),
-                child: ReplyCommentIcons(
-                  onPrssed: () {
-                    setState(() {
-                      showReplies = !showReplies;
-                    });
-                  },
-                  isUser: widget.isUser,
-                ),
-              ),
             ],
           ),
         )
@@ -702,85 +551,6 @@ class _CommentIconsState extends State<CommentIcons> {
         ),
         Row(
           children: [
-            Image.asset('assets/Icons/pen.png'),
-          ],
-        )
-      ],
-    );
-  }
-}
-
-//  This is a section that i used it to be in the bottom of the reply and comment card but for the reply card it will show the delete option if the replier is the curret user
-
-class ReplyCommentIcons extends StatefulWidget {
-  final VoidCallback onPrssed;
-  final bool isUser;
-  const ReplyCommentIcons({
-    super.key,
-    required this.onPrssed,
-    required this.isUser,
-  });
-
-  @override
-  // ignore: library_private_types_in_public_api
-  _ReplyCommentIconsState createState() => _ReplyCommentIconsState();
-}
-
-class _ReplyCommentIconsState extends State<ReplyCommentIcons> {
-  bool isToogled = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Row(
-          children: [
-            GestureDetector(
-              onTap: () {
-                setState(() {
-                  isToogled = !isToogled;
-                });
-              },
-              child: ColorFiltered(
-                colorFilter: isToogled
-                    ? const ColorFilter.mode(Colors.blue, BlendMode.srcIn)
-                    : const ColorFilter.mode(Colors.black38, BlendMode.srcIn),
-                child: Image.asset(AssetPaths.articleLikePng),
-              ),
-            ),
-            const SizedBox(
-              width: 10,
-            ),
-            GestureDetector(
-                onTap: widget.onPrssed,
-                child: const Text(
-                  'Reply',
-                  style: TextStyle(
-                      fontFamily: 'PlusJakartaSans',
-                      fontWeight: FontWeight.w400,
-                      fontSize: 10),
-                )),
-            const SizedBox(
-              width: 15,
-            ),
-            const Text(
-              'Report',
-              style: TextStyle(
-                  fontFamily: 'PlusJakartaSans',
-                  fontWeight: FontWeight.w400,
-                  fontSize: 10),
-            ),
-          ],
-        ),
-        Row(
-          children: [
-            widget.isUser
-                ? Image.asset('assets/Icons/trash.png')
-                : const SizedBox(),
-            const SizedBox(
-              width: 5,
-            ),
             Image.asset('assets/Icons/pen.png'),
           ],
         )

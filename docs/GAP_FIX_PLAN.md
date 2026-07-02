@@ -1,8 +1,9 @@
 # Gap Fix Plan
 
 Derived from comparing the live Swagger spec at
-`https://pulsminds-healthpilot.chickenkiller.com/swagger.json` (103 endpoints)
-against the Flutter app codebase (remote repos, providers, screens, navigation).
+`https://pulsminds-healthpilot.chickenkiller.com/swagger.json`
+(**81 paths / 119 path+method operations**) against the Flutter app codebase
+(remote repos, providers, screens, navigation).
 
 Branches are ordered by priority. Each branch must keep `flutter analyze` clean.
 
@@ -19,6 +20,7 @@ Branches are ordered by priority. Each branch must keep `flutter analyze` clean.
 | 7 — Health repo minor endpoints | ✅ Done | |
 | 8 — Community↔chat bridge | ⏳ Deferred | Blocked on backend shipping `chat_group_id` |
 | 9 — UI dead controls sweep | ✅ Done | |
+| 10 — Field-level parse/render re-audit | ✅ Done | Added after re-probing live payloads — see below |
 
 ---
 
@@ -31,11 +33,19 @@ the corresponding feature flag is `true`.
 | File | Fix | Status |
 |---|---|---|
 | `remote_subscription_repository.dart` `cancelSubscription()` | Changed `DELETE` → **`POST`** to match Swagger `POST /subscriptions/cancel/` | ✅ `743ed87` |
-| `remote_nutrition_repository.dart` `fetchHistory()` | Rewired from `GET /history/` → **`GET /meals/`** | ✅ `743ed87` |
-| `remote_nutrition_repository.dart` `addMeal()` | Rewired from `POST /history/` → **`POST /meals/`** | ✅ `743ed87` |
-| `remote_nutrition_repository.dart` `fetchGoals()` / `saveGoals()` | Rewired from `/settings/` → **`/goals/`** | ✅ `743ed87` |
+| `remote_nutrition_repository.dart` `fetchHistory()` | Standardised on `GET /meals/` | ✅ `743ed87` |
+| `remote_nutrition_repository.dart` `addMeal()` | Standardised on `POST /meals/` | ✅ `743ed87` |
+| `remote_nutrition_repository.dart` `fetchGoals()` / `saveGoals()` | Standardised on `/goals/` | ✅ `743ed87` |
 | `remote_health_repository.dart` `clearSymptoms()` | Made a no-op (backend has no bulk `DELETE /health/symptoms/`) | ✅ `743ed87` |
 | `remote_health_repository.dart` `fetchConditions()` | Returns `[]` — conditions endpoint doesn't exist on backend | ⏳ Won't fix (no backend endpoint) |
+
+> **Correction (re-audit 2026-07-02):** the original rationale for the nutrition
+> rewires ("`/history/` and `/settings/` don't exist") was wrong. Live probing
+> shows `/nutrition/history/` == `/nutrition/meals/` and `/nutrition/settings/`
+> == `/nutrition/goals/` return **identical payloads** — they are backend
+> aliases and both always worked. The rewires were harmless standardisation, not
+> bug fixes. `fetchConditions()` returning `[]` and `clearSymptoms()` as a no-op
+> are still correct (those endpoints genuinely don't exist).
 
 **Acceptance:** `FF_* = true` for affected features does not throw 404/405.
 
@@ -179,6 +189,29 @@ Single pass to wire or remove all remaining no-op interactive elements:
 
 ---
 
+## Branch 10 — Field-level parse/render re-audit (P1) ✅
+
+**Context:** Branches 1–9 fixed endpoint URLs, verbs and UI wiring, but did **not**
+audit whether model `fromJson` field names/types and widget rendering match the
+**actual** response bodies. A second pass re-probed every live endpoint group
+(authenticated) and compared real payloads against the app's parsing/rendering.
+Health, nutrition, chat, community, notifications and profile all checked out.
+Articles and subscriptions did not — five confirmed bugs, all latent until the
+matching `FF_*` flag is `true`:
+
+| # | Severity | Bug | Fix |
+|---|---|---|---|
+| 1 | High | Live `image_url` is a **network** URL but 3 article screens drew it with `Image.asset`/`AssetImage` (crash/broken image) | Added `ArticleFeedItem.imageProvider` (Network vs Asset by `http` prefix); swapped `article_screen.dart`, `article_detail_screen.dart`, `article_comment_screen.dart` |
+| 2 | High | `SubscriptionPlan`/`SubscriptionStatus.fromJson` read `price_monthly`/`plan_id`/`is_active`/`expires_at`; live sends `price`/`plan`/`is_premium`/`end_date` → non-nullable cast `TypeError` on every response | Renamed keys (null-safe, legacy fallbacks); `isPremium` for plans derived from `id != 'free'` |
+| 3 | Minor | Article like/comment counts read `likes`/`comments_count`; live sends `like_count`/`comment_count` → always 0 | Read live keys with legacy fallback |
+| 4 | UX | Detail screen never fetched `GET /articles/{id}/`, so it showed the feed `summary`, never the full `body` | Made `ArticleDetail` stateful; fetches full article via `fetchArticle(id)` on open |
+| 5 | Minor | `ChatGroup` ignored the list endpoint's `last_message`, so group previews were blank until history loaded | Parse `last_message.content` into `lastMessagePreview`; used as thread subtitle fallback |
+
+**Acceptance:** `flutter analyze` clean (no new issues); article images render,
+subscription screens don't throw, article detail shows full body.
+
+---
+
 ## Appendix — Full endpoint coverage matrix
 
 | Endpoint group | Total | Implemented | Missing | Branch |
@@ -187,12 +220,17 @@ Single pass to wire or remove all remaining no-op interactive elements:
 | Profile | 8 | 8 | 0 | — |
 | Health | 20 | 17 | 3 (PUT goal, individual fetch stubs removed) | 7 |
 | Medications | 12 | 12 | 0 | — |
-| Articles | 10 | 10 | 0 | — |
+| Articles | 10 | 10 | 0 (image/body/count parsing fixed) | 10 |
 | Assessment | 4 | 4 | 0 | 6 |
 | Chat | 20 | 18 | 2 skipped intentionally (alias routes) | — |
 | Community | 9 | 9 | 0 | — |
 | Notifications | 4 | 4 | 0 | 3a |
-| Subscriptions | 8 | 8 | 0 | — |
+| Subscriptions | 8 | 8 | 0 (plan/status parsing fixed) | 10 |
 | Nutrition | 10 | 10 | 0 | — |
 | Ads | 2 | 2 | 0 | — |
 | **Total** | **121** | **117** | **4** | |
+
+> **Note (re-audit 2026-07-02):** these per-group tallies are the original
+> author's hand-count and don't sum to the authoritative spec figure
+> (**81 paths / 119 path+method operations**, re-probed 2026-07-02). Treat the
+> matrix as a coverage sketch, not an exact endpoint census.

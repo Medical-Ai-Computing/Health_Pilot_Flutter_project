@@ -220,8 +220,8 @@ class ArticleCard extends StatelessWidget {
                 topRight: Radius.circular(10),
                 topLeft: Radius.circular(10),
               ),
-              child: Image.asset(
-                item.imageUrl,
+              child: Image(
+                image: item.imageProvider,
                 width: double.infinity,
                 height: screenHeight * 0.12,
                 fit: BoxFit.cover,

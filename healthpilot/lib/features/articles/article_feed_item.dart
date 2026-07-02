@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 
 /// One article row for the feed + detail route.
@@ -27,6 +28,13 @@ class ArticleFeedItem {
   String get formattedPublishedDate =>
       DateFormat.yMMMMd('en_US').format(publishedAt);
 
+  /// Live articles carry a network `image_url`; legacy/fallback rows carry a
+  /// bundled asset path. Pick the right [ImageProvider] so screens can render
+  /// either without crashing on an `Image.asset(<http url>)`.
+  ImageProvider get imageProvider => imageUrl.startsWith('http')
+      ? NetworkImage(imageUrl)
+      : AssetImage(imageUrl) as ImageProvider;
+
   ArticleFeedItem copyWith({int? likes, int? commentsCount}) => ArticleFeedItem(
         id: id,
         title: title,
@@ -55,8 +63,11 @@ class ArticleFeedItem {
                     as num?)
                 ?.toInt() ??
             0,
-        likes: (json['likes'] as num?)?.toInt() ?? 0,
-        commentsCount: (json['comments_count'] as num?)?.toInt() ?? 0,
+        likes: ((json['like_count'] ?? json['likes']) as num?)?.toInt() ?? 0,
+        commentsCount:
+            ((json['comment_count'] ?? json['comments_count']) as num?)
+                    ?.toInt() ??
+                0,
       );
 
   Map<String, dynamic> toJson() => {
