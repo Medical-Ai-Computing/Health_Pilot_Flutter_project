@@ -221,9 +221,9 @@ All items assume the flag/screen is actually reached; theming items only bite in
 | 20 | P1 | Theme | Onboarding/personal-info text invisible in dark mode | ✅ |
 | 21 | P1 | Errors | ~10 screens ignore provider `error` status (blank/empty instead of retry) | ✅ |
 | 22 | P1 | Sizing | `size.height * x` for gaps/app-bars/call-screens → huge gaps & overflow | ✅ |
-| 23 | P2 | Theme | Community User-Detail panel unreadable in dark mode | ⬜ |
-| 24 | P2 | Theme | Auth signup/login labels low-contrast in dark mode | ⬜ |
-| 25 | P2 | Theme | Shared `CustomAppBar` hardcodes white bar + dark title (6 screens) | ⬜ |
+| 23 | P2 | Theme | Community User-Detail panel unreadable in dark mode | ✅ |
+| 24 | P2 | Theme | Auth signup/login labels low-contrast in dark mode | ✅ |
+| 25 | P2 | Theme | Shared `CustomAppBar` hardcodes white bar + dark title | ❌ Not a bug |
 | 26 | P2 | Lists | Keyless stateful `CommentCard` rows → expand-state binds to wrong comment | ✅ |
 | 27 | P2 | Images | Article images have no error fallback (`DecorationImage` can't show one) | ◑ Partial |
 | 28 | P2 | Errors | Join/Leave group failures are silent (optimistic update never reverts) | ✅ |
@@ -279,20 +279,27 @@ All items assume the flag/screen is actually reached; theming items only bite in
   tablets; fixing it cleanly also requires converting the app-bar's `size.height*0.06` avatar/content to
   fixed sizes, else they'd overflow a fixed bar). Low impact on phones — deferred.
 
-### 23. Community User-Detail panel unreadable in dark mode  ✅confirmed
-- [ ] **Fix** — `chat/user_detail_screen.dart` (name/subtitle :323/:332, Info fields :458/:469, TabBar
-  unselected :168, empty-states :25 all `Color.fromRGBO(42,42,42,*)`). Use `cs.onSurface`/
-  `onSurfaceVariant`; let the TabBar inherit theme label colors.
+### 23. Community User-Detail panel unreadable in dark mode  ✅ Fixed
+- [x] **Fixed** — themed `chat/user_detail_screen.dart`: name/subtitle → `cs.onSurface`/
+  `onSurfaceVariant`; TabBar `unselectedLabelColor` → `cs.onSurfaceVariant`; `InfoBuilder` field
+  label/value → theme colors; the shared tab-placeholder now takes `context` and uses
+  `cs.onSurfaceVariant`; header tint → `cs.surfaceContainerHighest`. (Left the avatar white ring, the
+  'Community' badge on its blue-gradient chip, and the switch track tints — intentional fixed/decorative
+  colors.) `flutter analyze` clean.
 
-### 24. Auth signup/login labels low-contrast in dark mode  ✅confirmed
-- [ ] **Fix** — `onboarding/signup_and_login_screen.dart` (:204,:391,:607,:760,:805,:837). Use
-  `cs.onSurfaceVariant` for hints, `cs.onSurface` for labels.
+### 24. Auth signup/login labels low-contrast in dark mode  ✅ Fixed
+- [x] **Fixed** — themed the 7 dark-text literals in `onboarding/signup_and_login_screen.dart`
+  (account-message, "Or", "Didn't receive an email?", input hint, T&C RichText spans, bottom action
+  text) to `cs.onSurfaceVariant`/`cs.onSurface`. Kept the theme approach rather than pinning light,
+  because the screen has a white-by-design Google sign-in button (`IconContainor`) that would blend on a
+  white background. `flutter analyze` clean.
 
-### 25. Shared `CustomAppBar` hardcodes white bar + dark title  ✅confirmed
-- [ ] **Fix** — `lib/widget/custom_app_bar_title.dart:19,:39` (`backgroundColor: Colors.white`, title
-  `Color.fromRGBO(42,42,42,1)`); reused by 6 screens (article detail/comment, gadgets ×2, get-started,
-  personal-info). In dark mode a bright white bar sits over the dark body. Remove the hardcoded bg
-  (inherit `appBarTheme`), set title to `cs.onSurface`.
+### 25. Shared `CustomAppBar` hardcodes white bar + dark title  ❌ Not a bug (mis-attributed)
+- [x] **Investigated — no fix needed.** The shared `lib/widget/custom_app_bar_title.dart` (white bar) is
+  imported by **only `get_started_screen`** — a light-flow screen already pinned white in #20, so the
+  white bar is correct/consistent there. The `article_detail`/`article_comment`/`gadgets` "CustomAppBar"
+  references are **separate classes** (each defined in its own file), not this shared widget. The finder
+  over-counted via the class-name collision.
 
 ### 26. Keyless stateful `CommentCard` rows → wrong expand state  ✅ Fixed
 - [x] **Fixed** — added `key: ValueKey(c.id)` to the `CommentCard` in the article-comments

@@ -11,18 +11,18 @@ import 'package:provider/provider.dart';
 
 import '../../data/constants.dart';
 
-Widget _profileSharedTabPlaceholder(String message) {
+Widget _profileSharedTabPlaceholder(BuildContext context, String message) {
   return Center(
     child: Padding(
       padding: const EdgeInsets.all(24),
       child: Text(
         message,
         textAlign: TextAlign.center,
-        style: const TextStyle(
+        style: TextStyle(
           fontFamily: 'Plus Jakarta Sans',
           fontSize: 14,
           fontWeight: FontWeight.w400,
-          color: Color.fromRGBO(42, 42, 42, 0.55),
+          color: Theme.of(context).colorScheme.onSurfaceVariant,
         ),
       ),
     ),
@@ -165,7 +165,8 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                   ),
                 ),
                 TabBar(
-                  unselectedLabelColor: const Color.fromRGBO(42, 42, 42, 0.45),
+                  unselectedLabelColor:
+                      Theme.of(context).colorScheme.onSurfaceVariant,
                   labelColor: const Color.fromRGBO(110, 182, 255, 1),
                   isScrollable: true,
                   labelPadding: const EdgeInsets.symmetric(horizontal: 20),
@@ -192,11 +193,11 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                 Expanded(
                   child: TabBarView(
                     children: [
-                      _profileSharedTabPlaceholder('No media shared yet.'),
-                      _profileSharedTabPlaceholder('No files shared yet.'),
-                      _profileSharedTabPlaceholder('No audio shared yet.'),
-                      _profileSharedTabPlaceholder('No links shared yet.'),
-                      _profileSharedTabPlaceholder('No groups in common yet.'),
+                      _profileSharedTabPlaceholder(context, 'No media shared yet.'),
+                      _profileSharedTabPlaceholder(context, 'No files shared yet.'),
+                      _profileSharedTabPlaceholder(context, 'No audio shared yet.'),
+                      _profileSharedTabPlaceholder(context, 'No links shared yet.'),
+                      _profileSharedTabPlaceholder(context, 'No groups in common yet.'),
                     ],
                   ),
                 ),
@@ -229,8 +230,9 @@ class CustomeAppBarForUserDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final cs = Theme.of(context).colorScheme;
     return Container(
-      color: const Color.fromRGBO(110, 182, 255, 0.05),
+      color: cs.surfaceContainerHighest,
       margin: EdgeInsets.only(top: size.height * 0.01),
       child: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -316,20 +318,20 @@ class CustomeAppBarForUserDetailScreen extends StatelessWidget {
                       Text(
                         title,
                         overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
+                        style: TextStyle(
                             fontFamily: 'Plus Jakarta Sans',
                             fontSize: 16,
                             fontWeight: FontWeight.w400,
-                            color: Color.fromRGBO(42, 42, 42, 1)),
+                            color: cs.onSurface),
                       ),
                       Text(
                         subTitle,
                         overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
+                        style: TextStyle(
                             fontWeight: FontWeight.w300,
                             fontSize: 12,
                             fontFamily: 'Plus Jakarta Sans',
-                            color: Color.fromRGBO(42, 42, 42, 1)),
+                            color: cs.onSurfaceVariant),
                       ),
                     ],
                   ),
@@ -451,22 +453,22 @@ class InfoBuilder extends StatelessWidget {
         children: [
           Text(
             content,
-            style: const TextStyle(
+            style: TextStyle(
                 fontWeight: FontWeight.w400,
                 fontFamily: 'Plus Jakarta Sans',
                 fontSize: 14,
-                color: Color.fromRGBO(42, 42, 42, 1)),
+                color: Theme.of(context).colorScheme.onSurface),
           ),
           const SizedBox(
             height: 5,
           ),
           Text(
             title,
-            style: const TextStyle(
+            style: TextStyle(
                 fontWeight: FontWeight.w400,
                 fontFamily: 'Plus Jakarta Sans',
                 fontSize: 10,
-                color: Color.fromRGBO(42, 42, 42, 0.5)),
+                color: Theme.of(context).colorScheme.onSurfaceVariant),
           ),
         ],
       ),

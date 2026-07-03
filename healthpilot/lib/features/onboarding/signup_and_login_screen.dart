@@ -201,7 +201,7 @@ class _SignupAndLoginScreenState extends State<SignupAndLoginScreen> {
                       : "By creating an account, unlock complete features and access Personal data",
                   screenHeight: screenHeight,
                   screenWidth: screenWidth,
-                  color: const Color.fromRGBO(42, 42, 42, 0.5),
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                   letterHeight: 1.3,
                   padding: EdgeInsets.symmetric(
                       horizontal: screenWidth * 0.1,
@@ -384,11 +384,11 @@ class _SignupAndLoginScreenState extends State<SignupAndLoginScreen> {
                         Padding(
                           padding: EdgeInsets.symmetric(
                               horizontal: screenWidth * 0.01),
-                          child: const Text(
+                          child: Text(
                             "Or",
                             style: TextStyle(
                               fontFamily: 'PlusJakartaSans',
-                              color: Color.fromRGBO(42, 42, 42, 0.5),
+                              color: Theme.of(context).colorScheme.onSurfaceVariant,
                               fontSize: 15,
                               fontWeight: FontWeight.w400,
                               letterSpacing: -0.17,
@@ -596,7 +596,7 @@ class ConfirmEmailScreen extends StatelessWidget {
                     padding: EdgeInsets.symmetric(vertical: screenHeight * 0.1),
                     child: Column(
                       children: [
-                        const Text(
+                        Text(
                           'Didn’t receive an email?',
                           style: TextStyle(
                             fontFamily: 'PlusJakartaSans',
@@ -604,7 +604,7 @@ class ConfirmEmailScreen extends StatelessWidget {
                             fontWeight: FontWeight.w500,
                             height: 1.25,
                             letterSpacing: -0.165,
-                            color: Colors.black,
+                            color: Theme.of(context).colorScheme.onSurface,
                           ),
                           textAlign: TextAlign.left,
                         ),
@@ -756,8 +756,8 @@ class InputFields extends StatelessWidget {
               ),
               decoration: InputDecoration(
                 hintText: hintText,
-                hintStyle: const TextStyle(
-                  color: Color.fromRGBO(42, 42, 42, 0.5),
+                hintStyle: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                   fontFamily: 'PlusJakartaSans',
                   fontSize: 14,
                   fontWeight: FontWeight.w300,
@@ -801,8 +801,8 @@ class TermsPolicyText extends StatelessWidget {
     return RichText(
       text: TextSpan(
           text: "I have read and agree to the",
-          style: const TextStyle(
-            color: Color.fromRGBO(42, 42, 42, 0.5),
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
             fontFamily: 'PlusJakartasSans',
             fontSize: 11,
             fontWeight: FontWeight.w400,
@@ -831,10 +831,10 @@ class TermsPolicyText extends StatelessWidget {
                           );
                         });
                   }),
-            const TextSpan(
+            TextSpan(
                 text: ' and ',
                 style: TextStyle(
-                  color: Color.fromRGBO(42, 42, 42, 0.5),
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                   fontFamily: 'PlusJakartasSans',
                   fontSize: 12,
                   fontWeight: FontWeight.w400,
@@ -981,7 +981,7 @@ class BottomActionTexts extends StatelessWidget {
       text: TextSpan(
           text: normalTexts,
           style: TextStyle(
-            color: const Color.fromRGBO(42, 42, 42, 1),
+            color: Theme.of(context).colorScheme.onSurface,
             fontFamily: 'PlusJakartasSans',
             fontSize: fontSize,
             fontWeight: FontWeight.w400,
