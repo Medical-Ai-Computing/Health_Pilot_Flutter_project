@@ -324,6 +324,10 @@ class _ArticleCommentScreenState extends State<ArticleCommentScreen> {
                                   itemBuilder: (context, index) {
                                     final c = comments[index];
                                     return CommentCard(
+                                      // Stable identity so the row's expand
+                                      // state doesn't bind to the wrong comment
+                                      // when the list is replaced after a post.
+                                      key: ValueKey(c.id),
                                       screenWidth: screenWidth,
                                       screenHeight: screenHeight,
                                       imageUrl: 'assets/images/mohamed.png',

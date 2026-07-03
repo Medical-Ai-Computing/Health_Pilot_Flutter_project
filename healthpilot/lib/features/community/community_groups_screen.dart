@@ -170,14 +170,20 @@ class CommunityGroupCard extends StatelessWidget {
                 ),
                 if (group.isMember)
                   OutlinedButton(
-                    onPressed: () =>
-                        context.read<CommunityProvider>().leaveGroup(group.id),
+                    onPressed: () => _membership(
+                      context,
+                      context.read<CommunityProvider>().leaveGroup(group.id),
+                      'Could not leave group. Please try again.',
+                    ),
                     child: const Text('Leave'),
                   )
                 else
                   FilledButton(
-                    onPressed: () =>
-                        context.read<CommunityProvider>().joinGroup(group.id),
+                    onPressed: () => _membership(
+                      context,
+                      context.read<CommunityProvider>().joinGroup(group.id),
+                      'Could not join group. Please try again.',
+                    ),
                     child: const Text('Join'),
                   ),
               ],
@@ -227,6 +233,19 @@ class CommunityGroupCard extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  /// Awaits a join/leave [action] and surfaces a SnackBar on failure (the
+  /// provider only applies its optimistic update on success, so there's nothing
+  /// to revert — the gap was the silent failure + missing feedback).
+  Future<void> _membership(
+      BuildContext context, Future<void> action, String errorMsg) async {
+    final messenger = ScaffoldMessenger.of(context);
+    try {
+      await action;
+    } catch (_) {
+      messenger.showSnackBar(SnackBar(content: Text(errorMsg)));
+    }
   }
 
   /// Opt-in entry to the linked GroupChat: joins the chat room (idempotent),

@@ -247,6 +247,13 @@ class ArticleCard extends StatelessWidget {
                 width: double.infinity,
                 height: screenHeight * 0.12,
                 fit: BoxFit.cover,
+                // Fall back to a bundled asset if the network image 404s/fails.
+                errorBuilder: (_, __, ___) => Image.asset(
+                  'assets/images/old_woman.png',
+                  width: double.infinity,
+                  height: screenHeight * 0.12,
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
             SizedBox(height: screenHeight * 0.01),
