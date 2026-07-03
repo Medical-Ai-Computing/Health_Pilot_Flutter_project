@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:healthpilot/core/widgets/error_retry_view.dart';
 import 'package:healthpilot/data/asset_paths.dart';
 import 'package:healthpilot/features/articles/article_detail_screen.dart';
 import 'package:healthpilot/features/articles/article_feed_item.dart';
@@ -153,23 +154,44 @@ class _ArticleScreenState extends State<ArticleScreen> {
                   onSuffixTap: _showFilterShell,
                 ),
                 Expanded(
-                  child: ListView.builder(
-                    itemCount: visible.length,
-                    itemBuilder: (context, index) {
-                      return ArticleCard(
-                        screenWidth: screenWidth,
-                        screenHeight: screenHeight,
-                        item: visible[index],
-                        onOpen: _openDetail,
-                        onShare: (item) {
-                          Share.share(
-                            '${item.title}\n\n${item.body}',
-                            subject: item.title,
-                          );
-                        },
-                      );
-                    },
-                  ),
+                  child: (provider.status == ArticleLoadStatus.loading &&
+                          provider.articles.isEmpty)
+                      ? const Center(child: CircularProgressIndicator())
+                      : (provider.status == ArticleLoadStatus.error &&
+                              provider.articles.isEmpty)
+                          ? ErrorRetryView(
+                              onRetry: () =>
+                                  context.read<ArticleProvider>().refresh(),
+                            )
+                          : visible.isEmpty
+                              ? Center(
+                                  child: Text(
+                                    _query.isEmpty
+                                        ? 'No articles yet.'
+                                        : 'No articles match your search.',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyLarge
+                                        ?.copyWith(color: cs.onSurfaceVariant),
+                                  ),
+                                )
+                              : ListView.builder(
+                                  itemCount: visible.length,
+                                  itemBuilder: (context, index) {
+                                    return ArticleCard(
+                                      screenWidth: screenWidth,
+                                      screenHeight: screenHeight,
+                                      item: visible[index],
+                                      onOpen: _openDetail,
+                                      onShare: (item) {
+                                        Share.share(
+                                          '${item.title}\n\n${item.body}',
+                                          subject: item.title,
+                                        );
+                                      },
+                                    );
+                                  },
+                                ),
                 ),
               ],
             );

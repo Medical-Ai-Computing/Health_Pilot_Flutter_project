@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:healthpilot/core/widgets/error_retry_view.dart';
 import 'package:healthpilot/features/notifications/notification_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -41,6 +42,12 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
           if (notif.status == NotificationLoadStatus.loading &&
               notif.items.isEmpty) {
             return const Center(child: CircularProgressIndicator());
+          }
+          if (notif.status == NotificationLoadStatus.error &&
+              notif.items.isEmpty) {
+            return ErrorRetryView(
+              onRetry: () => context.read<NotificationProvider>().refresh(),
+            );
           }
           if (notif.items.isEmpty) {
             return Center(

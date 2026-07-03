@@ -31,6 +31,12 @@ class ArticleProvider extends ChangeNotifier {
     }
   }
 
+  /// Re-run the feed load (used by the error-state retry affordance).
+  Future<void> refresh() async {
+    _loadStarted = false;
+    await load();
+  }
+
   // ── Feed extras ──────────────────────────────────────────────────────────────
   Future<List<ArticleFeedItem>> fetchRecommended() => _repo.fetchRecommended();
 

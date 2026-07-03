@@ -158,7 +158,7 @@ class _GeneralChatScreenState extends State<GeneralChatScreen> {
                             itemComparator: (a, b) => a.name.compareTo(b.name),
                             groupComparator: (v1, v2) => v1.compareTo(v2),
                             groupSeparatorBuilder: (value) => SizedBox(
-                              height: size.height * 0.2,
+                              height: 12,
                             ),
                           ),
                         ),
@@ -206,7 +206,7 @@ class _GeneralChatScreenState extends State<GeneralChatScreen> {
                         a.displayName.compareTo(b.displayName),
                     groupComparator: (v1, v2) => v1.compareTo(v2),
                     groupSeparatorBuilder: (value) => SizedBox(
-                      height: size.height * 0.2,
+                      height: 12,
                     ),
                   ),
                 ),
@@ -382,7 +382,7 @@ class _GeneralChatScreenState extends State<GeneralChatScreen> {
                                 a.groupName.compareTo(b.groupName),
                             groupComparator: (v1, v2) => v1.compareTo(v2),
                             groupSeparatorBuilder: (value) => SizedBox(
-                              height: size.height * 0.2,
+                              height: 12,
                             ),
                           ),
                         ),
