@@ -309,6 +309,26 @@ class ChatProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Re-sends a failed outgoing direct message: drops the failed copy, then
+  /// sends its content fresh (mirrors the AI chatbot's tap-to-retry).
+  Future<void> resendDirect(String targetUserId, DirectMessage failed) async {
+    if (!_users.any((u) => u.userId == targetUserId)) return;
+    _users = [
+      for (final u in _users)
+        if (u.userId == targetUserId)
+          u.copyWith(
+            chatHistory: u.chatHistory
+                .where((m) =>
+                    !(m.timestamp == failed.timestamp && m.sendFailed))
+                .toList(),
+          )
+        else
+          u,
+    ];
+    notifyListeners();
+    await sendDirect(targetUserId, failed.senderId, failed.content);
+  }
+
   /// Replaces the pending message identified by [ts] in [userId]'s thread.
   /// Re-finds the user by id so a concurrent reload can't corrupt an index.
   void _replaceUserMessage(
@@ -480,6 +500,25 @@ class ChatProvider extends ChangeNotifier {
       _loadingThreads.remove(groupId);
       notifyListeners();
     }
+  }
+
+  /// Re-sends a failed outgoing group message (drops the failed copy first).
+  Future<void> resendGroup(String groupId, DirectMessage failed) async {
+    if (!_groups.any((g) => g.groupId == groupId)) return;
+    _groups = [
+      for (final g in _groups)
+        if (g.groupId == groupId)
+          g.copyWith(
+            groupChatHistory: g.groupChatHistory
+                .where((m) =>
+                    !(m.timestamp == failed.timestamp && m.sendFailed))
+                .toList(),
+          )
+        else
+          g,
+    ];
+    notifyListeners();
+    await sendGroup(groupId, failed.senderId, failed.content);
   }
 
   void _markGroupFailed(String groupId, DateTime timestamp) {

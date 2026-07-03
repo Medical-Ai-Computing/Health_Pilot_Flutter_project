@@ -368,6 +368,11 @@ class _GroupChatListState extends State<_GroupChatList> {
             senderName: name,
             avatarUrl:
                 (avatarUrl == null || avatarUrl.isEmpty) ? null : avatarUrl,
+            onRetry: (!isIncoming && chat.sendFailed)
+                ? () => context
+                    .read<ChatProvider>()
+                    .resendGroup(widget.senderId, chat)
+                : null,
           );
         },
       ),
@@ -384,12 +389,14 @@ class _GroupMessageBubble extends StatelessWidget {
     required this.isIncoming,
     required this.senderName,
     this.avatarUrl,
+    this.onRetry,
   });
 
   final DirectMessage message;
   final bool isIncoming;
   final String senderName;
   final String? avatarUrl;
+  final VoidCallback? onRetry;
 
   // Deterministic accent per sender so names are visually distinct.
   static const _palette = [
@@ -479,7 +486,7 @@ class _GroupMessageBubble extends StatelessWidget {
                       const SizedBox(height: 4),
                       Text(
                         message.sendFailed
-                            ? 'Failed'
+                            ? 'Failed — tap to retry'
                             : message.isDelivered
                                 ? 'Sent'
                                 : 'Sending…',
@@ -499,7 +506,12 @@ class _GroupMessageBubble extends StatelessWidget {
       ),
     );
 
-    if (!isIncoming) return bubble;
+    if (!isIncoming) {
+      if (message.sendFailed && onRetry != null) {
+        return GestureDetector(onTap: onRetry, child: bubble);
+      }
+      return bubble;
+    }
     // Incoming: avatar gutter + bubble.
     return Padding(
       padding: const EdgeInsets.only(right: 32),

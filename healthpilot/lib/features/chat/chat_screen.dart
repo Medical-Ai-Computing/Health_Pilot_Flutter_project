@@ -453,7 +453,7 @@ class _ChatListState extends State<ChatList> {
                   borderRadius: BorderRadius.circular(10),
                 );
 
-          return Bubble(
+          final bubble = Bubble(
             alignment:
                 isIncoming ? Alignment.centerLeft : Alignment.centerRight,
             radius: const Radius.circular(10),
@@ -502,7 +502,7 @@ class _ChatListState extends State<ChatList> {
                           const SizedBox(height: 4),
                           Text(
                             chat.sendFailed
-                                ? 'Failed'
+                                ? 'Failed — tap to retry'
                                 : chat.isDelivered
                                     ? 'Sent'
                                     : 'Sending…',
@@ -519,6 +519,15 @@ class _ChatListState extends State<ChatList> {
                       ),
             ),
           );
+          if (!isIncoming && chat.sendFailed) {
+            return GestureDetector(
+              onTap: () => context
+                  .read<ChatProvider>()
+                  .resendDirect(widget.senderId, chat),
+              child: bubble,
+            );
+          }
+          return bubble;
         },
       ),
     );
