@@ -205,6 +205,155 @@ fixed** — ordered by priority.
 
 ---
 
+# Round 3 — cross-cutting sweep (5-dimension subagent audit, 2026-07-03)
+
+Adversarial subagent sweep over 5 cross-cutting dimensions (theming, sizing, errors, lists, images):
+20 raw findings → **8 confirmed, 3 plausible, 9 refuted**. (The verifier refuted the "most colors are
+intentional" and "constraints.biggest is safe" notes — those were finders confirming *non*-issues —
+plus several low/enhancement items.) Synthesis + completeness-critic didn't run (session limit), so
+this section is synthesized by hand from the surviving findings. **None fixed yet** — priority-ordered.
+All items assume the flag/screen is actually reached; theming items only bite in **dark mode**.
+
+## Progress (round 3)
+
+| # | Pri | Dim | Item | Status |
+|---|---|---|---|---|
+| 20 | P1 | Theme | Onboarding/personal-info text invisible in dark mode | ⬜ |
+| 21 | P1 | Errors | ~10 screens ignore provider `error` status (blank/empty instead of retry) | ⬜ |
+| 22 | P1 | Sizing | `size.height * x` for gaps/app-bars/call-screens → huge gaps & overflow | ⬜ |
+| 23 | P2 | Theme | Community User-Detail panel unreadable in dark mode | ⬜ |
+| 24 | P2 | Theme | Auth signup/login labels low-contrast in dark mode | ⬜ |
+| 25 | P2 | Theme | Shared `CustomAppBar` hardcodes white bar + dark title (6 screens) | ⬜ |
+| 26 | P2 | Lists | Keyless stateful `CommentCard` rows → expand-state binds to wrong comment | ⬜ |
+| 27 | P2 | Images | Article images have no error fallback (`DecorationImage` can't show one) | ⬜ |
+| 28 | P2 | Errors | Join/Leave group failures are silent (optimistic update never reverts) | ⬜ |
+| 29 | P2 | Errors | Failed peer-chat messages show "Failed" but no retry (chatbot has retry) | ⬜ |
+| 30 | P3 | Errors | Load catches discard `ApiException.userMessage` (generic text only) | ⬜ |
+| 31 | P3 | Errors | No shared error-snackbar helper (~29 ad-hoc `SnackBar`s, dup strings) | ⬜ |
+| 32 | P3 | Sizing | Widths sized from screen **height** (wrong axis) — landscape/tablet ⚠️plausible | ⬜ |
+| 33 | P3 | Images | No persistent image cache (`cached_network_image` absent) — re-downloads | ⬜ |
+| 34 | P3 | Images | No loading placeholder on network images (blank avatar/hero) | ⬜ |
+| 35 | P3 | Sizing | Keyboard shrinks percentage-sized forms; `resizeToAvoidBottomInset` inconsistent | ⬜ |
+| 36 | P3 | Lists | Chatbot transcript uses `ListView(children:[...])` not `.builder` (perf) | ⬜ |
+| 37 | P3 | Sizing | ScreenUtil setup is effectively dead (~4 uses); no single scaling strategy | ⬜ |
+
+> **Not bugs** (verifier-refuted, recorded so they aren't re-flagged): most `Colors.white`/brand-blue
+> literals are intentional fixed colors (white text on colored buttons/headers/snackbars); the
+> `LayoutBuilder(constraints.biggest)` usages are all top-level under a bounded Scaffold body, so
+> there's no infinite/zero-constraint trap.
+
+### 20. Onboarding / personal-info text invisible in dark mode  ✅confirmed
+- [ ] **Fix**
+- **Where:** `lib/features/personal_info/initial_info_1.dart` (27 dark-gray + 5 `Colors.black` text
+  uses; e.g. :92,:149,:193,:551), `initial_info_2/3/4.dart`, `get_started_screen.dart` (:125,:231,:323).
+  The literal `Color.fromRGBO(4x,4x,4x,*)` appears ~70× across 14 files.
+- **Failure:** in dark mode the Scaffold flips to the dark surface but field labels (`Colors.black`),
+  unit captions and RulerPicker digits/ticks (`Color.fromRGBO(42,42,42,*)`) stay dark → the user can't
+  read labels or see which ruler value is selected.
+- **Fix:** drop explicit colors (inherit themed `textTheme`) or use `cs.onSurface`/`cs.onSurfaceVariant`;
+  feed the RulerPicker scale/line styles a theme color.
+
+### 21. ~10 screens never render provider `error` state  ✅confirmed
+- [ ] **Fix**
+- **Where:** 12 providers set `LoadStatus.error`, but only `medications_screen.dart:205` and
+  `food_nutrition_history_screen.dart:48` branch on it. Ignored by `health_dashboard_screen.dart:53`,
+  `notifications_screen.dart`, `community_hub_screen.dart`, `chat_screen.dart`, `article_screen.dart`,
+  `profile_screen.dart`, etc.
+- **Failure:** offline / backend 5xx → the screen shows a normal "no data yet" empty state instead of
+  an error + retry, so the user thinks they have no goals/articles/notifications.
+- **Fix:** add a `status == *.error` branch with a retry affordance (reuse the pattern at
+  `food_nutrition_history_screen.dart:378`).
+
+### 22. Full-screen-height percentages for gaps / app-bars / call screens  ✅confirmed
+- [ ] **Fix**
+- **Where:** `chat/general_chat_screen.dart:161,:209` (`SizedBox(height: size.height * 0.2)` list
+  separators), `chat_screen.dart:87` & `group_chat_screen.dart:87` (app-bar `preferredSize` height
+  `size.height*0.15`), `chat/audio_call_screen.dart` & `vidoe_call_screen.dart` (stacked 0.55/0.53 +
+  0.3 + 0.25). ~289 `.height * x` uses across 31 files.
+- **Failure:** ~170px+ empty gaps between chat groups; oversized app-bars on tablets; call screens sum
+  height-percentages that exceed the viewport on small/landscape devices → RenderFlex overflow stripes.
+- **Fix:** fixed spacing for separators/headers, `kToolbarHeight` for app-bars, `Flexible`/`Expanded`
+  inside a bounded Column for call layouts.
+
+### 23. Community User-Detail panel unreadable in dark mode  ✅confirmed
+- [ ] **Fix** — `chat/user_detail_screen.dart` (name/subtitle :323/:332, Info fields :458/:469, TabBar
+  unselected :168, empty-states :25 all `Color.fromRGBO(42,42,42,*)`). Use `cs.onSurface`/
+  `onSurfaceVariant`; let the TabBar inherit theme label colors.
+
+### 24. Auth signup/login labels low-contrast in dark mode  ✅confirmed
+- [ ] **Fix** — `onboarding/signup_and_login_screen.dart` (:204,:391,:607,:760,:805,:837). Use
+  `cs.onSurfaceVariant` for hints, `cs.onSurface` for labels.
+
+### 25. Shared `CustomAppBar` hardcodes white bar + dark title  ✅confirmed
+- [ ] **Fix** — `lib/widget/custom_app_bar_title.dart:19,:39` (`backgroundColor: Colors.white`, title
+  `Color.fromRGBO(42,42,42,1)`); reused by 6 screens (article detail/comment, gadgets ×2, get-started,
+  personal-info). In dark mode a bright white bar sits over the dark body. Remove the hardcoded bg
+  (inherit `appBarTheme`), set title to `cs.onSurface`.
+
+### 26. Keyless stateful `CommentCard` rows → wrong expand state  ✅confirmed
+- [ ] **Fix** — `articles/article_comment_screen.dart:322-335`: `ListView.builder` with no key on the
+  stateful `CommentCard` (holds `showReplies`); `_comments` is wholesale-replaced on every post/reload,
+  so after insert/delete the expand state attaches to the wrong comment. Add `key: ValueKey(c.id)`.
+
+### 27. Article images have no error fallback  ✅confirmed
+- [ ] **Fix** — `articles/article_feed_item.dart:34` (`imageProvider` returns bare `NetworkImage`),
+  consumed by `article_detail_screen.dart:90` & `article_comment_screen.dart:132` via
+  `DecorationImage` (which **cannot** take an `errorBuilder`) and `article_screen.dart:224`. A 404/
+  expired/offline image renders a blank hero/thumbnail. Render via `Image.network(errorBuilder:,
+  loadingBuilder:)` (Stack for the hero) instead of `DecorationImage`.
+
+### 28. Join / Leave group failures are silent  ✅confirmed
+- [ ] **Fix** — `community/community_groups_screen.dart:174,:180` call `joinGroup/leaveGroup` with no
+  try/catch; provider applies the optimistic `isMember`/`isJoined` flip only on success. On failure the
+  button never updates and (unawaited) the async error is unhandled. Also `chat/general_chat_screen.dart:288,:320`.
+  Wrap in try/catch, revert optimism, SnackBar `e.userMessage`.
+
+### 29. Failed peer-chat messages have no retry  ⚠️plausible
+- [ ] **Fix** — `chat_screen.dart:504` & `group_chat_screen.dart:481` show a "Failed" label with no tap
+  handler, whereas `chatbot_screen.dart:327` offers "tap to retry". Add a resend on tap mirroring
+  `AiAssistantProvider.retry`. (Verifier for this dimension didn't run — confirm on device.)
+
+### 30. Load catches discard `ApiException.userMessage`  ⚠️plausible
+- [ ] **Fix** — `article_provider.dart:27`, `notification_provider.dart:34`, `chat_provider.dart:241`,
+  `community_provider.dart:68`, `nutrition_provider.dart:33` use bare `catch (_)` and store no message,
+  so even error branches show generic text. Catch `on ApiException catch (e)` and store `e.userMessage`.
+
+### 31. No shared error-snackbar helper  ℹ️ (P3, refactor)
+- [ ] **Fix** — ~29 inline `SnackBar(content: Text(...))` sites with ~18 near-duplicate "Could not X.
+  Try again." strings; only one local helper exists. Add a `context.showErrorSnack(ApiException)`
+  extension and route action failures through it.
+
+### 32. Widths sized from screen **height** (wrong axis)  ⚠️plausible
+- [ ] **Fix** — `chat/user_detail_screen.dart:311` (`width: size.height * 0.23` for a text column),
+  `chat_screen.dart:189-190`, `group_chat_screen.dart:162`, `public_profile_screen.dart:99,:267`
+  (~17 sites). On landscape/short/tablet screens these collapse or mis-proportion. Size widths from the
+  width axis or use `Expanded`/`Flexible`/fixed px.
+
+### 33. No persistent image cache  ℹ️ (P3, enhancement)
+- [ ] **Fix** — `cached_network_image` absent; avatars (`core/widgets/user_avatar.dart:46`, used in
+  scrolling chat/community lists) and article images re-download on cold start. Add
+  `cached_network_image` and route `UserAvatar` + article images through it (also fixes #27/#34).
+
+### 34. No loading placeholder on network images  ℹ️ (P3)
+- [ ] **Fix** — `user_avatar.dart:46`, `personal_information_screen.dart:92`, article image sites have
+  no `loadingBuilder` → blank circle/hero until download resolves. Add a placeholder.
+
+### 35. Keyboard shrinks percentage-sized forms  ℹ️ (P3)
+- [ ] **Fix** — `medications_screen.dart:109` leaves `resizeToAvoidBottomInset` default true while
+  sizing from `constraints.biggest`, so the form contracts/reflows while typing; 8 other Scaffolds set
+  it false. Pick one strategy (keyboard-independent base size, or scroll focused field into view).
+
+### 36. Chatbot transcript uses `ListView(children:)` not `.builder`  ℹ️ (P3, perf)
+- [ ] **Fix** — `chatbot_screen.dart:230` builds every bubble up-front and rebuilds all on each provider
+  notify. Switch to `ListView.builder`.
+
+### 37. ScreenUtil setup effectively dead  ℹ️ (P3, cleanup)
+- [ ] **Fix** — `main.dart:182` `ScreenUtilInit(designSize:(411,852))` but only ~4 `.sp/.w` uses; fonts
+  size off `screenWidth*x` (ignores text-scale/accessibility). Either commit to ScreenUtil everywhere
+  or drop it and use theme text styles + `MediaQuery.textScaler`.
+
+---
+
 ## Coverage & remaining areas
 
 Round 1 — directly reviewed: **home, health-assessment flow, private chat, group chat, chatbot,
@@ -221,5 +370,10 @@ above): `profile/personal_information_screen.dart`, `emergency_contact`/`persona
 screens, `auth/onboarding/forgot_password` (partly validated in commit `62b703e`),
 `health/health_dashboard_screen.dart`, `symptom_tracking_screen.dart`, `ads/*`.
 
-Cross-cutting checks a follow-up pass should also run: dark-mode/theming, ScreenUtil vs
-`MediaQuery` sizing consistency, error-toast consistency, list keys/perf, image caching.
+Cross-cutting checks — **done in Round 3** (dark-mode/theming, ScreenUtil vs `MediaQuery` sizing,
+error-toast consistency, list keys/perf, image caching) → findings #20–#37.
+
+Still un-swept cross-cutting concerns (the completeness-critic didn't run — session limit): text
+scaling / `textScaler` accessibility, RTL / localization (the app has a language screen but strings are
+hardcoded), safe-area/notch handling, minimum tap-target sizes, and first-paint/splash. Worth a
+follow-up pass.
