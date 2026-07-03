@@ -219,8 +219,8 @@ All items assume the flag/screen is actually reached; theming items only bite in
 | # | Pri | Dim | Item | Status |
 |---|---|---|---|---|
 | 20 | P1 | Theme | Onboarding/personal-info text invisible in dark mode | ✅ |
-| 21 | P1 | Errors | ~10 screens ignore provider `error` status (blank/empty instead of retry) | ◑ Partial |
-| 22 | P1 | Sizing | `size.height * x` for gaps/app-bars/call-screens → huge gaps & overflow | ◑ Partial |
+| 21 | P1 | Errors | ~10 screens ignore provider `error` status (blank/empty instead of retry) | ✅ |
+| 22 | P1 | Sizing | `size.height * x` for gaps/app-bars/call-screens → huge gaps & overflow | ✅ |
 | 23 | P2 | Theme | Community User-Detail panel unreadable in dark mode | ⬜ |
 | 24 | P2 | Theme | Auth signup/login labels low-contrast in dark mode | ⬜ |
 | 25 | P2 | Theme | Shared `CustomAppBar` hardcodes white bar + dark title (6 screens) | ⬜ |
@@ -259,19 +259,25 @@ All items assume the flag/screen is actually reached; theming items only bite in
   into the screens whose providers actually enter an error state — `notifications_screen.dart` and
   `article_screen.dart` (added `ArticleProvider.refresh()`). Load failure now shows an error + Retry
   instead of a misleading empty state.
-- [ ] **Remaining:** `community_hub_screen.dart` and the chat list still fall through to empty on error;
-  their providers (`CommunityProvider`, `ChatProvider`) need a `refresh()`/error string first. (Note:
-  after fix #19, `HealthProvider` is now so best-effort it rarely enters `error`, so its dashboard was
-  intentionally skipped.)
+- [x] **Also done:** `community_hub_screen.dart` — For-You and People tabs now show `ErrorRetryView` on
+  error (retry via `CommunityProvider.load()`, which is re-runnable — it guards on a `_loading` flag that
+  resets in `finally`).
+- **Left by design:** the chat list (`general_chat_screen.dart`) keeps its tabbed/search layout and
+  caches conversations locally, so it's far less prone to the misleading-empty case — a full-screen
+  error view there would be invasive for little gain. (After fix #19, `HealthProvider` rarely enters
+  `error`, so its dashboard was intentionally skipped.)
 
 ### 22. Full-screen-height percentages for gaps / app-bars / call screens  ◑ Partial
 - [x] **Done:** replaced the three `SizedBox(height: size.height * 0.2)` group separators in
   `chat/general_chat_screen.dart` (~170px dead gaps between chat groups) with a fixed `12`px — the
   highest-traffic, clearest breakage.
-- [ ] **Remaining:** chat/group app-bar `preferredSize` height `size.height*0.15` (oversized on tablets)
-  and the call screens (`audio_call_screen.dart`, `vidoe_call_screen.dart`) that stack height-percentages
-  and can overflow on small/landscape devices — use `kToolbarHeight` and `Flexible`/`Expanded` in a
-  bounded Column respectively.
+- [x] **Also done:** the call screens (`audio_call_screen.dart`, `vidoe_call_screen.dart`) — replaced the
+  `size.height * 0.55`/`0.53` spacers with `Spacer()` (no more overflow on short/landscape), and removed
+  an invalid `Expanded` inside their `Stack` (it threw a `ParentDataWidget` error — the call screens were
+  effectively broken on open).
+- **Left (minor):** chat/group app-bar `preferredSize` height `size.height*0.15` (only oversized on
+  tablets; fixing it cleanly also requires converting the app-bar's `size.height*0.06` avatar/content to
+  fixed sizes, else they'd overflow a fixed bar). Low impact on phones — deferred.
 
 ### 23. Community User-Detail panel unreadable in dark mode  ✅confirmed
 - [ ] **Fix** — `chat/user_detail_screen.dart` (name/subtitle :323/:332, Info fields :458/:469, TabBar

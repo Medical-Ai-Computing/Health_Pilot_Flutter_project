@@ -38,11 +38,11 @@ class AudioCallScreen extends StatelessWidget {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          Expanded(
-            child: Image.asset(
-              audioCallBackImg,
-              fit: BoxFit.cover,
-            ),
+          // StackFit.expand already stretches this to fill; an Expanded here is
+          // invalid inside a Stack (throws a ParentDataWidget error).
+          Image.asset(
+            audioCallBackImg,
+            fit: BoxFit.cover,
           ),
           Column(
             children: [
@@ -79,9 +79,7 @@ class AudioCallScreen extends StatelessWidget {
                   fontSize: 20,
                 ),
               ),
-              SizedBox(
-                height: size.height * 0.55,
-              ),
+              const Spacer(),
               Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: Row(

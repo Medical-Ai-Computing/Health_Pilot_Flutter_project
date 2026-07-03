@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:healthpilot/core/auth/auth_state.dart';
+import 'package:healthpilot/core/widgets/error_retry_view.dart';
 import 'package:healthpilot/core/widgets/user_avatar.dart';
 import 'package:healthpilot/features/chat/chat_provider.dart';
 import 'package:healthpilot/features/chat/chat_screen.dart';
@@ -82,6 +83,13 @@ class _ForYouTab extends StatelessWidget {
         provider.groups.isEmpty) {
       return const Center(child: CircularProgressIndicator());
     }
+    if (provider.status == CommunityStatus.error &&
+        provider.suggestedPeers.isEmpty &&
+        provider.groups.isEmpty) {
+      return ErrorRetryView(
+        onRetry: () => context.read<CommunityProvider>().load(),
+      );
+    }
     final peers = provider.suggestedPeers.take(3).toList();
     final groups = provider.groups.take(3).toList();
 
@@ -132,6 +140,13 @@ class _PeopleTab extends StatelessWidget {
     if (provider.status == CommunityStatus.loading &&
         provider.suggestedPeers.isEmpty) {
       return const Center(child: CircularProgressIndicator());
+    }
+    if (provider.status == CommunityStatus.error &&
+        provider.suggestedPeers.isEmpty &&
+        provider.connections.isEmpty) {
+      return ErrorRetryView(
+        onRetry: () => context.read<CommunityProvider>().load(),
+      );
     }
     final connections =
         provider.connections.where((c) => c.status == 'accepted').toList();
