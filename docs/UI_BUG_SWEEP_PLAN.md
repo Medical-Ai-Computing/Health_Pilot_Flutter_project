@@ -227,14 +227,14 @@ All items assume the flag/screen is actually reached; theming items only bite in
 | 26 | P2 | Lists | Keyless stateful `CommentCard` rows → expand-state binds to wrong comment | ✅ |
 | 27 | P2 | Images | Article images have no error fallback (`DecorationImage` can't show one) | ◑ Partial |
 | 28 | P2 | Errors | Join/Leave group failures are silent (optimistic update never reverts) | ✅ |
-| 29 | P2 | Errors | Failed peer-chat messages show "Failed" but no retry (chatbot has retry) | ⬜ |
-| 30 | P3 | Errors | Load catches discard `ApiException.userMessage` (generic text only) | ⬜ |
+| 29 | P2 | Errors | Failed peer-chat messages show "Failed" but no retry (chatbot has retry) | ✅ |
+| 30 | P3 | Errors | Load catches discard `ApiException.userMessage` (generic text only) | ✅ |
 | 31 | P3 | Errors | No shared error-snackbar helper (~29 ad-hoc `SnackBar`s, dup strings) | ⬜ |
 | 32 | P3 | Sizing | Widths sized from screen **height** (wrong axis) — landscape/tablet ⚠️plausible | ⬜ |
 | 33 | P3 | Images | No persistent image cache (`cached_network_image` absent) — re-downloads | ⬜ |
 | 34 | P3 | Images | No loading placeholder on network images (blank avatar/hero) | ⬜ |
 | 35 | P3 | Sizing | Keyboard shrinks percentage-sized forms; `resizeToAvoidBottomInset` inconsistent | ⬜ |
-| 36 | P3 | Lists | Chatbot transcript uses `ListView(children:[...])` not `.builder` (perf) | ⬜ |
+| 36 | P3 | Lists | Chatbot transcript uses `ListView(children:[...])` not `.builder` (perf) | ✅ |
 | 37 | P3 | Sizing | ScreenUtil setup is effectively dead (~4 uses); no single scaling strategy | ⬜ |
 
 > **Not bugs** (verifier-refuted, recorded so they aren't re-flagged): most `Colors.white`/brand-blue
@@ -320,15 +320,17 @@ All items assume the flag/screen is actually reached; theming items only bite in
 - [ ] **Remaining (minor):** the chat-group join in `general_chat_screen.dart` still lacks the same
   wrapper.
 
-### 29. Failed peer-chat messages have no retry  ⚠️plausible
-- [ ] **Fix** — `chat_screen.dart:504` & `group_chat_screen.dart:481` show a "Failed" label with no tap
-  handler, whereas `chatbot_screen.dart:327` offers "tap to retry". Add a resend on tap mirroring
-  `AiAssistantProvider.retry`. (Verifier for this dimension didn't run — confirm on device.)
+### 29. Failed peer-chat messages have no retry  ✅ Fixed
+- [x] **Fixed** — both direct and group chat now show "Failed — tap to retry" and resend on tap via
+  new `ChatProvider.resendDirect`/`resendGroup` (drop the failed copy, re-send fresh) — matching the AI
+  chatbot's affordance.
 
-### 30. Load catches discard `ApiException.userMessage`  ⚠️plausible
-- [ ] **Fix** — `article_provider.dart:27`, `notification_provider.dart:34`, `chat_provider.dart:241`,
-  `community_provider.dart:68`, `nutrition_provider.dart:33` use bare `catch (_)` and store no message,
-  so even error branches show generic text. Catch `on ApiException catch (e)` and store `e.userMessage`.
+### 30. Load catches discard `ApiException.userMessage`  ◑ Partial
+- [x] **Done:** `ArticleProvider`, `NotificationProvider`, `CommunityProvider` now catch
+  `on ApiException catch (e)` and store `e.userMessage` in a new `error` getter, which their
+  `ErrorRetryView` now displays.
+- [ ] **Remaining:** `ChatProvider`/`NutritionProvider` load paths still use bare `catch (_)` (their
+  screens don't currently surface a provider error message).
 
 ### 31. No shared error-snackbar helper  ℹ️ (P3, refactor)
 - [ ] **Fix** — ~29 inline `SnackBar(content: Text(...))` sites with ~18 near-duplicate "Could not X.
@@ -355,9 +357,9 @@ All items assume the flag/screen is actually reached; theming items only bite in
   sizing from `constraints.biggest`, so the form contracts/reflows while typing; 8 other Scaffolds set
   it false. Pick one strategy (keyboard-independent base size, or scroll focused field into view).
 
-### 36. Chatbot transcript uses `ListView(children:)` not `.builder`  ℹ️ (P3, perf)
-- [ ] **Fix** — `chatbot_screen.dart:230` builds every bubble up-front and rebuilds all on each provider
-  notify. Switch to `ListView.builder`.
+### 36. Chatbot transcript uses `ListView(children:)` not `.builder`  ✅ Fixed
+- [x] **Fixed** — `chatbot_screen.dart` now uses `ListView.builder` (itemCount/itemBuilder) so bubbles
+  build lazily instead of all up-front.
 
 ### 37. ScreenUtil setup effectively dead  ℹ️ (P3, cleanup)
 - [ ] **Fix** — `main.dart:182` `ScreenUtilInit(designSize:(411,852))` but only ~4 `.sp/.w` uses; fonts

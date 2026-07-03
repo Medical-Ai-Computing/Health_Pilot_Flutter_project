@@ -87,6 +87,7 @@ class _ForYouTab extends StatelessWidget {
         provider.suggestedPeers.isEmpty &&
         provider.groups.isEmpty) {
       return ErrorRetryView(
+        message: provider.error,
         onRetry: () => context.read<CommunityProvider>().load(),
       );
     }
@@ -145,6 +146,7 @@ class _PeopleTab extends StatelessWidget {
         provider.suggestedPeers.isEmpty &&
         provider.connections.isEmpty) {
       return ErrorRetryView(
+        message: provider.error,
         onRetry: () => context.read<CommunityProvider>().load(),
       );
     }

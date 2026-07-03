@@ -227,13 +227,12 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
             ),
             // ── message list ─────────────────────────────────────────────────
             Expanded(
-              child: ListView(
+              child: ListView.builder(
                 controller: _scrollController,
                 padding:
                     const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-                children: [
-                  for (final msg in messages) _bubbleForMessage(msg),
-                ],
+                itemCount: messages.length,
+                itemBuilder: (context, i) => _bubbleForMessage(messages[i]),
               ),
             ),
             // ── suggestion chips ─────────────────────────────────────────────

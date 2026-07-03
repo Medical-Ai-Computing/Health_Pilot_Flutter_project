@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:healthpilot/core/network/api_error.dart';
 import 'package:healthpilot/core/repositories/i_article_repository.dart';
 import 'package:healthpilot/features/articles/article_feed_item.dart';
 
@@ -9,10 +10,12 @@ class ArticleProvider extends ChangeNotifier {
 
   List<ArticleFeedItem> _articles = [];
   ArticleLoadStatus _status = ArticleLoadStatus.idle;
+  String? _error;
   bool _loadStarted = false;
 
   List<ArticleFeedItem> get articles => List.unmodifiable(_articles);
   ArticleLoadStatus get status => _status;
+  String? get error => _error;
 
   ArticleProvider(this._repo);
 
@@ -20,10 +23,14 @@ class ArticleProvider extends ChangeNotifier {
     if (_loadStarted) return;
     _loadStarted = true;
     _status = ArticleLoadStatus.loading;
+    _error = null;
     notifyListeners();
     try {
       _articles = await _repo.fetchArticles();
       _status = ArticleLoadStatus.loaded;
+    } on ApiException catch (e) {
+      _error = e.userMessage;
+      _status = ArticleLoadStatus.error;
     } catch (_) {
       _status = ArticleLoadStatus.error;
     } finally {

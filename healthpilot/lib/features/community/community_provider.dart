@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+import 'package:healthpilot/core/network/api_error.dart';
 import 'package:healthpilot/core/repositories/i_community_repository.dart';
 import 'package:healthpilot/features/community/community_models.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -16,6 +17,7 @@ class CommunityProvider extends ChangeNotifier {
   List<ConnectionRequest> _sentRequests = [];
   List<CommunityGroup> _groups = [];
   CommunityStatus _status = CommunityStatus.idle;
+  String? _error;
   bool _loading = false;
 
   List<CommunityGroup> get groups => List.unmodifiable(_groups);
@@ -28,6 +30,7 @@ class CommunityProvider extends ChangeNotifier {
   List<ConnectionRequest> get sentRequests =>
       List.unmodifiable(_sentRequests.where((r) => r.status == 'pending'));
   CommunityStatus get status => _status;
+  String? get error => _error;
 
   CommunityProvider(this._repo);
 
@@ -46,6 +49,7 @@ class CommunityProvider extends ChangeNotifier {
     if (_loading) return;
     _loading = true;
     _status = CommunityStatus.loading;
+    _error = null;
     notifyListeners();
     try {
       await _loadSentPeerIds();
@@ -65,6 +69,9 @@ class CommunityProvider extends ChangeNotifier {
       }
       _cleanupAcceptedSent();
       _status = CommunityStatus.loaded;
+    } on ApiException catch (e) {
+      _error = e.userMessage;
+      _status = CommunityStatus.error;
     } catch (_) {
       _status = CommunityStatus.error;
     } finally {

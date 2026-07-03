@@ -46,6 +46,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
           if (notif.status == NotificationLoadStatus.error &&
               notif.items.isEmpty) {
             return ErrorRetryView(
+              message: notif.error,
               onRetry: () => context.read<NotificationProvider>().refresh(),
             );
           }

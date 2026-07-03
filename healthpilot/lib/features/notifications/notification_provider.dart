@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:healthpilot/core/network/api_error.dart';
 import 'package:healthpilot/core/repositories/i_notification_repository.dart';
 import 'package:healthpilot/features/notifications/notification_models.dart';
 
@@ -10,11 +11,13 @@ class NotificationProvider extends ChangeNotifier {
   List<AppNotification> _items = [];
   int _unreadCount = 0;
   NotificationLoadStatus _status = NotificationLoadStatus.idle;
+  String? _error;
   bool _loadStarted = false;
 
   List<AppNotification> get items => List.unmodifiable(_items);
   int get unreadCount => _unreadCount;
   NotificationLoadStatus get status => _status;
+  String? get error => _error;
 
   NotificationProvider(this._repo);
 
@@ -26,11 +29,15 @@ class NotificationProvider extends ChangeNotifier {
 
   Future<void> refresh() async {
     _status = NotificationLoadStatus.loading;
+    _error = null;
     notifyListeners();
     try {
       _items = await _repo.fetchNotifications();
       _unreadCount = await _repo.unreadCount();
       _status = NotificationLoadStatus.loaded;
+    } on ApiException catch (e) {
+      _error = e.userMessage;
+      _status = NotificationLoadStatus.error;
     } catch (_) {
       _status = NotificationLoadStatus.error;
     } finally {

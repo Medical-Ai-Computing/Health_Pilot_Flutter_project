@@ -160,6 +160,7 @@ class _ArticleScreenState extends State<ArticleScreen> {
                       : (provider.status == ArticleLoadStatus.error &&
                               provider.articles.isEmpty)
                           ? ErrorRetryView(
+                              message: provider.error,
                               onRetry: () =>
                                   context.read<ArticleProvider>().refresh(),
                             )
