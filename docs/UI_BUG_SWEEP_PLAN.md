@@ -218,9 +218,9 @@ All items assume the flag/screen is actually reached; theming items only bite in
 
 | # | Pri | Dim | Item | Status |
 |---|---|---|---|---|
-| 20 | P1 | Theme | Onboarding/personal-info text invisible in dark mode | ⬜ |
-| 21 | P1 | Errors | ~10 screens ignore provider `error` status (blank/empty instead of retry) | ⬜ |
-| 22 | P1 | Sizing | `size.height * x` for gaps/app-bars/call-screens → huge gaps & overflow | ⬜ |
+| 20 | P1 | Theme | Onboarding/personal-info text invisible in dark mode | ✅ |
+| 21 | P1 | Errors | ~10 screens ignore provider `error` status (blank/empty instead of retry) | ◑ Partial |
+| 22 | P1 | Sizing | `size.height * x` for gaps/app-bars/call-screens → huge gaps & overflow | ◑ Partial |
 | 23 | P2 | Theme | Community User-Detail panel unreadable in dark mode | ⬜ |
 | 24 | P2 | Theme | Auth signup/login labels low-contrast in dark mode | ⬜ |
 | 25 | P2 | Theme | Shared `CustomAppBar` hardcodes white bar + dark title (6 screens) | ⬜ |
@@ -242,38 +242,36 @@ All items assume the flag/screen is actually reached; theming items only bite in
 > `LayoutBuilder(constraints.biggest)` usages are all top-level under a bounded Scaffold body, so
 > there's no infinite/zero-constraint trap.
 
-### 20. Onboarding / personal-info text invisible in dark mode  ✅confirmed
-- [ ] **Fix**
-- **Where:** `lib/features/personal_info/initial_info_1.dart` (27 dark-gray + 5 `Colors.black` text
-  uses; e.g. :92,:149,:193,:551), `initial_info_2/3/4.dart`, `get_started_screen.dart` (:125,:231,:323).
-  The literal `Color.fromRGBO(4x,4x,4x,*)` appears ~70× across 14 files.
-- **Failure:** in dark mode the Scaffold flips to the dark surface but field labels (`Colors.black`),
-  unit captions and RulerPicker digits/ticks (`Color.fromRGBO(42,42,42,*)`) stay dark → the user can't
-  read labels or see which ruler value is selected.
-- **Fix:** drop explicit colors (inherit themed `textTheme`) or use `cs.onSurface`/`cs.onSurfaceVariant`;
-  feed the RulerPicker scale/line styles a theme color.
+### 20. Onboarding / personal-info text invisible in dark mode  ✅ Fixed
+- [x] **Fixed** — pinned the onboarding data-entry screens to a light background
+  (`backgroundColor: Colors.white`) so their dark labels/unit captions/RulerPicker digits stay readable
+  regardless of OS theme: `initial_info_1.dart` (:57), `initial_info_4.dart` (:42),
+  `get_started_screen.dart` (:58). These are a deliberately light-themed flow (dark text + the white
+  `CustomAppBar` throughout), so pinning the surface is the low-risk complete fix rather than migrating
+  ~50 hardcoded literals. `flutter analyze` clean (baseline unchanged).
+- **Remaining:** `initial_info_2.dart` uses a `Colors.transparent` Scaffold (3 dark literals) — left as-is
+  pending a look at what renders behind it. A full theme-color migration (use `cs.onSurface`/
+  `onSurfaceVariant`, feed RulerPicker theme colors) is the alternative if these screens should honor
+  dark mode.
 
-### 21. ~10 screens never render provider `error` state  ✅confirmed
-- [ ] **Fix**
-- **Where:** 12 providers set `LoadStatus.error`, but only `medications_screen.dart:205` and
-  `food_nutrition_history_screen.dart:48` branch on it. Ignored by `health_dashboard_screen.dart:53`,
-  `notifications_screen.dart`, `community_hub_screen.dart`, `chat_screen.dart`, `article_screen.dart`,
-  `profile_screen.dart`, etc.
-- **Failure:** offline / backend 5xx → the screen shows a normal "no data yet" empty state instead of
-  an error + retry, so the user thinks they have no goals/articles/notifications.
-- **Fix:** add a `status == *.error` branch with a retry affordance (reuse the pattern at
-  `food_nutrition_history_screen.dart:378`).
+### 21. ~10 screens never render provider `error` state  ◑ Partial
+- [x] **Done:** added a shared `lib/core/widgets/error_retry_view.dart` (`ErrorRetryView`) and wired it
+  into the screens whose providers actually enter an error state — `notifications_screen.dart` and
+  `article_screen.dart` (added `ArticleProvider.refresh()`). Load failure now shows an error + Retry
+  instead of a misleading empty state.
+- [ ] **Remaining:** `community_hub_screen.dart` and the chat list still fall through to empty on error;
+  their providers (`CommunityProvider`, `ChatProvider`) need a `refresh()`/error string first. (Note:
+  after fix #19, `HealthProvider` is now so best-effort it rarely enters `error`, so its dashboard was
+  intentionally skipped.)
 
-### 22. Full-screen-height percentages for gaps / app-bars / call screens  ✅confirmed
-- [ ] **Fix**
-- **Where:** `chat/general_chat_screen.dart:161,:209` (`SizedBox(height: size.height * 0.2)` list
-  separators), `chat_screen.dart:87` & `group_chat_screen.dart:87` (app-bar `preferredSize` height
-  `size.height*0.15`), `chat/audio_call_screen.dart` & `vidoe_call_screen.dart` (stacked 0.55/0.53 +
-  0.3 + 0.25). ~289 `.height * x` uses across 31 files.
-- **Failure:** ~170px+ empty gaps between chat groups; oversized app-bars on tablets; call screens sum
-  height-percentages that exceed the viewport on small/landscape devices → RenderFlex overflow stripes.
-- **Fix:** fixed spacing for separators/headers, `kToolbarHeight` for app-bars, `Flexible`/`Expanded`
-  inside a bounded Column for call layouts.
+### 22. Full-screen-height percentages for gaps / app-bars / call screens  ◑ Partial
+- [x] **Done:** replaced the three `SizedBox(height: size.height * 0.2)` group separators in
+  `chat/general_chat_screen.dart` (~170px dead gaps between chat groups) with a fixed `12`px — the
+  highest-traffic, clearest breakage.
+- [ ] **Remaining:** chat/group app-bar `preferredSize` height `size.height*0.15` (oversized on tablets)
+  and the call screens (`audio_call_screen.dart`, `vidoe_call_screen.dart`) that stack height-percentages
+  and can overflow on small/landscape devices — use `kToolbarHeight` and `Flexible`/`Expanded` in a
+  bounded Column respectively.
 
 ### 23. Community User-Detail panel unreadable in dark mode  ✅confirmed
 - [ ] **Fix** — `chat/user_detail_screen.dart` (name/subtitle :323/:332, Info fields :458/:469, TabBar

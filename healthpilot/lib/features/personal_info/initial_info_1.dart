@@ -55,6 +55,9 @@ class _InitialInfoFirstState extends State<InitialInfoFirst> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Scaffold(
+        // Onboarding is a light-themed flow (dark text + white app bar); pin the
+        // background so labels/ruler digits stay readable when the OS is in dark mode.
+        backgroundColor: Colors.white,
         appBar: AppBar(
           elevation: 0,
           leading: IconButton(
