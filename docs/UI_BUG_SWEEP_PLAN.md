@@ -224,9 +224,9 @@ All items assume the flag/screen is actually reached; theming items only bite in
 | 23 | P2 | Theme | Community User-Detail panel unreadable in dark mode | ⬜ |
 | 24 | P2 | Theme | Auth signup/login labels low-contrast in dark mode | ⬜ |
 | 25 | P2 | Theme | Shared `CustomAppBar` hardcodes white bar + dark title (6 screens) | ⬜ |
-| 26 | P2 | Lists | Keyless stateful `CommentCard` rows → expand-state binds to wrong comment | ⬜ |
-| 27 | P2 | Images | Article images have no error fallback (`DecorationImage` can't show one) | ⬜ |
-| 28 | P2 | Errors | Join/Leave group failures are silent (optimistic update never reverts) | ⬜ |
+| 26 | P2 | Lists | Keyless stateful `CommentCard` rows → expand-state binds to wrong comment | ✅ |
+| 27 | P2 | Images | Article images have no error fallback (`DecorationImage` can't show one) | ◑ Partial |
+| 28 | P2 | Errors | Join/Leave group failures are silent (optimistic update never reverts) | ✅ |
 | 29 | P2 | Errors | Failed peer-chat messages show "Failed" but no retry (chatbot has retry) | ⬜ |
 | 30 | P3 | Errors | Load catches discard `ApiException.userMessage` (generic text only) | ⬜ |
 | 31 | P3 | Errors | No shared error-snackbar helper (~29 ad-hoc `SnackBar`s, dup strings) | ⬜ |
@@ -294,23 +294,24 @@ All items assume the flag/screen is actually reached; theming items only bite in
   personal-info). In dark mode a bright white bar sits over the dark body. Remove the hardcoded bg
   (inherit `appBarTheme`), set title to `cs.onSurface`.
 
-### 26. Keyless stateful `CommentCard` rows → wrong expand state  ✅confirmed
-- [ ] **Fix** — `articles/article_comment_screen.dart:322-335`: `ListView.builder` with no key on the
-  stateful `CommentCard` (holds `showReplies`); `_comments` is wholesale-replaced on every post/reload,
-  so after insert/delete the expand state attaches to the wrong comment. Add `key: ValueKey(c.id)`.
+### 26. Keyless stateful `CommentCard` rows → wrong expand state  ✅ Fixed
+- [x] **Fixed** — added `key: ValueKey(c.id)` to the `CommentCard` in the article-comments
+  `ListView.builder`, so expand state stays bound to its comment after the list is replaced.
 
-### 27. Article images have no error fallback  ✅confirmed
-- [ ] **Fix** — `articles/article_feed_item.dart:34` (`imageProvider` returns bare `NetworkImage`),
-  consumed by `article_detail_screen.dart:90` & `article_comment_screen.dart:132` via
-  `DecorationImage` (which **cannot** take an `errorBuilder`) and `article_screen.dart:224`. A 404/
-  expired/offline image renders a blank hero/thumbnail. Render via `Image.network(errorBuilder:,
-  loadingBuilder:)` (Stack for the hero) instead of `DecorationImage`.
+### 27. Article images have no error fallback  ◑ Partial
+- [x] **Done:** the article feed thumbnail (`article_screen.dart`) now has an `errorBuilder` → bundled
+  asset fallback when the network image fails.
+- [ ] **Remaining:** the detail (`article_detail_screen.dart:86`) and comment
+  (`article_comment_screen.dart:132`) heroes still use `DecorationImage` (which can't take an
+  `errorBuilder`). They need a `Stack` + `Positioned.fill(Image(errorBuilder:))` restructure (the
+  closing brace is far from the opening, so it was deferred rather than risk a mis-matched edit).
 
-### 28. Join / Leave group failures are silent  ✅confirmed
-- [ ] **Fix** — `community/community_groups_screen.dart:174,:180` call `joinGroup/leaveGroup` with no
-  try/catch; provider applies the optimistic `isMember`/`isJoined` flip only on success. On failure the
-  button never updates and (unawaited) the async error is unhandled. Also `chat/general_chat_screen.dart:288,:320`.
-  Wrap in try/catch, revert optimism, SnackBar `e.userMessage`.
+### 28. Join / Leave group failures are silent  ✅ Fixed
+- [x] **Fixed** — community group Join/Leave now go through a `_membership` helper that awaits the
+  action and shows a SnackBar on failure. (No optimism to revert: the provider only mutates state after
+  a successful await.)
+- [ ] **Remaining (minor):** the chat-group join in `general_chat_screen.dart` still lacks the same
+  wrapper.
 
 ### 29. Failed peer-chat messages have no retry  ⚠️plausible
 - [ ] **Fix** — `chat_screen.dart:504` & `group_chat_screen.dart:481` show a "Failed" label with no tap
