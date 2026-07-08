@@ -957,11 +957,18 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                     child: Padding(
                       padding:
                           EdgeInsets.symmetric(vertical: screenHeight * 0.06),
-                      child: PaymentButton(
+                      child:                       PaymentButton(
                         screenWidth: screenWidth,
                         screenHeight: screenHeight,
                         buttonText: "Next",
                         buttonAction: () {
+                          if (!_formKey.currentState!.validate()) return;
+                          if (!isPaymentChecked && !isPaypalChecked && !isChappaChecked) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Please select a payment method.')),
+                            );
+                            return;
+                          }
                           Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) => PaymentReviewScreen(
                                     paymentInfo: PersonalPaymentInformations(

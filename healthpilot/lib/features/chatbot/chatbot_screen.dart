@@ -2,6 +2,7 @@ import 'package:bubble/bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:healthpilot/features/chatbot/ai_assistant_provider.dart';
+import 'package:healthpilot/core/auth/auth_state.dart';
 import 'package:healthpilot/features/chatbot/chatbot_models.dart';
 import 'package:healthpilot/features/chatbot/widgets/chat_bubble.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -321,9 +322,11 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
   }
 
   Widget _bubbleForMessage(ChatMessage msg) {
+    final auth = context.read<AuthState>();
+    final isGuest = auth.isGuest || auth.status != AuthStatus.authenticated;
     final String? footer;
     if (msg.hasFailed) {
-      footer = 'Failed — tap to retry';
+      footer = isGuest ? 'Create an account to send messages' : 'Failed — tap to retry';
     } else if (msg.showSentLabel) {
       footer = 'Sent';
     } else if (msg.deliveryStatus == OutgoingDeliveryStatus.pending) {
@@ -345,7 +348,7 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
           widthFactor: 0.92,
           alignment:
               msg.fromUser ? Alignment.centerRight : Alignment.centerLeft,
-          child: msg.hasFailed
+          child: msg.hasFailed && !isGuest
               ? GestureDetector(
                   onTap: () =>
                       context.read<AiAssistantProvider>().retry(msg.id),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 // import 'package:gap/gap.dart';
 import 'package:healthpilot/features/gadgets/addgadgetScreen.dart';
+import 'package:healthpilot/features/subscription/subscription_and_payment_screen.dart';
 
 class GadgetScreen extends StatelessWidget {
   const GadgetScreen({super.key});
@@ -34,7 +35,20 @@ class GadgetScreen extends StatelessWidget {
                     builder: (context) => AddGadgetScreen(),
                   ));
             },
-          )
+          ),
+          SizedBox(height: size.height * 0.02),
+          Button(
+            screenWidth: size.width,
+            screenHeight: size.height,
+            buttonText: "Subscription",
+            buttonAction: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const SubscriptionAndPaymentScreen(),
+                  ));
+            },
+          ),
         ],
       )),
     );
@@ -42,7 +56,6 @@ class GadgetScreen extends StatelessWidget {
 }
 
 class Gap {}
-
 class CustomAppBar extends StatelessWidget {
   final double screenWidth;
   final double screenHeight;

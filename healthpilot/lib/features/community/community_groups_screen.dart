@@ -94,7 +94,11 @@ Future<void> showCreateCommunityGroupDialog(BuildContext context) async {
                 ),
                 TextFormField(
                   controller: slugCtrl,
-                  decoration: const InputDecoration(labelText: 'Slug'),
+                  decoration: const InputDecoration(
+                    labelText: 'Slug',
+                    helperText: 'URL-friendly identifier (e.g. diabetes-support)',
+                    helperMaxLines: 2,
+                  ),
                   validator: (v) =>
                       (v == null || v.trim().isEmpty) ? 'Required' : null,
                 ),

@@ -48,8 +48,11 @@ class SubscriptionProvider extends ChangeNotifier {
   }
 
   Future<void> confirmSubscription() async {
-    if (_selectedPlanId == null) return;
-    final updated = await _repo.subscribe(_selectedPlanId!);
+    final planId = _selectedPlanId;
+    if (planId == null) {
+      throw Exception('No plan selected. Please go back and select a plan.');
+    }
+    final updated = await _repo.subscribe(planId);
     _status = updated;
     notifyListeners();
   }

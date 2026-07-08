@@ -8,6 +8,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:healthpilot/core/widgets/safe_assets.dart';
 import 'package:healthpilot/data/constants.dart';
 import 'package:healthpilot/features/chat/general_chat_screen.dart';
+import 'package:share_plus/share_plus.dart';
 
 import 'package:healthpilot/features/home/discover_healthpilot.dart';
 
@@ -254,6 +255,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
         if (_emergencySecondsRemaining <= 1) {
           _emergencyCountdownTimer?.cancel();
           isOnEmeregencyCalling = false;
+          _sendEmergencyEmail();
         } else {
           _emergencySecondsRemaining--;
         }
@@ -268,12 +270,29 @@ class _HomePageScreenState extends State<HomePageScreen> {
     });
   }
 
-  Future<void> _dismissTutorial() async {
-    final p = await SharedPreferences.getInstance();
-    await p.setBool('isTutorGiven', true);
-    if (!mounted) {
-      return;
+  Future<void> _sendEmergencyEmail() async {
+    if (!mounted) return;
+    final messenger = ScaffoldMessenger.of(context);
+    try {
+      await Share.share(
+        'I need urgent assistance. This is an emergency alert sent from HealthPilot.',
+        subject: 'Emergency Alert from HealthPilot',
+      );
+    } catch (_) {
+      messenger.showSnackBar(
+        const SnackBar(content: Text('Could not open email client. Please call emergency services directly.')),
+      );
     }
+  }
+
+  Future<void> _dismissTutorial() async {
+    try {
+      final p = await SharedPreferences.getInstance();
+      await p.setBool('isTutorGiven', true);
+    } catch (_) {
+      // Proceed even if saving fails — the in-memory state is enough for this session.
+    }
+    if (!mounted) return;
     setState(() {
       isTutorGiven = true;
       isOnHelp = false;
@@ -773,7 +792,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
                       ),
                       SizedBox(height: size.height * 0.015),
                       const Text(
-                        'Calling your emergency contacts',
+                        'Emergency Alert',
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
@@ -782,7 +801,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
                       ),
                       SizedBox(height: size.height * 0.015),
                       Text(
-                        'Connecting in ${_formatEmergencyCountdown()}',
+                        'Contacting emergency contacts in ${_formatEmergencyCountdown()}',
                         style: TextStyle(
                           fontSize: 28,
                           fontWeight: FontWeight.w700,
@@ -792,7 +811,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
                       ),
                       SizedBox(height: size.height * 0.012),
                       Text(
-                        'This is a demo flow—no real call is placed. Tap Cancel to stop the countdown.',
+                        'An emergency email will be sent to your contacts when the countdown reaches zero. If this is a real emergency, call your local emergency number immediately.',
                         style: TextStyle(
                           color: Theme.of(context)
                               .colorScheme

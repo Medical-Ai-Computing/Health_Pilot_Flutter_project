@@ -169,36 +169,60 @@ class _SymptomTrackingScreenState extends State<SymptomTrackingScreen> {
           ),
         ),
         SizedBox(height: size.height * 0.02),
-        TextFormField(
-          controller: _symptomController,
-          maxLines: 1,
-          decoration: InputDecoration(
-            hintText: 'Search Symptoms',
-            hintStyle: const TextStyle(
-              fontFamily: 'PlusJakartaSans',
-              fontWeight: FontWeight.w400,
-              fontSize: 14,
+        Row(
+          children: [
+            Expanded(
+              child: TextFormField(
+                controller: _symptomController,
+                maxLines: 1,
+                decoration: InputDecoration(
+                  hintText: 'Search Symptoms',
+                  hintStyle: const TextStyle(
+                    fontFamily: 'PlusJakartaSans',
+                    fontWeight: FontWeight.w400,
+                    fontSize: 14,
+                  ),
+                  prefixIcon: Icon(Icons.search,
+                      size: size.width * 0.08,
+                      color: const Color.fromRGBO(41, 41, 41, 0.5)),
+                  contentPadding: EdgeInsets.symmetric(
+                      vertical: size.height * 0.015, horizontal: size.width * 0.03),
+                  border: OutlineInputBorder(
+                    borderSide:
+                        const BorderSide(color: Color.fromRGBO(41, 41, 41, 0.25)),
+                    borderRadius:
+                        BorderRadius.all(Radius.circular(size.width * 0.03)),
+                  ),
+                  isDense: true,
+                ),
+                keyboardType: TextInputType.text,
+                textInputAction: TextInputAction.done,
+                onFieldSubmitted: (value) {
+                  if (value.trim().isNotEmpty) {
+                    setState(() => _symptomFilled = true);
+                  }
+                },
+              ),
             ),
-            prefixIcon: Icon(Icons.search,
-                size: size.width * 0.08,
-                color: const Color.fromRGBO(41, 41, 41, 0.5)),
-            contentPadding: EdgeInsets.symmetric(
-                vertical: size.height * 0.015, horizontal: size.width * 0.03),
-            border: OutlineInputBorder(
-              borderSide:
-                  const BorderSide(color: Color.fromRGBO(41, 41, 41, 0.25)),
-              borderRadius:
-                  BorderRadius.all(Radius.circular(size.width * 0.03)),
+            SizedBox(width: size.width * 0.02),
+            ElevatedButton(
+              onPressed: () {
+                if (_symptomController.text.trim().isNotEmpty) {
+                  setState(() => _symptomFilled = true);
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color.fromRGBO(110, 182, 255, 1),
+                foregroundColor: Colors.white,
+                padding: EdgeInsets.symmetric(
+                    vertical: size.height * 0.018),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(size.width * 0.03)),
+              ),
+              child: const Text('ADD',
+                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
             ),
-            isDense: true,
-          ),
-          keyboardType: TextInputType.text,
-          textInputAction: TextInputAction.done,
-          onFieldSubmitted: (value) {
-            if (value.trim().isNotEmpty) {
-              setState(() => _symptomFilled = true);
-            }
-          },
+          ],
         ),
       ],
     );

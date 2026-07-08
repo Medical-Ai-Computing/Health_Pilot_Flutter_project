@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:healthpilot/core/auth/auth_state.dart';
 import 'package:healthpilot/data/constants.dart';
 import 'package:healthpilot/features/health/health_dashboard_screen.dart';
 import 'package:healthpilot/features/health/health_provider.dart';
@@ -20,11 +21,6 @@ class HealthProfile extends StatefulWidget {
 }
 
 class _HealthProfileState extends State<HealthProfile> {
-  final List<String> peoples = [
-    'Yaikob zeray',
-    'Abel sisay',
-    'Kirubel hailu',
-  ];
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -32,6 +28,8 @@ class _HealthProfileState extends State<HealthProfile> {
     final healthProvider = context.watch<HealthProvider>();
     final conditions = healthProvider.conditions;
     final symptoms = healthProvider.symptoms;
+    final auth = context.watch<AuthState>();
+    final greeting = auth.isGuest ? 'Hello, Guest' : 'Hello, ${auth.firstName}';
     return Scaffold(
       body: SingleChildScrollView(
         child: SafeArea(
@@ -46,7 +44,7 @@ class _HealthProfileState extends State<HealthProfile> {
                 children: [
                   Expanded(
                     child: Text(
-                      'Hello, UserName',
+                      greeting,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
@@ -331,54 +329,6 @@ class _HealthProfileState extends State<HealthProfile> {
                       },
                     ),
                   ],
-                ),
-              ),
-              SizedBox(
-                height: size.height * 0.03,
-              ),
-              Row(
-                children: [
-                  const Expanded(
-                    child: Text(
-                      'Health Profiles',
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontFamily: "PlusJakartaSans",
-                        fontWeight: FontWeight.w500,
-                        fontSize: 16,
-                      ),
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Add profile coming soon'),
-                        ),
-                      );
-                    },
-                    icon: Icon(Icons.add_circle_outline, color: cs.onSurface),
-                  ),
-                ],
-              ),
-              SizedBox(
-                width: double.infinity,
-                height: size.height * 0.3,
-                child: ListView.builder(
-                  itemCount: peoples.length,
-                  itemBuilder: (context, index) {
-                    return HealthProfileModel(
-                      disorder: peoples[index],
-                      onTap: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Profile details coming soon'),
-                          ),
-                        );
-                      },
-                    );
-                  },
                 ),
               ),
             ],

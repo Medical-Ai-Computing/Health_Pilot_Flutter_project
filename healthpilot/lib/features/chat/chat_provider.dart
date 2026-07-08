@@ -404,13 +404,13 @@ class ChatProvider extends ChangeNotifier {
         for (final g in _groups)
           if (g.groupId == groupId)
             g.copyWith(
-              groupChatHistory: [
+              groupChatHistory: _sortedGroupHistory([
                 for (final m in g.groupChatHistory)
                   if (m.timestamp == message.timestamp && !m.isDelivered)
                     sent
                   else
                     m,
-              ],
+              ]),
             )
           else
             g,
@@ -420,6 +420,12 @@ class ChatProvider extends ChangeNotifier {
       _markGroupFailed(groupId, message.timestamp);
     }
     notifyListeners();
+  }
+
+  List<DirectMessage> _sortedGroupHistory(List<DirectMessage> messages) {
+    final sorted = List<DirectMessage>.from(messages);
+    sorted.sort((a, b) => a.timestamp.compareTo(b.timestamp));
+    return sorted;
   }
 
   Future<PrivateChat> startPrivateChat(int userId) =>

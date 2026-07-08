@@ -6,6 +6,10 @@
 /// After activation the backend redirects to a page at
 /// `https://healthpilot.com/open-app?verified=true` with a button that
 /// opens the app — `isVerified` detects that signal.
+///
+/// Custom URL scheme `healthpilot://` is also supported:
+/// - `healthpilot://auth/activate?token=<uuid>`
+/// - `healthpilot://open-app?verified=true`
 abstract final class ActivationLink {
   static String? parseToken(Uri uri) {
     final token = uri.queryParameters['token']?.trim();
@@ -23,6 +27,9 @@ abstract final class ActivationLink {
   /// Returns `true` when the URI is a post-activation verified link from the
   /// backend redirect page (`/open-app?verified=true`).
   static bool isVerified(Uri uri) {
+    if (uri.scheme == 'healthpilot') {
+      return uri.queryParameters['verified'] == 'true';
+    }
     return uri.host == 'healthpilot.com' &&
         uri.path == '/open-app' &&
         uri.queryParameters['verified'] == 'true';

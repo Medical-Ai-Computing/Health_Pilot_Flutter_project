@@ -19,6 +19,7 @@ class CommunityProvider extends ChangeNotifier {
   CommunityStatus _status = CommunityStatus.idle;
   String? _error;
   bool _loading = false;
+  final Set<int> _loadingGroups = {};
 
   List<CommunityGroup> get groups => List.unmodifiable(_groups);
   List<CommunityGroup> get joinedGroups =>
@@ -132,28 +133,40 @@ class CommunityProvider extends ChangeNotifier {
   }
 
   Future<void> joinGroup(int groupId) async {
-    await _repo.joinGroup(groupId);
-    _groups = [
-      for (final g in _groups)
-        if (g.id == groupId)
-          g.copyWith(isMember: true, memberCount: g.memberCount + 1)
-        else
-          g,
-    ];
+    if (_loadingGroups.contains(groupId)) return;
+    _loadingGroups.add(groupId);
+    try {
+      await _repo.joinGroup(groupId);
+      _groups = [
+        for (final g in _groups)
+          if (g.id == groupId)
+            g.copyWith(isMember: true, memberCount: g.memberCount + 1)
+          else
+            g,
+      ];
+    } finally {
+      _loadingGroups.remove(groupId);
+    }
     notifyListeners();
   }
 
   Future<void> leaveGroup(int groupId) async {
-    await _repo.leaveGroup(groupId);
-    _groups = [
-      for (final g in _groups)
-        if (g.id == groupId)
-          g.copyWith(
-              isMember: false,
-              memberCount: g.memberCount > 0 ? g.memberCount - 1 : 0)
-        else
-          g,
-    ];
+    if (_loadingGroups.contains(groupId)) return;
+    _loadingGroups.add(groupId);
+    try {
+      await _repo.leaveGroup(groupId);
+      _groups = [
+        for (final g in _groups)
+          if (g.id == groupId)
+            g.copyWith(
+                isMember: false,
+                memberCount: g.memberCount > 0 ? g.memberCount - 1 : 0)
+          else
+            g,
+      ];
+    } finally {
+      _loadingGroups.remove(groupId);
+    }
     notifyListeners();
   }
 

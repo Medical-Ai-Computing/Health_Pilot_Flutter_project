@@ -30,6 +30,54 @@ class _SettingsScreenState extends State<SettingsScreen> {
     AppNavigation.replaceWithLogin(context);
   }
 
+  void _showFaqDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Frequently Asked Questions'),
+        content: const SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _FaqItem(
+                question: 'What is HealthPilot?',
+                answer: 'HealthPilot is a health companion app that helps you track symptoms, '
+                    'assess health concerns, manage medications, and connect with a community.',
+              ),
+              _FaqItem(
+                question: 'Is my data secure?',
+                answer: 'Yes. Your health data is encrypted and stored securely. '
+                    'We do not share your personal information without your consent.',
+              ),
+              _FaqItem(
+                question: 'How do I activate my account?',
+                answer: 'After signing up, check your email for an activation link. '
+                    'Tap the link to activate your account and start using all features.',
+              ),
+              _FaqItem(
+                question: 'Is this a replacement for medical advice?',
+                answer: 'No. HealthPilot provides general information only and is not a '
+                    'substitute for professional medical advice, diagnosis, or treatment.',
+              ),
+              _FaqItem(
+                question: 'How do I reset my password?',
+                answer: 'Go to the login screen and tap "Forgot your password? Reset now" '
+                    'to receive reset instructions via email.',
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Close'),
+          ),
+        ],
+      ),
+    );
+  }
+
   Future<void> _deleteAccount() async {
     final confirmed = await showDialog<bool>(
       context: context,
@@ -155,7 +203,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       imageAdress: 'assets/Icons/FAQ.svg',
                       settingAdress: 'FAQ',
                       iconData: Icons.arrow_forward,
-                      onpressed: null,
+                      onpressed: () => _showFaqDialog(context),
                     ),
                     HealthInformationSettings(
                       imageAdress: 'assets/Icons/profile.svg',
@@ -222,6 +270,36 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _FaqItem extends StatelessWidget {
+  const _FaqItem({required this.question, required this.answer});
+
+  final String question;
+  final String answer;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            question,
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            answer,
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+        ],
       ),
     );
   }

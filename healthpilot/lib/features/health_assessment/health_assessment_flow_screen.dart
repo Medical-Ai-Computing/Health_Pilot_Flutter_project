@@ -66,14 +66,14 @@ class _HealthAssessmentFlowScreenState
         // Allergies can be skipped.
         return true;
       case 3:
-        return _selectedSymptoms.isNotEmpty;
+        // Allow proceed if there are selected symptoms OR free-text entered.
+        return _selectedSymptoms.isNotEmpty || _symptomController.text.trim().isNotEmpty;
       case 4:
         return _symptomDuration != null;
       case _otherSymptomsPageIndex:
         return _hasOtherSymptoms != null;
       case _addMoreSymptomsPageIndex:
-        // User already had some symptoms; but if they deleted all, block.
-        return _selectedSymptoms.isNotEmpty;
+        return _selectedSymptoms.isNotEmpty || _symptomController.text.trim().isNotEmpty;
       case _trendPageIndex:
         return _symptomsTrend != null;
       default:
@@ -91,6 +91,16 @@ class _HealthAssessmentFlowScreenState
   }
 
   void _goNext() {
+    // Before proceeding from a symptoms page, add any typed free-text as a symptom.
+    if (_page == 3 || _page == _addMoreSymptomsPageIndex) {
+      final text = _symptomController.text.trim();
+      if (text.isNotEmpty && !_selectedSymptoms.any((s) => s.toLowerCase() == text.toLowerCase())) {
+        setState(() {
+          _selectedSymptoms.add(text);
+          _symptomController.clear();
+        });
+      }
+    }
     if (_page == _otherSymptomsPageIndex && _hasOtherSymptoms == false) {
       _pageController.animateToPage(
         _trendPageIndex,
@@ -997,21 +1007,24 @@ class _BottomInfoLinks extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             row(
-              'Don’t understand? Here is a description',
               'About this assessment',
-              'This quick check collects a few basics — who it’s for, blood type, '
-                  'and any allergies — along with your current symptoms, then gives '
-                  'general, non-diagnostic guidance. Answer what you can; optional '
-                  'steps like allergies can be skipped. It takes about a minute.',
+              'About this assessment',
+              'This quick, non-diagnostic check asks a few basic questions — who it is for, '
+                  'blood type, allergies, and current symptoms — and then provides general '
+                  'guidance based on your answers. All fields are optional except the core '
+                  'symptoms. The entire process takes about a minute. Your answers are not '
+                  'stored or shared without your consent.',
             ),
             row(
-              'Why am I being asked this',
-              'Why we ask',
-              'Each question helps tailor your result. Blood type and allergies flag '
-                  'safety considerations, and symptom details — how long you’ve had '
-                  'them and whether they’re changing — help gauge urgency. Your '
-                  'answers are used only to generate this assessment and are not a '
-                  'substitute for professional medical advice.',
+              'Why am I being asked these questions?',
+              'Why we ask these questions',
+              'Each question helps us give you a more relevant result.\n\n'
+                  '- **Who it is for**: Tailors the assessment to the right person.\n'
+                  '- **Blood type**: Used for safety considerations in guidance.\n'
+                  '- **Allergies**: Flags potential conflicts or precautions.\n'
+                  '- **Symptom duration & trend**: Helps gauge how urgent or persistent an issue may be.\n\n'
+                  'This is not a medical diagnosis. Always consult a qualified healthcare '
+                  'professional for personal medical advice.',
             ),
           ],
         ),
