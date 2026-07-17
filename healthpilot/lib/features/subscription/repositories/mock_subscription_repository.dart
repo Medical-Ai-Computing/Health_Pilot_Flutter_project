@@ -2,8 +2,8 @@ import 'package:healthpilot/core/repositories/i_subscription_repository.dart';
 import 'package:healthpilot/features/subscription/subscription_models.dart';
 
 const _kPremiumPlan = SubscriptionPlan(
-  id: 'premium',
-  name: 'Premium Version',
+  id: 'monthly',
+  name: 'Premium Monthly',
   priceMonthly: 25.99,
   features: [
     'Personalized treatment & recommendation',

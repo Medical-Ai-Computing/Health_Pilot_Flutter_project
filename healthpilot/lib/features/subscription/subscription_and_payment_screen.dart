@@ -108,7 +108,7 @@ class _SubscriptionAndPaymentScreenState
                       screenHeight: screenHeight,
                       screenWidth: screenWidth,
                       color: cs.primary,
-                      planId: premiumPlan?.id ?? 'premium',
+                      planId: subProvider.defaultPaidPlanId,
                       price: premiumPlan?.formattedPrice ?? '25.99\$/month',
                     ),
                   ),
@@ -128,7 +128,7 @@ class _SubscriptionAndPaymentScreenState
                           // Proceed with the recommended (premium) plan.
                           context
                               .read<SubscriptionProvider>()
-                              .selectPlan(premiumPlan?.id ?? 'premium');
+                              .selectPlan(subProvider.defaultPaidPlanId);
                           Navigator.of(context).push(MaterialPageRoute(
                               builder: (_) => const PaymentMethodScreen()));
                         }),

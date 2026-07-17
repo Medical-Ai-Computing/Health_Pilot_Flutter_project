@@ -347,7 +347,7 @@ void main() {
 
     test('confirmSubscription succeeds with a plan selected', () async {
       final p = SubscriptionProvider(MockSubscriptionRepository());
-      p.selectPlan('premium');
+      p.selectPlan('monthly');
       await p.confirmSubscription();
       expect(p.status?.isActive, isTrue);
     });

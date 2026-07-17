@@ -828,7 +828,7 @@ void main() {
         (tester) async {
       final subsP = SubscriptionProvider(MockSubscriptionRepository());
       await subsP.load();
-      subsP.selectPlan('premium');
+      subsP.selectPlan('monthly');
       await subsP.confirmSubscription();
       expect(subsP.isPremium, isTrue);
     });
@@ -845,7 +845,7 @@ void main() {
       final subsP = SubscriptionProvider(MockSubscriptionRepository());
       await subsP.load();
       expect(subsP.isPremium, isFalse);
-      subsP.selectPlan('premium');
+      subsP.selectPlan('monthly');
       await subsP.confirmSubscription();
       expect(subsP.isPremium, isTrue);
       expect(subsP.status?.isActive, isTrue);

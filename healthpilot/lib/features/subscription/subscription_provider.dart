@@ -25,6 +25,12 @@ class SubscriptionProvider extends ChangeNotifier {
     return null;
   }
 
+  /// Live backend plan ids are `monthly` / `yearly`, not `premium`.
+  static const defaultPaidPlanIdFallback = 'monthly';
+
+  String get defaultPaidPlanId =>
+      premiumPlan?.id ?? defaultPaidPlanIdFallback;
+
   SubscriptionProvider(this._repo);
 
   Future<void> load() async {
@@ -48,8 +54,8 @@ class SubscriptionProvider extends ChangeNotifier {
   }
 
   Future<void> confirmSubscription() async {
-    final planId = _selectedPlanId;
-    if (planId == null) {
+    final planId = _selectedPlanId ?? defaultPaidPlanId;
+    if (planId.isEmpty) {
       throw Exception('No plan selected. Please go back and select a plan.');
     }
     final updated = await _repo.subscribe(planId);
