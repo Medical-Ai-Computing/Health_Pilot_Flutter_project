@@ -372,7 +372,7 @@ class ArticleCard extends StatelessWidget {
                                     colorFilter: ColorFilter.mode(
                                         cs.onSurface, BlendMode.srcIn),
                                     child: Image.asset(
-                                        'assets/Icons/stopwatch .png'),
+                                        AssetPaths.articleStopwatchPng),
                                   ),
                                 ),
                                 SizedBox(width: screenWidth * 0.02),

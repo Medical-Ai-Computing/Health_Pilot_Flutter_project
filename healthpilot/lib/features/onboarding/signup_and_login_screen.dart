@@ -5,6 +5,7 @@ import 'package:healthpilot/core/auth/auth_state.dart';
 import 'package:healthpilot/core/flags/feature_flags.dart';
 import 'package:healthpilot/core/navigation/app_navigation.dart';
 import 'package:healthpilot/core/network/api_error.dart';
+import 'package:healthpilot/data/constants.dart';
 import 'package:healthpilot/features/onboarding/terms_dialogBox.dart';
 import 'package:provider/provider.dart';
 
@@ -74,15 +75,25 @@ class _SignupAndLoginScreenState extends State<SignupAndLoginScreen> {
   }
 
   Future<void> _login() async {
+    final email = emailController.text.trim();
+    final password = passwordController.text;
+    if (email.isEmpty || password.isEmpty) {
+      _showError('Please enter your email and password.');
+      return;
+    }
     if (!FeatureFlags.auth) {
+      _showError(
+        'Demo mode: add dart_defines.json and run with '
+        '--dart-define-from-file=dart_defines.json for real login.',
+      );
       AppNavigation.replaceWithHome(context);
       return;
     }
     setState(() => _isLoading = true);
     try {
       await context.read<AuthState>().login(
-            emailController.text.trim(),
-            passwordController.text,
+            email,
+            password,
           );
       if (!mounted) return;
       AppNavigation.replaceWithHome(context);
@@ -207,6 +218,33 @@ class _SignupAndLoginScreenState extends State<SignupAndLoginScreen> {
                       horizontal: screenWidth * 0.1,
                       vertical: screenHeight * 0.02),
                 ),
+                if (!FeatureFlags.auth) ...[
+                  Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
+                    child: Material(
+                      color: Theme.of(context)
+                          .colorScheme
+                          .errorContainer
+                          .withValues(alpha: 0.35),
+                      borderRadius: BorderRadius.circular(12),
+                      child: Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: Text(
+                          'Demo mode is active (dart defines not loaded). '
+                          'Copy dart_defines.example.json to dart_defines.json '
+                          'and run with --dart-define-from-file=dart_defines.json.',
+                          style: TextStyle(
+                            fontFamily: 'PlusJakartaSans',
+                            fontSize: 13,
+                            color: Theme.of(context).colorScheme.onSurface,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: screenHeight * 0.02),
+                ],
                 if (showActivationBanner) ...[
                   Padding(
                     padding:
@@ -957,8 +995,10 @@ class IconContainor extends StatelessWidget {
           color: Colors.white,
           borderRadius: BorderRadius.circular(10),
           border: Border.all(color: const Color.fromRGBO(221, 218, 218, 1))),
-      child: Image.asset(
-          'assets/Icons/google.png'), //D:\Coding\healthApp\Flutter_project\healthpilot\assets\Icons\Google1.png
+      child: SvgPicture.asset(
+        googleSignIn,
+        fit: BoxFit.scaleDown,
+      ),
     );
   }
 }

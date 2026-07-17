@@ -9,6 +9,37 @@ paid version unlocks additional features like personalized recommendations based
 joining support groups, and symptom tracking. Users can also access medication reminders, language translation services, 
 and a wealth of health tips and articles. Join us on this transformative health journey!
 
+## Build and run
+
+All Flutter commands must be run from the **`healthpilot/`** directory (where `pubspec.yaml` lives).
+
+1. Copy the example config and adjust values if needed:
+
+```bash
+cd healthpilot
+cp dart_defines.example.json dart_defines.json
+```
+
+2. Install dependencies:
+
+```bash
+flutter pub get
+```
+
+3. Run or build **with dart defines** (required for real backend auth and API data):
+
+```bash
+flutter run --dart-define-from-file=dart_defines.json
+```
+
+```bash
+flutter build apk --release --dart-define-from-file=dart_defines.json
+```
+
+Without `--dart-define-from-file`, feature flags default to off and the app runs in **demo/mock mode** (any login works, placeholder health data appears). The login screen shows a banner when demo mode is active.
+
+`dart_defines.json` is gitignored locally; use `dart_defines.example.json` as the committed template.
+
 ## Contribution
 ```
 Fork the Repository:

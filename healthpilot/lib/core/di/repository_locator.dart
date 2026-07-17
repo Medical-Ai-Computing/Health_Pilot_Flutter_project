@@ -74,6 +74,30 @@ abstract final class RepositoryLocator {
   // Late-bound so AuthState can register its callback after creation.
   static Future<void> Function()? _onAuthExpiredCallback;
 
+  /// Loads feature data for the signed-in user, or clears it when logged out /
+  /// in offline guest mode (mock repo + no backend flag).
+  static void _syncFeatureProvider({
+    required AuthState authState,
+    required void Function() reset,
+    required void Function() load,
+    required bool featureEnabled,
+    bool loadForGuest = true,
+  }) {
+    if (authState.status == AuthStatus.unauthenticated) {
+      reset();
+      return;
+    }
+    if (authState.status != AuthStatus.authenticated) return;
+
+    if (authState.isGuest && (!featureEnabled || !loadForGuest)) {
+      reset();
+      return;
+    }
+
+    reset();
+    load();
+  }
+
   static void initialize() {
     tokenStore = const SecureTokenStore(FlutterSecureStorage());
     ApiClient.initialize(
@@ -126,10 +150,14 @@ abstract final class RepositoryLocator {
                 : MockMedicationRepository(),
           ),
           update: (_, authState, provider) {
-            if (authState.status == AuthStatus.authenticated) {
-              provider!.load();
-            }
-            return provider!;
+            final meds = provider!;
+            _syncFeatureProvider(
+              authState: authState,
+              featureEnabled: FeatureFlags.medications,
+              reset: meds.reset,
+              load: meds.load,
+            );
+            return meds;
           },
         ),
 
@@ -141,10 +169,14 @@ abstract final class RepositoryLocator {
                 : MockHealthRepository(),
           ),
           update: (_, authState, provider) {
-            if (authState.status == AuthStatus.authenticated) {
-              provider!.load();
-            }
-            return provider!;
+            final health = provider!;
+            _syncFeatureProvider(
+              authState: authState,
+              featureEnabled: FeatureFlags.healthData,
+              reset: health.reset,
+              load: health.load,
+            );
+            return health;
           },
         ),
 

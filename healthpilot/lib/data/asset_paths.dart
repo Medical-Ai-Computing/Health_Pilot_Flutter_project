@@ -46,6 +46,7 @@ abstract final class AssetPaths {
       'assets/Icons/triangle_exclamation_pic.svg';
   static const gmailLogo = 'assets/icons/gmail_logo.svg';
   static const googleSignIn = 'assets/Icons/gsign.svg';
+  static const articleStopwatchPng = 'assets/Icons/stopwatch .png';
   static const linkedinLogo = 'assets/icons/linkedin_logo.svg';
   static const translateIcon = 'assets/icons/translate.svg';
   static const bellReminder = 'assets/icons/bell_reminder.svg';

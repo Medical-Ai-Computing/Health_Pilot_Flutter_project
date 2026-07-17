@@ -75,6 +75,21 @@ class HealthProvider extends ChangeNotifier {
     await load();
   }
 
+  /// Clears in-memory state when the user logs out or switches accounts.
+  void reset() {
+    _conditions = [];
+    _symptoms = [];
+    _vitals = [];
+    _goals = [];
+    _latestSummary = null;
+    _summaries = [];
+    _dashboard = null;
+    _status = HealthLoadStatus.idle;
+    _error = null;
+    _loadStarted = false;
+    notifyListeners();
+  }
+
   // ── Vitals ────────────────────────────────────────────────────────────────
   Future<void> addVital(VitalLog vital) async {
     final created = await _repo.addVital(vital);

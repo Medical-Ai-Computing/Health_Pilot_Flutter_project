@@ -133,7 +133,7 @@ class _ArticleDetailState extends State<ArticleDetail> {
                                             BlendMode.srcIn,
                                           ),
                                           child: Image.asset(
-                                            'assets/Icons/stopwatch .png',
+                                            AssetPaths.articleStopwatchPng,
                                           ),
                                         ),
                                       ),

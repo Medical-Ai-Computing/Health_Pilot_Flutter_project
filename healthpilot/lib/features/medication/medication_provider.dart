@@ -57,6 +57,15 @@ class MedicationProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Clears in-memory state when the user logs out or switches accounts.
+  void reset() {
+    _medications = [];
+    _status = MedLoadStatus.idle;
+    _error = null;
+    _loadStarted = false;
+    notifyListeners();
+  }
+
   Future<List<MedicationReminder>> fetchReminders(int medicationId) =>
       _repo.fetchReminders(medicationId);
 
