@@ -340,15 +340,25 @@ void main() {
   // FIX 11: Subscription Next validation
   // ═════════════════════════════════════════════════════════════════════════
   group('Fix 11: Subscription Next button', () {
-    test('confirmSubscription throws when no plan selected', () async {
+    test('confirmSubscription uses monthly fallback when no plan selected',
+        () async {
       final p = SubscriptionProvider(MockSubscriptionRepository());
-      expect(p.confirmSubscription(), throwsA(isA<Exception>()));
+      await p.confirmSubscription();
+      expect(p.status?.isActive, isTrue);
     });
 
     test('confirmSubscription succeeds with a plan selected', () async {
       final p = SubscriptionProvider(MockSubscriptionRepository());
       p.selectPlan('monthly');
       await p.confirmSubscription();
+      expect(p.status?.isActive, isTrue);
+    });
+
+    test('completeCheckout runs payment flow then activates plan', () async {
+      final p = SubscriptionProvider(MockSubscriptionRepository());
+      await p.load();
+      p.selectPlan('monthly');
+      await p.completeCheckout(paymentMethod: 'credit_card');
       expect(p.status?.isActive, isTrue);
     });
   });

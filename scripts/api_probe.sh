@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #
-# Endpoint probe for HealthPilot backend — auth, profile, health, nutrition,
-# medications, and subscriptions.
+# Endpoint probe for HealthPilot backend — auth, profile, contacts, health,
+# nutrition, medications, and subscriptions.
 # Logs in, then GETs each read endpoint and exercises safe create→delete
 # writes, printing every response so payload shapes can be compared against
 # the app's parsing code.
@@ -83,6 +83,49 @@ call GET "/profile/me/"
 step "PROFILE: PATCH /profile/me/ (echo current is_visible_in_community)"
 VIS="$(echo "$LAST_BODY" | jq -r '.data.is_visible_in_community // true')"
 call PATCH "/profile/me/" "{\"is_visible_in_community\": $VIS}"
+
+############################  CONTACTS  ############################
+step "CONTACTS: GET /profile/emergency-contacts/"
+call GET "/profile/emergency-contacts/"
+
+step "CONTACTS: POST /profile/emergency-contacts/ (create temp)"
+call POST "/profile/emergency-contacts/" \
+  '{"first_name":"__probe","last_name":"Contact","relationship":"OTHER","phone":"+15550001111","email":"probe.contact@example.com"}'
+EC_ID="$(pick_id)"
+info "created emergency contact id = ${EC_ID:-<none>}"
+
+if [[ -n "$EC_ID" ]]; then
+  step "CONTACTS: GET /profile/emergency-contacts/$EC_ID/"
+  call GET "/profile/emergency-contacts/$EC_ID/"
+
+  step "CONTACTS: PATCH /profile/emergency-contacts/$EC_ID/ (no-op phone echo)"
+  call PATCH "/profile/emergency-contacts/$EC_ID/" \
+    '{"first_name":"__probe","last_name":"Contact","relationship":"OTHER","phone":"+15550001111","email":"probe.contact@example.com"}'
+
+  step "CONTACTS: DELETE /profile/emergency-contacts/$EC_ID/ (cleanup)"
+  call DELETE "/profile/emergency-contacts/$EC_ID/"
+fi
+
+step "CONTACTS: GET /profile/doctors/"
+call GET "/profile/doctors/"
+
+step "CONTACTS: POST /profile/doctors/ (create temp)"
+call POST "/profile/doctors/" \
+  '{"first_name":"Dr","last_name":"Probe","profession":"General Practice","phone":"+15550002222","email":"probe.doctor@example.com","report_frequency":2}'
+DOC_ID="$(pick_id)"
+info "created doctor id = ${DOC_ID:-<none>}"
+
+if [[ -n "$DOC_ID" ]]; then
+  step "CONTACTS: GET /profile/doctors/$DOC_ID/"
+  call GET "/profile/doctors/$DOC_ID/"
+
+  step "CONTACTS: PATCH /profile/doctors/$DOC_ID/ (no-op echo)"
+  call PATCH "/profile/doctors/$DOC_ID/" \
+    '{"first_name":"Dr","last_name":"Probe","profession":"General Practice","phone":"+15550002222","email":"probe.doctor@example.com","report_frequency":2}'
+
+  step "CONTACTS: DELETE /profile/doctors/$DOC_ID/ (cleanup)"
+  call DELETE "/profile/doctors/$DOC_ID/"
+fi
 
 ############################  HEALTH  ############################
 step "HEALTH: GET /health/symptoms/"

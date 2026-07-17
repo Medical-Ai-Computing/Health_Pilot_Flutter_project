@@ -54,7 +54,7 @@ class EmergencyContactEntry {
 
   factory EmergencyContactEntry.fromJson(Map<String, dynamic> json) =>
       EmergencyContactEntry(
-        id: json['id'] as String,
+        id: json['id'].toString(),
         firstName: json['first_name'] as String,
         lastName: json['last_name'] as String,
         email: json['email'] as String,
@@ -115,7 +115,7 @@ class PersonalDoctorEntry {
 
   factory PersonalDoctorEntry.fromJson(Map<String, dynamic> json) =>
       PersonalDoctorEntry(
-        id: json['id'] as String,
+        id: json['id'].toString(),
         firstName: json['first_name'] as String,
         lastName: json['last_name'] as String,
         profession: json['profession'] as String,

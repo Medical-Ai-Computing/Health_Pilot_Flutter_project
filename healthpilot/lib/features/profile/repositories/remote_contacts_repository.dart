@@ -7,11 +7,34 @@ class RemoteContactsRepository implements IContactsRepository {
   const RemoteContactsRepository(this._client);
   final ApiClient _client;
 
+  Future<List<dynamic>> _fetchAllPages(String path) async {
+    final all = <dynamic>[];
+    final seen = <String>{};
+    Map<String, dynamic>? query;
+    while (true) {
+      final data = await _client.get(path, queryParameters: query);
+      if (data is! Map) {
+        if (data is List) all.addAll(data);
+        break;
+      }
+      final results = data['results'];
+      if (results is List) all.addAll(results);
+      final next = data['next'];
+      if (next is! String || next.isEmpty) break;
+      final nextQuery = Uri.parse(next).queryParameters;
+      final key = nextQuery.toString();
+      if (nextQuery.isEmpty || !seen.add(key)) break;
+      query = Map<String, dynamic>.from(nextQuery);
+    }
+    return all;
+  }
+
   @override
   Future<List<EmergencyContactEntry>> fetchEmergencyContacts() async {
-    final data =
-        await _client.get('${ApiConstants.profileBase}/emergency-contacts/');
-    return (data as List)
+    final items = await _fetchAllPages(
+      '${ApiConstants.profileBase}/emergency-contacts/',
+    );
+    return items
         .map((e) => EmergencyContactEntry.fromJson(e as Map<String, dynamic>))
         .toList();
   }
@@ -42,8 +65,9 @@ class RemoteContactsRepository implements IContactsRepository {
 
   @override
   Future<List<PersonalDoctorEntry>> fetchDoctors() async {
-    final data = await _client.get('${ApiConstants.profileBase}/doctors/');
-    return (data as List)
+    final items =
+        await _fetchAllPages('${ApiConstants.profileBase}/doctors/');
+    return items
         .map((e) => PersonalDoctorEntry.fromJson(e as Map<String, dynamic>))
         .toList();
   }

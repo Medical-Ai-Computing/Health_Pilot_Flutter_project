@@ -4,7 +4,7 @@
   "FF_AUTH": "true",
   "FF_PROFILE": "true",
   "FF_ARTICLES": "true",
-  "FF_MEDICATIONS": "false",
+  "FF_MEDICATIONS": "true",
   "FF_ASSESSMENT": "true",
   "FF_CONTACTS": "false",
   "FF_HEALTH_DATA": "true",
@@ -13,5 +13,5 @@
   "FF_COMMUNITY": "true",
   "FF_NUTRITION": "true",
   "FF_NOTIFICATIONS": "true",
-  "FF_SUBSCRIPTIONS": "false"
+  "FF_SUBSCRIPTIONS": "true"
 }

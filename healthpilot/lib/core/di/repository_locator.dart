@@ -285,10 +285,13 @@ abstract final class RepositoryLocator {
                 : MockSubscriptionRepository(),
           ),
           update: (_, authState, provider) {
-            if (authState.status == AuthStatus.authenticated) {
-              provider!.load();
+            final subs = provider!;
+            if (authState.status == AuthStatus.unauthenticated) {
+              subs.reset();
+            } else if (authState.status == AuthStatus.authenticated) {
+              subs.load();
             }
-            return provider!;
+            return subs;
           },
         ),
 

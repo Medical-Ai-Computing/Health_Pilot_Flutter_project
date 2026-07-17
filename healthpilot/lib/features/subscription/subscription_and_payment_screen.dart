@@ -502,6 +502,14 @@ class PaymentReviewScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
+    final subProvider = context.watch<SubscriptionProvider>();
+    final plan = subProvider.selectedPlan ?? subProvider.premiumPlan;
+    final total = plan?.priceMonthly ?? 25.99;
+    final subtotal = total;
+    const tax = 0.0;
+    final totalLabel = '\$${total.toStringAsFixed(2)}';
+    final subtotalLabel = '\$${subtotal.toStringAsFixed(2)}';
+    final taxLabel = '\$${tax.toStringAsFixed(2)}';
     return Scaffold(
       backgroundColor: cs.surface,
       body: SafeArea(
@@ -684,17 +692,17 @@ class PaymentReviewScreen extends StatelessWidget {
                             screenWidth: screenWidth,
                           ),
                           PersonalpayInfo(
-                            personalPaymentInfo: "24.42\$",
+                            personalPaymentInfo: subtotalLabel,
                             screenHeight: screenHeight,
                             screenWidth: screenWidth,
                           ),
                           PersonalpayInfo(
-                            personalPaymentInfo: "1.57\$",
+                            personalPaymentInfo: taxLabel,
                             screenHeight: screenHeight,
                             screenWidth: screenWidth,
                           ),
                           PersonalpayInfo(
-                            personalPaymentInfo: "25.99\$",
+                            personalPaymentInfo: totalLabel,
                             screenHeight: screenHeight,
                             screenWidth: screenWidth,
                           )
@@ -708,26 +716,10 @@ class PaymentReviewScreen extends StatelessWidget {
                   child: Padding(
                     padding:
                         EdgeInsets.symmetric(vertical: screenHeight * 0.06),
-                    child: PaymentButton(
+                    child: _SubscriptionCheckoutButton(
                       screenWidth: screenWidth,
                       screenHeight: screenHeight,
-                      buttonText: "Next",
-                      buttonAction: () async {
-                        final provider =
-                            context.read<SubscriptionProvider>();
-                        final navigator = Navigator.of(context);
-                        final messenger = ScaffoldMessenger.of(context);
-                        try {
-                          await provider.confirmSubscription();
-                          navigator.push(MaterialPageRoute(
-                              builder: (context) =>
-                                  const SubscriptionFinishScreen()));
-                        } catch (_) {
-                          messenger.showSnackBar(const SnackBar(
-                              content: Text(
-                                  'Could not complete subscription. Please try again.')));
-                        }
-                      },
+                      paymentInfo: paymentInfo,
                     ),
                   ),
                 ),
@@ -745,6 +737,67 @@ class PaymentReviewScreen extends StatelessWidget {
 }
 
 //payment screen ends here
+
+class _SubscriptionCheckoutButton extends StatefulWidget {
+  const _SubscriptionCheckoutButton({
+    required this.screenWidth,
+    required this.screenHeight,
+    required this.paymentInfo,
+  });
+
+  final double screenWidth;
+  final double screenHeight;
+  final PersonalPaymentInformations paymentInfo;
+
+  @override
+  State<_SubscriptionCheckoutButton> createState() =>
+      _SubscriptionCheckoutButtonState();
+}
+
+class _SubscriptionCheckoutButtonState extends State<_SubscriptionCheckoutButton> {
+  bool _isProcessing = false;
+
+  Future<void> _checkout() async {
+    if (_isProcessing) return;
+    setState(() => _isProcessing = true);
+    final provider = context.read<SubscriptionProvider>();
+    final navigator = Navigator.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    try {
+      final paymentMethod = SubscriptionProvider.paymentMethodFor(
+        card: widget.paymentInfo.isPaymentChecked,
+        paypal: widget.paymentInfo.isPaypalChecked,
+        chapa: widget.paymentInfo.isChappaChecked,
+      );
+      await provider.completeCheckout(paymentMethod: paymentMethod);
+      if (!mounted) return;
+      navigator.push(MaterialPageRoute(
+        builder: (context) => const SubscriptionFinishScreen(),
+      ));
+    } catch (_) {
+      if (!mounted) return;
+      messenger.showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Could not complete subscription. Please try again.',
+          ),
+        ),
+      );
+    } finally {
+      if (mounted) setState(() => _isProcessing = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return PaymentButton(
+      screenWidth: widget.screenWidth,
+      screenHeight: widget.screenHeight,
+      buttonText: _isProcessing ? 'Processing…' : 'Next',
+      buttonAction: _isProcessing ? null : _checkout,
+    );
+  }
+}
 
 /// PaymentButton
 ///
