@@ -35,8 +35,26 @@ import 'package:healthpilot/features/profile/personal_doctor_personal_informatio
 import 'package:healthpilot/data/constants.dart';
 import 'package:healthpilot/features/profile/language_translation.dart';
 
-class SubscriptionAndPaymentScreen extends StatelessWidget {
+class SubscriptionAndPaymentScreen extends StatefulWidget {
   const SubscriptionAndPaymentScreen({super.key});
+
+  @override
+  State<SubscriptionAndPaymentScreen> createState() =>
+      _SubscriptionAndPaymentScreenState();
+}
+
+class _SubscriptionAndPaymentScreenState
+    extends State<SubscriptionAndPaymentScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // Fetch live plans/status so the price and premium plan id come from the
+    // backend instead of the hardcoded fallback. (load() is idempotent.)
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      context.read<SubscriptionProvider>().load();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -90,7 +108,7 @@ class SubscriptionAndPaymentScreen extends StatelessWidget {
                       screenHeight: screenHeight,
                       screenWidth: screenWidth,
                       color: cs.primary,
-                      planId: premiumPlan?.id ?? 'premium',
+                      planId: subProvider.defaultPaidPlanId,
                       price: premiumPlan?.formattedPrice ?? '25.99\$/month',
                     ),
                   ),
@@ -105,7 +123,15 @@ class SubscriptionAndPaymentScreen extends StatelessWidget {
                         buttonText: "Next",
                         buttoncolor: cs.primary,
                         textColor: cs.onPrimary,
-                        fontsize: 18),
+                        fontsize: 18,
+                        buttonAction: () {
+                          // Proceed with the recommended (premium) plan.
+                          context
+                              .read<SubscriptionProvider>()
+                              .selectPlan(subProvider.defaultPaidPlanId);
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (_) => const PaymentMethodScreen()));
+                        }),
                   )
                 ],
               ),
@@ -476,6 +502,14 @@ class PaymentReviewScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
+    final subProvider = context.watch<SubscriptionProvider>();
+    final plan = subProvider.selectedPlan ?? subProvider.premiumPlan;
+    final total = plan?.priceMonthly ?? 25.99;
+    final subtotal = total;
+    const tax = 0.0;
+    final totalLabel = '\$${total.toStringAsFixed(2)}';
+    final subtotalLabel = '\$${subtotal.toStringAsFixed(2)}';
+    final taxLabel = '\$${tax.toStringAsFixed(2)}';
     return Scaffold(
       backgroundColor: cs.surface,
       body: SafeArea(
@@ -658,17 +692,17 @@ class PaymentReviewScreen extends StatelessWidget {
                             screenWidth: screenWidth,
                           ),
                           PersonalpayInfo(
-                            personalPaymentInfo: "24.42\$",
+                            personalPaymentInfo: subtotalLabel,
                             screenHeight: screenHeight,
                             screenWidth: screenWidth,
                           ),
                           PersonalpayInfo(
-                            personalPaymentInfo: "1.57\$",
+                            personalPaymentInfo: taxLabel,
                             screenHeight: screenHeight,
                             screenWidth: screenWidth,
                           ),
                           PersonalpayInfo(
-                            personalPaymentInfo: "25.99\$",
+                            personalPaymentInfo: totalLabel,
                             screenHeight: screenHeight,
                             screenWidth: screenWidth,
                           )
@@ -682,18 +716,10 @@ class PaymentReviewScreen extends StatelessWidget {
                   child: Padding(
                     padding:
                         EdgeInsets.symmetric(vertical: screenHeight * 0.06),
-                    child: PaymentButton(
+                    child: _SubscriptionCheckoutButton(
                       screenWidth: screenWidth,
                       screenHeight: screenHeight,
-                      buttonText: "Next",
-                      buttonAction: () {
-                        context
-                            .read<SubscriptionProvider>()
-                            .confirmSubscription();
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) =>
-                                const SubscriptionFinishScreen()));
-                      },
+                      paymentInfo: paymentInfo,
                     ),
                   ),
                 ),
@@ -711,6 +737,67 @@ class PaymentReviewScreen extends StatelessWidget {
 }
 
 //payment screen ends here
+
+class _SubscriptionCheckoutButton extends StatefulWidget {
+  const _SubscriptionCheckoutButton({
+    required this.screenWidth,
+    required this.screenHeight,
+    required this.paymentInfo,
+  });
+
+  final double screenWidth;
+  final double screenHeight;
+  final PersonalPaymentInformations paymentInfo;
+
+  @override
+  State<_SubscriptionCheckoutButton> createState() =>
+      _SubscriptionCheckoutButtonState();
+}
+
+class _SubscriptionCheckoutButtonState extends State<_SubscriptionCheckoutButton> {
+  bool _isProcessing = false;
+
+  Future<void> _checkout() async {
+    if (_isProcessing) return;
+    setState(() => _isProcessing = true);
+    final provider = context.read<SubscriptionProvider>();
+    final navigator = Navigator.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    try {
+      final paymentMethod = SubscriptionProvider.paymentMethodFor(
+        card: widget.paymentInfo.isPaymentChecked,
+        paypal: widget.paymentInfo.isPaypalChecked,
+        chapa: widget.paymentInfo.isChappaChecked,
+      );
+      await provider.completeCheckout(paymentMethod: paymentMethod);
+      if (!mounted) return;
+      navigator.push(MaterialPageRoute(
+        builder: (context) => const SubscriptionFinishScreen(),
+      ));
+    } catch (_) {
+      if (!mounted) return;
+      messenger.showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Could not complete subscription. Please try again.',
+          ),
+        ),
+      );
+    } finally {
+      if (mounted) setState(() => _isProcessing = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return PaymentButton(
+      screenWidth: widget.screenWidth,
+      screenHeight: widget.screenHeight,
+      buttonText: _isProcessing ? 'Processing…' : 'Next',
+      buttonAction: _isProcessing ? null : _checkout,
+    );
+  }
+}
 
 /// PaymentButton
 ///
@@ -1028,7 +1115,7 @@ class PersonalpayInfo extends StatelessWidget {
 /// process. It provides a confirmation message and allows users to finish the process.
 
 class SubscriptionFinishScreen extends StatelessWidget {
-  static const routeName = "/ForgotPasswordEmailCheck";
+  static const routeName = "/subscription-finish";
   const SubscriptionFinishScreen({
     super.key,
   });

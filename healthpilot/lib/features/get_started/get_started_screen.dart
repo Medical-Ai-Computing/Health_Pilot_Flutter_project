@@ -56,6 +56,8 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        // Light-themed onboarding flow (white app bar); keep dark text readable.
+        backgroundColor: Colors.white,
         appBar: PreferredSize(
           preferredSize: const Size(50, 60),
           child: CustomAppBar(

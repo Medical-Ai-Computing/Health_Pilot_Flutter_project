@@ -51,6 +51,14 @@ import 'package:healthpilot/core/repositories/i_subscription_repository.dart';
 import 'package:healthpilot/features/subscription/subscription_provider.dart';
 import 'package:healthpilot/features/subscription/repositories/mock_subscription_repository.dart';
 import 'package:healthpilot/features/subscription/repositories/remote_subscription_repository.dart';
+import 'package:healthpilot/core/repositories/i_notification_repository.dart';
+import 'package:healthpilot/features/notifications/notification_provider.dart';
+import 'package:healthpilot/features/notifications/repositories/mock_notification_repository.dart';
+import 'package:healthpilot/features/notifications/repositories/remote_notification_repository.dart';
+import 'package:healthpilot/core/repositories/i_ads_repository.dart';
+import 'package:healthpilot/features/ads/ads_provider.dart';
+import 'package:healthpilot/features/ads/repositories/mock_ads_repository.dart';
+import 'package:healthpilot/features/ads/repositories/remote_ads_repository.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
@@ -65,6 +73,30 @@ abstract final class RepositoryLocator {
 
   // Late-bound so AuthState can register its callback after creation.
   static Future<void> Function()? _onAuthExpiredCallback;
+
+  /// Loads feature data for the signed-in user, or clears it when logged out /
+  /// in offline guest mode (mock repo + no backend flag).
+  static void _syncFeatureProvider({
+    required AuthState authState,
+    required void Function() reset,
+    required void Function() load,
+    required bool featureEnabled,
+    bool loadForGuest = true,
+  }) {
+    if (authState.status == AuthStatus.unauthenticated) {
+      reset();
+      return;
+    }
+    if (authState.status != AuthStatus.authenticated) return;
+
+    if (authState.isGuest && (!featureEnabled || !loadForGuest)) {
+      reset();
+      return;
+    }
+
+    reset();
+    load();
+  }
 
   static void initialize() {
     tokenStore = const SecureTokenStore(FlutterSecureStorage());
@@ -118,10 +150,14 @@ abstract final class RepositoryLocator {
                 : MockMedicationRepository(),
           ),
           update: (_, authState, provider) {
-            if (authState.status == AuthStatus.authenticated) {
-              provider!.load();
-            }
-            return provider!;
+            final meds = provider!;
+            _syncFeatureProvider(
+              authState: authState,
+              featureEnabled: FeatureFlags.medications,
+              reset: meds.reset,
+              load: meds.load,
+            );
+            return meds;
           },
         ),
 
@@ -133,10 +169,14 @@ abstract final class RepositoryLocator {
                 : MockHealthRepository(),
           ),
           update: (_, authState, provider) {
-            if (authState.status == AuthStatus.authenticated) {
-              provider!.load();
-            }
-            return provider!;
+            final health = provider!;
+            _syncFeatureProvider(
+              authState: authState,
+              featureEnabled: FeatureFlags.healthData,
+              reset: health.reset,
+              load: health.load,
+            );
+            return health;
           },
         ),
 
@@ -212,7 +252,10 @@ abstract final class RepositoryLocator {
           ),
           update: (_, authState, provider) {
             if (authState.status == AuthStatus.authenticated) {
-              provider!.load();
+              final userId = authState.userId;
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                provider!.load(currentUserId: userId);
+              });
             }
             return provider!;
           },
@@ -240,6 +283,40 @@ abstract final class RepositoryLocator {
                 ? RemoteSubscriptionRepository(apiClient)
                     as ISubscriptionRepository
                 : MockSubscriptionRepository(),
+          ),
+          update: (_, authState, provider) {
+            final subs = provider!;
+            if (authState.status == AuthStatus.unauthenticated) {
+              subs.reset();
+            } else if (authState.status == AuthStatus.authenticated) {
+              subs.load();
+            }
+            return subs;
+          },
+        ),
+
+        // Branch 15 — Notifications; auto-loads on authentication.
+        ChangeNotifierProxyProvider<AuthState, NotificationProvider>(
+          create: (_) => NotificationProvider(
+            FeatureFlags.notifications
+                ? RemoteNotificationRepository(apiClient)
+                    as INotificationRepository
+                : MockNotificationRepository(),
+          ),
+          update: (_, authState, provider) {
+            if (authState.status == AuthStatus.authenticated) {
+              provider!.load();
+            }
+            return provider!;
+          },
+        ),
+
+        // Branch 16 — Ads; auto-loads on authentication.
+        ChangeNotifierProxyProvider<AuthState, AdsProvider>(
+          create: (_) => AdsProvider(
+            FeatureFlags.ads
+                ? RemoteAdsRepository(apiClient) as IAdsRepository
+                : MockAdsRepository(),
           ),
           update: (_, authState, provider) {
             if (authState.status == AuthStatus.authenticated) {

@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 
 /// One article row for the feed + detail route.
@@ -27,17 +28,46 @@ class ArticleFeedItem {
   String get formattedPublishedDate =>
       DateFormat.yMMMMd('en_US').format(publishedAt);
 
+  /// Live articles carry a network `image_url`; legacy/fallback rows carry a
+  /// bundled asset path. Pick the right [ImageProvider] so screens can render
+  /// either without crashing on an `Image.asset(<http url>)`.
+  ImageProvider get imageProvider => imageUrl.startsWith('http')
+      ? NetworkImage(imageUrl)
+      : AssetImage(imageUrl) as ImageProvider;
+
+  ArticleFeedItem copyWith({int? likes, int? commentsCount}) => ArticleFeedItem(
+        id: id,
+        title: title,
+        body: body,
+        imageUrl: imageUrl,
+        author: author,
+        publishedAt: publishedAt,
+        readMinutes: readMinutes,
+        likes: likes ?? this.likes,
+        commentsCount: commentsCount ?? this.commentsCount,
+      );
+
+  /// Live API uses `{id:int, headline, summary|body, image_url,
+  /// read_time_minutes}`; older shape used `{title, body, read_minutes}`.
   factory ArticleFeedItem.fromJson(Map<String, dynamic> json) =>
       ArticleFeedItem(
-        id: json['id'] as String,
-        title: json['title'] as String,
-        body: json['body'] as String? ?? '',
+        id: json['id'].toString(),
+        title: (json['title'] ?? json['headline'] ?? '') as String,
+        body: (json['body'] ?? json['summary'] ?? '') as String? ?? '',
         imageUrl: json['image_url'] as String? ?? 'assets/images/old_woman.png',
         author: json['author'] as String? ?? '',
-        publishedAt: DateTime.parse(json['published_at'] as String),
-        readMinutes: (json['read_minutes'] as num?)?.toInt() ?? 0,
-        likes: (json['likes'] as num?)?.toInt() ?? 0,
-        commentsCount: (json['comments_count'] as num?)?.toInt() ?? 0,
+        publishedAt:
+            DateTime.tryParse(json['published_at'] as String? ?? '') ??
+                DateTime(1970),
+        readMinutes: ((json['read_minutes'] ?? json['read_time_minutes'])
+                    as num?)
+                ?.toInt() ??
+            0,
+        likes: ((json['like_count'] ?? json['likes']) as num?)?.toInt() ?? 0,
+        commentsCount:
+            ((json['comment_count'] ?? json['comments_count']) as num?)
+                    ?.toInt() ??
+                0,
       );
 
   Map<String, dynamic> toJson() => {
@@ -68,4 +98,29 @@ class ArticleFeedItem {
       commentsCount: 12,
     );
   }
+}
+
+/// A comment on an article — `/articles/{id}/comments/`.
+class ArticleComment {
+  const ArticleComment({
+    required this.id,
+    required this.authorName,
+    required this.text,
+    this.createdAt,
+    this.parentId,
+  });
+
+  final int id;
+  final String authorName;
+  final String text;
+  final DateTime? createdAt;
+  final int? parentId;
+
+  factory ArticleComment.fromJson(Map<String, dynamic> json) => ArticleComment(
+        id: (json['id'] as num?)?.toInt() ?? 0,
+        authorName: json['author_name'] as String? ?? '',
+        text: json['text'] as String? ?? '',
+        createdAt: DateTime.tryParse(json['created_at'] as String? ?? ''),
+        parentId: (json['parent'] as num?)?.toInt(),
+      );
 }

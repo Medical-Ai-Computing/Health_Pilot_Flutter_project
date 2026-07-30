@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+import 'package:healthpilot/core/network/api_error.dart';
 import 'package:healthpilot/core/repositories/i_community_repository.dart';
 import 'package:healthpilot/features/community/community_models.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -14,9 +15,15 @@ class CommunityProvider extends ChangeNotifier {
   List<ConnectionRequest> _connections = [];
   List<ConnectionRequest> _incomingRequests = [];
   List<ConnectionRequest> _sentRequests = [];
+  List<CommunityGroup> _groups = [];
   CommunityStatus _status = CommunityStatus.idle;
+  String? _error;
   bool _loading = false;
+  final Set<int> _loadingGroups = {};
 
+  List<CommunityGroup> get groups => List.unmodifiable(_groups);
+  List<CommunityGroup> get joinedGroups =>
+      _groups.where((g) => g.isMember).toList();
   List<SuggestedPeer> get suggestedPeers => List.unmodifiable(_suggestedPeers);
   List<ConnectionRequest> get connections => List.unmodifiable(_connections);
   List<ConnectionRequest> get incomingRequests =>
@@ -24,6 +31,7 @@ class CommunityProvider extends ChangeNotifier {
   List<ConnectionRequest> get sentRequests =>
       List.unmodifiable(_sentRequests.where((r) => r.status == 'pending'));
   CommunityStatus get status => _status;
+  String? get error => _error;
 
   CommunityProvider(this._repo);
 
@@ -42,6 +50,7 @@ class CommunityProvider extends ChangeNotifier {
     if (_loading) return;
     _loading = true;
     _status = CommunityStatus.loading;
+    _error = null;
     notifyListeners();
     try {
       await _loadSentPeerIds();
@@ -53,8 +62,17 @@ class CommunityProvider extends ChangeNotifier {
       _suggestedPeers = results[0] as List<SuggestedPeer>;
       _connections = results[1] as List<ConnectionRequest>;
       _incomingRequests = results[2] as List<ConnectionRequest>;
+      // Groups are best-effort — don't fail the whole screen if unavailable.
+      try {
+        _groups = await _repo.fetchGroups();
+      } catch (_) {
+        _groups = [];
+      }
       _cleanupAcceptedSent();
       _status = CommunityStatus.loaded;
+    } on ApiException catch (e) {
+      _error = e.userMessage;
+      _status = CommunityStatus.error;
     } catch (_) {
       _status = CommunityStatus.error;
     } finally {
@@ -93,6 +111,72 @@ class CommunityProvider extends ChangeNotifier {
       for (final r in _incomingRequests)
         if (r.id == requestId) updated else r,
     ];
+    notifyListeners();
+  }
+
+  // ── Community groups ───────────────────────────────────────────────────────
+
+  Future<void> refreshGroups() async {
+    _groups = await _repo.fetchGroups();
+    notifyListeners();
+  }
+
+  Future<void> createGroup({
+    required String name,
+    required String slug,
+    String? description,
+  }) async {
+    final group = await _repo.createGroup(
+        name: name, slug: slug, description: description);
+    _groups = [group, ..._groups];
+    notifyListeners();
+  }
+
+  Future<void> joinGroup(int groupId) async {
+    if (_loadingGroups.contains(groupId)) return;
+    _loadingGroups.add(groupId);
+    try {
+      await _repo.joinGroup(groupId);
+      _groups = [
+        for (final g in _groups)
+          if (g.id == groupId)
+            g.copyWith(isMember: true, memberCount: g.memberCount + 1)
+          else
+            g,
+      ];
+    } finally {
+      _loadingGroups.remove(groupId);
+    }
+    notifyListeners();
+  }
+
+  Future<void> leaveGroup(int groupId) async {
+    if (_loadingGroups.contains(groupId)) return;
+    _loadingGroups.add(groupId);
+    try {
+      await _repo.leaveGroup(groupId);
+      _groups = [
+        for (final g in _groups)
+          if (g.id == groupId)
+            g.copyWith(
+                isMember: false,
+                memberCount: g.memberCount > 0 ? g.memberCount - 1 : 0)
+          else
+            g,
+      ];
+    } finally {
+      _loadingGroups.remove(groupId);
+    }
+    notifyListeners();
+  }
+
+  Future<CommunityGroup> fetchGroup(int id) async {
+    return await _repo.fetchGroup(id);
+  }
+
+  Future<void> deleteGroup(int id) async {
+    await _repo.deleteGroup(id);
+    _groups = _groups.where((g) => g.id != id).toList();
     notifyListeners();
   }
 

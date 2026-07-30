@@ -25,7 +25,9 @@ class _HealthAssessmentFlowScreenState
   BloodType? _bloodType;
   final _allergiesController = TextEditingController();
 
-  final _symptomController = TextEditingController(text: 'Cough');
+  // The search box starts empty (full catalog visible); 'Cough' stays as a
+  // preselected chip so the step's "continue" gate is satisfied by default.
+  final _symptomController = TextEditingController();
   final Set<String> _selectedSymptoms = {'Cough'};
 
   String?
@@ -64,14 +66,14 @@ class _HealthAssessmentFlowScreenState
         // Allergies can be skipped.
         return true;
       case 3:
-        return _selectedSymptoms.isNotEmpty;
+        // Allow proceed if there are selected symptoms OR free-text entered.
+        return _selectedSymptoms.isNotEmpty || _symptomController.text.trim().isNotEmpty;
       case 4:
         return _symptomDuration != null;
       case _otherSymptomsPageIndex:
         return _hasOtherSymptoms != null;
       case _addMoreSymptomsPageIndex:
-        // User already had some symptoms; but if they deleted all, block.
-        return _selectedSymptoms.isNotEmpty;
+        return _selectedSymptoms.isNotEmpty || _symptomController.text.trim().isNotEmpty;
       case _trendPageIndex:
         return _symptomsTrend != null;
       default:
@@ -89,6 +91,16 @@ class _HealthAssessmentFlowScreenState
   }
 
   void _goNext() {
+    // Before proceeding from a symptoms page, add any typed free-text as a symptom.
+    if (_page == 3 || _page == _addMoreSymptomsPageIndex) {
+      final text = _symptomController.text.trim();
+      if (text.isNotEmpty && !_selectedSymptoms.any((s) => s.toLowerCase() == text.toLowerCase())) {
+        setState(() {
+          _selectedSymptoms.add(text);
+          _symptomController.clear();
+        });
+      }
+    }
     if (_page == _otherSymptomsPageIndex && _hasOtherSymptoms == false) {
       _pageController.animateToPage(
         _trendPageIndex,
@@ -137,6 +149,43 @@ class _HealthAssessmentFlowScreenState
     );
   }
 
+  /// Clears every answer and returns to the first step (after confirmation).
+  Future<void> _resetFlow() async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Start over?'),
+        content: const Text(
+            'This clears your answers and returns to the first step.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text('Start over'),
+          ),
+        ],
+      ),
+    );
+    if (confirm != true || !mounted) return;
+    setState(() {
+      _subject = null;
+      _bloodType = null;
+      _allergiesController.clear();
+      _symptomController.clear();
+      _selectedSymptoms
+        ..clear()
+        ..add('Cough');
+      _symptomDuration = null;
+      _hasOtherSymptoms = null;
+      _symptomsTrend = null;
+      _page = 0;
+    });
+    _pageController.jumpToPage(0);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -152,6 +201,7 @@ class _HealthAssessmentFlowScreenState
                   _goBack();
                 }
               },
+              onReset: _resetFlow,
             ),
             Expanded(
               child: PageView(
@@ -172,6 +222,7 @@ class _HealthAssessmentFlowScreenState
                   ),
                   _BloodTypePage(
                     value: _bloodType,
+                    subject: _subject,
                     onChanged: (v) => setState(() => _bloodType = v),
                   ),
                   _AllergiesPage(controller: _allergiesController),
@@ -243,10 +294,12 @@ class _TopBar extends StatelessWidget {
   const _TopBar({
     required this.title,
     required this.onBack,
+    this.onReset,
   });
 
   final String title;
   final VoidCallback onBack;
+  final VoidCallback? onReset;
 
   @override
   Widget build(BuildContext context) {
@@ -274,8 +327,9 @@ class _TopBar extends StatelessWidget {
             ),
           ),
           IconButton(
-            onPressed: () {},
+            onPressed: onReset,
             icon: const Icon(Icons.refresh),
+            tooltip: 'Start over',
           ),
         ],
       ),
@@ -334,10 +388,15 @@ class _WhoForPage extends StatelessWidget {
 }
 
 class _BloodTypePage extends StatelessWidget {
-  const _BloodTypePage({required this.value, required this.onChanged});
+  const _BloodTypePage({
+    required this.value,
+    required this.onChanged,
+    required this.subject,
+  });
 
   final BloodType? value;
   final ValueChanged<BloodType> onChanged;
+  final HealthAssessmentSubject? subject;
 
   @override
   Widget build(BuildContext context) {
@@ -359,7 +418,9 @@ class _BloodTypePage extends StatelessWidget {
         children: [
           const SizedBox(height: 26),
           Text(
-            'What is their blood type?',
+            subject == HealthAssessmentSubject.myself
+                ? 'What is your blood type?'
+                : 'What is their blood type?',
             style: t.bodyLarge?.copyWith(
               fontSize: 14,
               fontWeight: FontWeight.w400,
@@ -499,7 +560,7 @@ class _AllergiesPageState extends State<_AllergiesPage> {
   }
 }
 
-class _SymptomsPage extends StatelessWidget {
+class _SymptomsPage extends StatefulWidget {
   const _SymptomsPage({
     required this.title,
     required this.controller,
@@ -513,15 +574,68 @@ class _SymptomsPage extends StatelessWidget {
   final ValueChanged<String> onToggle;
 
   @override
+  State<_SymptomsPage> createState() => _SymptomsPageState();
+}
+
+class _SymptomsPageState extends State<_SymptomsPage> {
+  /// Common symptoms the search box filters against. Anything not here can
+  /// still be added as free text via the "Add …" row / keyboard submit.
+  static const List<(String, String)> _catalog = [
+    ('Cough', 'Dry or wet cough'),
+    ('Headache', 'Persistent headache'),
+    ('Fever', 'High temperature'),
+    ('Sore Throat', 'Pain or scratchiness in the throat'),
+    ('Fatigue', 'Unusual tiredness or low energy'),
+    ('Shortness of Breath', 'Difficulty breathing'),
+    ('Nausea', 'Feeling sick to your stomach'),
+    ('Dizziness', 'Lightheadedness or vertigo'),
+    ('Muscle Aches', 'Body or muscle pain'),
+    ('Runny Nose', 'Nasal congestion or discharge'),
+    ('Chills', 'Feeling cold or shivering'),
+    ('Diarrhea', 'Loose or frequent stools'),
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    widget.controller.addListener(_onQueryChanged);
+  }
+
+  @override
+  void dispose() {
+    widget.controller.removeListener(_onQueryChanged);
+    super.dispose();
+  }
+
+  void _onQueryChanged() {
+    if (mounted) setState(() {});
+  }
+
+  /// Adds whatever the user typed as a symptom, then clears the field.
+  void _addTyped() {
+    final text = widget.controller.text.trim();
+    if (text.isEmpty) return;
+    if (!widget.selected.any((s) => s.toLowerCase() == text.toLowerCase())) {
+      widget.onToggle(text);
+    }
+    widget.controller.clear();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final t = Theme.of(context).textTheme;
     final c = Theme.of(context).colorScheme;
 
-    final suggestions = const [
-      ('Dry Cough', 'Dry cough with no mucus'),
-      ('Headache', 'Persistent headache'),
-      ('Fever', 'High temperature'),
-    ];
+    final query = widget.controller.text.trim();
+    final lower = query.toLowerCase();
+    final matches = query.isEmpty
+        ? _catalog
+        : _catalog.where((s) => s.$1.toLowerCase().contains(lower)).toList();
+    // Offer a free-text add when the query matches neither the catalog nor an
+    // already-selected symptom.
+    final canAddCustom = query.isNotEmpty &&
+        !_catalog.any((s) => s.$1.toLowerCase() == lower) &&
+        !widget.selected.any((s) => s.toLowerCase() == lower);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -529,61 +643,93 @@ class _SymptomsPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 26),
-          Text(title,
+          Text(widget.title,
               style: t.bodyLarge
                   ?.copyWith(fontSize: 14, fontWeight: FontWeight.w400)),
           const SizedBox(height: 12),
           TextField(
-            controller: controller,
+            controller: widget.controller,
+            textInputAction: TextInputAction.done,
+            onSubmitted: (_) => _addTyped(),
             decoration: const InputDecoration(
-              hintText: 'Search symptom',
+              hintText: 'Search or type a symptom',
               filled: true,
               prefixIcon: Icon(Icons.search),
             ),
           ),
           const SizedBox(height: 10),
-          if (selected.isNotEmpty)
+          if (widget.selected.isNotEmpty)
             Wrap(
               spacing: 8,
               runSpacing: 8,
-              children: selected
+              children: widget.selected
                   .map((s) => InputChip(
                         label: Text(s),
                         selected: true,
-                        onDeleted: () => onToggle(s),
+                        onDeleted: () => widget.onToggle(s),
                       ))
                   .toList(),
             ),
           const SizedBox(height: 10),
           Expanded(
-            child: ListView.separated(
-              itemCount: suggestions.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 10),
-              itemBuilder: (ctx, idx) {
-                final (title, subtitle) = suggestions[idx];
-                return Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(color: c.outline),
-                    borderRadius: BorderRadius.circular(10),
-                    color: Theme.of(context).colorScheme.surface,
-                  ),
-                  child: ListTile(
-                    title:
-                        Text(title, style: t.bodyLarge?.copyWith(fontSize: 13)),
-                    subtitle: Text(subtitle,
-                        style: t.bodySmall?.copyWith(fontSize: 11)),
-                    trailing: IconButton(
-                      onPressed: () => onToggle(title),
-                      icon: Icon(
-                        selected.contains(title)
-                            ? Icons.check_circle
-                            : Icons.add_circle_outline,
-                        color: c.primary,
+            child: ListView(
+              children: [
+                if (canAddCustom)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(color: c.primary),
+                        borderRadius: BorderRadius.circular(10),
+                        color: c.surface,
+                      ),
+                      child: ListTile(
+                        title: Text('Add “$query”',
+                            style: t.bodyLarge?.copyWith(fontSize: 13)),
+                        subtitle: Text('Use your own words',
+                            style: t.bodySmall?.copyWith(fontSize: 11)),
+                        trailing:
+                            Icon(Icons.add_circle_outline, color: c.primary),
+                        onTap: _addTyped,
                       ),
                     ),
                   ),
-                );
-              },
+                if (matches.isEmpty && !canAddCustom)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 24),
+                    child: Center(
+                      child: Text('No matching symptoms',
+                          style: t.bodySmall
+                              ?.copyWith(color: c.onSurfaceVariant)),
+                    ),
+                  ),
+                for (final (title, subtitle) in matches)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(color: c.outline),
+                        borderRadius: BorderRadius.circular(10),
+                        color: c.surface,
+                      ),
+                      child: ListTile(
+                        title: Text(title,
+                            style: t.bodyLarge?.copyWith(fontSize: 13)),
+                        subtitle: Text(subtitle,
+                            style: t.bodySmall?.copyWith(fontSize: 11)),
+                        trailing: IconButton(
+                          onPressed: () => widget.onToggle(title),
+                          icon: Icon(
+                            widget.selected.contains(title)
+                                ? Icons.check_circle
+                                : Icons.add_circle_outline,
+                            color: c.primary,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
             ),
           ),
         ],
@@ -787,7 +933,7 @@ class _BottomInfoLinks extends StatelessWidget {
     final c = Theme.of(context).colorScheme;
     final t = Theme.of(context).textTheme;
 
-    Widget row(String label) {
+    Widget row(String label, String sheetTitle, String sheetBody) {
       return InkWell(
         onTap: () {
           showModalBottomSheet<void>(
@@ -806,14 +952,14 @@ class _BottomInfoLinks extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        label,
+                        sheetTitle,
                         style: Theme.of(context).textTheme.titleSmall,
                       ),
                       const SizedBox(height: 10),
                       Expanded(
                         child: SingleChildScrollView(
                           child: Text(
-                            label,
+                            sheetBody,
                             style: Theme.of(context).textTheme.bodyMedium,
                           ),
                         ),
@@ -860,8 +1006,26 @@ class _BottomInfoLinks extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            row('Don’t understand? Here is a description'),
-            row('Why am I being asked this'),
+            row(
+              'About this assessment',
+              'About this assessment',
+              'This quick, non-diagnostic check asks a few basic questions — who it is for, '
+                  'blood type, allergies, and current symptoms — and then provides general '
+                  'guidance based on your answers. All fields are optional except the core '
+                  'symptoms. The entire process takes about a minute. Your answers are not '
+                  'stored or shared without your consent.',
+            ),
+            row(
+              'Why am I being asked these questions?',
+              'Why we ask these questions',
+              'Each question helps us give you a more relevant result.\n\n'
+                  '- **Who it is for**: Tailors the assessment to the right person.\n'
+                  '- **Blood type**: Used for safety considerations in guidance.\n'
+                  '- **Allergies**: Flags potential conflicts or precautions.\n'
+                  '- **Symptom duration & trend**: Helps gauge how urgent or persistent an issue may be.\n\n'
+                  'This is not a medical diagnosis. Always consult a qualified healthcare '
+                  'professional for personal medical advice.',
+            ),
           ],
         ),
       ),

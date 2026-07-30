@@ -7,7 +7,7 @@ import 'package:healthpilot/features/chat/chat_provider.dart';
 import 'package:healthpilot/features/chat/chat_screen.dart';
 import 'package:healthpilot/features/chat/connection_requests_screen.dart';
 import 'package:healthpilot/features/chat/group_chat_screen.dart';
-import 'package:healthpilot/features/chat/similar_people_screen.dart';
+import 'package:healthpilot/features/community/community_hub_screen.dart';
 import 'package:healthpilot/features/chat/widgets/custom_profile_tile.dart';
 import 'package:healthpilot/features/community/community_provider.dart';
 import 'package:healthpilot/core/auth/auth_state.dart';
@@ -126,6 +126,7 @@ class _GeneralChatScreenState extends State<GeneralChatScreen> {
                                 isPro: c.isPro,
                                 unreadMessage: provider.unreadCount(c.id),
                                 profilePic: devsImage,
+                                avatarUrl: c.avatarUrl,
                                 chat: c.lastMessage,
                                 onPressed: () {
                                   final currentUserId =
@@ -157,7 +158,7 @@ class _GeneralChatScreenState extends State<GeneralChatScreen> {
                             itemComparator: (a, b) => a.name.compareTo(b.name),
                             groupComparator: (v1, v2) => v1.compareTo(v2),
                             groupSeparatorBuilder: (value) => SizedBox(
-                              height: size.height * 0.2,
+                              height: 12,
                             ),
                           ),
                         ),
@@ -179,6 +180,9 @@ class _GeneralChatScreenState extends State<GeneralChatScreen> {
                         isPro: u.isPro,
                         unreadMessage: provider.unreadCount(u.userId),
                         profilePic: devsImage,
+                        avatarUrl: u.profilePictureUrl.isEmpty
+                            ? null
+                            : u.profilePictureUrl,
                         chat: u.chatHistory.isNotEmpty
                             ? u.chatHistory.last.content
                             : '',
@@ -202,7 +206,7 @@ class _GeneralChatScreenState extends State<GeneralChatScreen> {
                         a.displayName.compareTo(b.displayName),
                     groupComparator: (v1, v2) => v1.compareTo(v2),
                     groupSeparatorBuilder: (value) => SizedBox(
-                      height: size.height * 0.2,
+                      height: 12,
                     ),
                   ),
                 ),
@@ -231,23 +235,144 @@ class _GeneralChatScreenState extends State<GeneralChatScreen> {
                             groupBy: (g) => g.isPro.toString(),
                             order: GroupedListOrder.DESC,
                             itemBuilder: (context, g) {
-                              return CustomChatProfileTile(
-                                name: g.groupName,
-                                isPro: g.isPro,
-                                unreadMessage: provider.unreadCount(g.groupId),
-                                profilePic: devsImage,
-                                chat: g.groupChatHistory.isNotEmpty
-                                    ? g.groupChatHistory.last.content
-                                    : '',
-                                onPressed: () {
-                                  final currentUserId =
-                                      context.read<AuthState>().userId;
-                                  provider.markRead(g.groupId);
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (context) => GroupChatScreen(
-                                          groupId: g.groupId,
-                                          userId: currentUserId)));
-                                },
+                              final cs = Theme.of(context).colorScheme;
+                              final trailing = g.isJoined
+                                  ? Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        if (provider.unreadCount(g.groupId) !=
+                                            0)
+                                          CircleAvatar(
+                                            backgroundColor: const Color
+                                                .fromRGBO(110, 182, 255, 1),
+                                            radius: 16,
+                                            child: Text(
+                                              provider.unreadCount(
+                                                          g.groupId) >
+                                                      9
+                                                  ? '9+'
+                                                  : provider
+                                                      .unreadCount(g.groupId)
+                                                      .toString(),
+                                              style: TextStyle(
+                                                color: const Color.fromRGBO(
+                                                    42, 42, 42, 1),
+                                                fontFamily:
+                                                    'Plus Jakarta Sans',
+                                                fontSize: 13.sp,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ),
+                                          ),
+                                        const SizedBox(width: 4),
+                                        OutlinedButton.icon(
+                                          onPressed: () async {
+                                            await provider
+                                                .leaveGroup(g.groupId);
+                                          },
+                                          icon: const Icon(
+                                              Icons.exit_to_app, size: 16),
+                                          label: const Text('Leave'),
+                                          style: OutlinedButton.styleFrom(
+                                            foregroundColor: cs.error,
+                                            side: BorderSide(color: cs.error),
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 8),
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                  : ElevatedButton.icon(
+                                      onPressed: () async {
+                                        await provider
+                                            .joinGroup(g.groupId);
+                                      },
+                                      icon: const Icon(
+                                        Icons.group_add,
+                                        size: 16,
+                                      ),
+                                      label: const Text('Join'),
+                                      style: ElevatedButton.styleFrom(
+                                        padding:
+                                            const EdgeInsets.symmetric(
+                                                horizontal: 8),
+                                      ),
+                                    );
+                              return SizedBox(
+                                height: size.height * 0.15,
+                                child: InkWell(
+                                  onTap: g.isJoined
+                                      ? () {
+                                          final currentUserId = context
+                                              .read<AuthState>()
+                                              .userId;
+                                          provider.markRead(g.groupId);
+                                          Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      GroupChatScreen(
+                                                          groupId: g.groupId,
+                                                          userId:
+                                                              currentUserId)));
+                                        }
+                                      : () async {
+                                          await provider
+                                              .joinGroup(g.groupId);
+                                        },
+                                  child: Column(
+                                    children: [
+                                      ListTile(
+                                        leading: CircleAvatar(
+                                          radius: 40,
+                                          backgroundImage:
+                                              AssetImage(devsImage),
+                                        ),
+                                        title: Row(
+                                          children: [
+                                            Expanded(
+                                              child: Text(
+                                                g.groupName,
+                                                overflow:
+                                                    TextOverflow.ellipsis,
+                                                maxLines: 1,
+                                              ),
+                                            ),
+                                            if (g.isPro)
+                                              Icon(
+                                                Icons.star,
+                                                size: size.width * 0.05352,
+                                                color: const Color.fromRGBO(
+                                                    110, 182, 255, 1),
+                                              ),
+                                          ],
+                                        ),
+                                        subtitle: Text(
+                                          g.isJoined &&
+                                                  g.groupChatHistory.isNotEmpty
+                                              ? g.groupChatHistory.last.content
+                                              : [
+                                                  if (g.description != null &&
+                                                      g.description!.isNotEmpty)
+                                                    g.description!,
+                                                  '${g.memberCount} member${g.memberCount == 1 ? '' : 's'}',
+                                                ].join(' · '),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        trailing: trailing,
+                                      ),
+                                      const Padding(
+                                        padding: EdgeInsets.only(
+                                            left: 32.0, right: 29),
+                                        child: Divider(
+                                          color: Color.fromRGBO(
+                                              42, 42, 42, 0.15),
+                                          thickness: 0.5,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               );
                             },
                             groupHeaderBuilder: (element) => Container(
@@ -257,7 +382,7 @@ class _GeneralChatScreenState extends State<GeneralChatScreen> {
                                 a.groupName.compareTo(b.groupName),
                             groupComparator: (v1, v2) => v1.compareTo(v2),
                             groupSeparatorBuilder: (value) => SizedBox(
-                              height: size.height * 0.2,
+                              height: 12,
                             ),
                           ),
                         ),
@@ -362,8 +487,8 @@ class _GeneralChatScreenState extends State<GeneralChatScreen> {
     final cs = Theme.of(context).colorScheme;
     return FloatingActionButton(
       onPressed: () {
-        Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => SimilarPeopleScreen()));
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => const CommunityHubScreen()));
       },
       backgroundColor: cs.primary,
       child: Icon(

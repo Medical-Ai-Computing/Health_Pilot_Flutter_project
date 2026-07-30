@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:bubble/bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:grouped_list/grouped_list.dart';
+import 'package:healthpilot/core/widgets/user_avatar.dart';
 import 'package:healthpilot/data/constants.dart';
 import 'package:healthpilot/features/chat/chat_models.dart';
 import 'package:healthpilot/features/chat/chat_provider.dart';
@@ -24,6 +27,40 @@ class GroupChatScreen extends StatefulWidget {
 }
 
 class _GroupChatScreenState extends State<GroupChatScreen> {
+  Timer? _pollTimer;
+
+  /// True once the first fetch settles. Background (15s) polls must not blank
+  /// the conversation with a spinner — only the initial load shows one.
+  bool _initialLoadDone = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      _syncThread();
+    });
+    _pollTimer = Timer.periodic(const Duration(seconds: 15), (_) {
+      if (!mounted) return;
+      _syncThread();
+    });
+  }
+
+  /// Pulls the latest group messages, then marks the thread read.
+  Future<void> _syncThread() async {
+    final provider = context.read<ChatProvider>();
+    await provider.fetchGroupMessages(widget.groupId);
+    if (!mounted) return;
+    if (!_initialLoadDone) setState(() => _initialLoadDone = true);
+    provider.markRead(widget.groupId);
+  }
+
+  @override
+  void dispose() {
+    _pollTimer?.cancel();
+    super.dispose();
+  }
+
   void _onSend(String text) {
     final trimmed = text.trim();
     if (trimmed.isEmpty) return;
@@ -50,10 +87,14 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
           preferredSize: Size(size.width, size.height * 0.15),
           child: _GroupAppBar(
             title: group.groupName,
-            subTitle: ' ${group.membersId.length} members',
+            subTitle: ' ${group.memberCount} members',
             profileImageUrl: devsImage,
             isMuted: group.isMuted,
-            more: () {},
+            more: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Group details coming soon')),
+              );
+            },
           )),
       body: SafeArea(
         bottom: true,
@@ -61,7 +102,8 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           child: Column(
             children: [
-              if (provider.isLoadingThread(widget.groupId))
+              if (provider.isLoadingThread(widget.groupId) &&
+                  !_initialLoadDone)
                 const Expanded(
                   child: Center(child: CircularProgressIndicator()),
                 )
@@ -73,7 +115,11 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
                     userId: widget.userId,
                     chatList: group.groupChatHistory),
               SendMessage(
-                attach: () {},
+                attach: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('File sharing coming soon')),
+                  );
+                },
                 sendMessage: _onSend,
               ),
             ],
@@ -211,7 +257,7 @@ class _GroupAppBar extends StatelessWidget {
   }
 }
 
-class _GroupChatList extends StatelessWidget {
+class _GroupChatList extends StatefulWidget {
   final List<DirectMessage> chatList;
   final String senderId;
   final String userId;
@@ -223,12 +269,47 @@ class _GroupChatList extends StatelessWidget {
   });
 
   @override
+  State<_GroupChatList> createState() => _GroupChatListState();
+}
+
+class _GroupChatListState extends State<_GroupChatList> {
+  final _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _scheduleScrollToBottom();
+  }
+
+  @override
+  void didUpdateWidget(_GroupChatList old) {
+    super.didUpdateWidget(old);
+    if (widget.chatList.length != old.chatList.length) {
+      _scheduleScrollToBottom();
+    }
+  }
+
+  void _scheduleScrollToBottom() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!_scrollController.hasClients) return;
+      _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+    });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final provider = context.read<ChatProvider>();
     final size = MediaQuery.of(context).size;
     return Expanded(
       child: GroupedListView(
-        elements: chatList,
+        controller: _scrollController,
+        elements: widget.chatList,
         groupBy: (chat) => DateFormat.MMMd().format(chat.timestamp),
         groupSeparatorBuilder: (chat) => SizedBox(
           width: double.infinity,
@@ -272,113 +353,177 @@ class _GroupChatList extends StatelessWidget {
           ),
         ),
         itemBuilder: (context, chat) {
-          final isIncoming = int.parse(chat.senderId) != int.parse(userId);
-          final cs = Theme.of(context).colorScheme;
-          final isDark = Theme.of(context).brightness == Brightness.dark;
-
-          final bubbleDecoration = isIncoming
-              ? BoxDecoration(
-                  color: cs.surfaceContainerHighest,
-                  borderRadius: BorderRadius.circular(10),
-                )
-              : BoxDecoration(
-                  gradient: AppTheme.chatBubbleGradient(context),
-                  borderRadius: BorderRadius.circular(10),
-                );
-
-          String senderName = '';
-          if (isIncoming) {
-            senderName = provider.findUser(chat.senderId)?.displayName ?? chat.senderId;
-          }
-
-          return Bubble(
-            alignment:
-                isIncoming ? Alignment.centerLeft : Alignment.centerRight,
-            radius: const Radius.circular(10),
-            nip: isIncoming ? BubbleNip.leftBottom : BubbleNip.rightBottom,
-            margin: const BubbleEdges.symmetric(vertical: 5),
-            padding: const BubbleEdges.all(0),
-            showNip: true,
-            color: Colors.transparent,
-            shadowColor: Colors.transparent,
-            child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
-              decoration: bubbleDecoration,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: isIncoming
-                    ? CrossAxisAlignment.start
-                    : CrossAxisAlignment.end,
-                children: [
-                  if (isIncoming)
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 4),
-                      child: Text(
-                        senderName,
-                        style: TextStyle(
-                          fontFamily: 'Plus Jakarta Sans',
-                          fontWeight: FontWeight.w500,
-                          fontSize: 11,
-                          color: cs.onSurfaceVariant,
-                        ),
-                      ),
-                    ),
-                  isIncoming
-                      ? Row(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Flexible(
-                              child: ChatMarkdownBody(
-                                rawText: chat.content,
-                                textColor: cs.onSurface,
-                                fontSize: 12,
-                              ),
-                            ),
-                            const SizedBox(width: 10),
-                            Text(
-                              DateFormat('hh:mm a').format(chat.timestamp),
-                              style: GoogleFonts.plusJakartaSans(
-                                fontSize: 8,
-                                fontWeight: FontWeight.w400,
-                                color: cs.onSurface.withValues(alpha: 0.8),
-                              ),
-                            ),
-                          ],
-                        )
-                      : Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            ChatMarkdownBody(
-                              rawText: chat.content,
-                              textColor: isDark ? cs.onPrimary : cs.onSurface,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              chat.sendFailed
-                                  ? 'Failed'
-                                  : chat.isDelivered
-                                      ? 'Sent'
-                                      : 'Sending…',
-                              style: GoogleFonts.plusJakartaSans(
-                                fontSize: 8,
-                                fontWeight: FontWeight.w400,
-                                color: chat.sendFailed
-                                    ? cs.error
-                                    : (isDark ? cs.onPrimary : cs.onSurface)
-                                        .withValues(alpha: 0.8),
-                              ),
-                            ),
-                          ],
-                        ),
-                ],
-              ),
-            ),
+          // String compare avoids FormatException on any non-numeric id.
+          final isIncoming = chat.senderId != widget.userId;
+          // Prefer the server-provided sender_name; fall back to a known
+          // connection's name, then a neutral label (never a raw numeric id).
+          final known = provider.findUser(chat.senderId);
+          final name = (chat.senderName != null && chat.senderName!.isNotEmpty)
+              ? chat.senderName!
+              : (known?.displayName ?? 'Member');
+          final avatarUrl = known?.profilePictureUrl;
+          return _GroupMessageBubble(
+            message: chat,
+            isIncoming: isIncoming,
+            senderName: name,
+            avatarUrl:
+                (avatarUrl == null || avatarUrl.isEmpty) ? null : avatarUrl,
+            onRetry: (!isIncoming && chat.sendFailed)
+                ? () => context
+                    .read<ChatProvider>()
+                    .resendGroup(widget.senderId, chat)
+                : null,
           );
         },
+      ),
+    );
+  }
+}
+
+/// Group chat bubble: shows the sender's avatar + a colour-coded name on
+/// incoming messages so different members are easy to tell apart. Outgoing
+/// messages stay right-aligned with a delivery label.
+class _GroupMessageBubble extends StatelessWidget {
+  const _GroupMessageBubble({
+    required this.message,
+    required this.isIncoming,
+    required this.senderName,
+    this.avatarUrl,
+    this.onRetry,
+  });
+
+  final DirectMessage message;
+  final bool isIncoming;
+  final String senderName;
+  final String? avatarUrl;
+  final VoidCallback? onRetry;
+
+  // Deterministic accent per sender so names are visually distinct.
+  static const _palette = [
+    Color(0xFF1E88E5), Color(0xFF8E24AA), Color(0xFF00897B), Color(0xFFF4511E),
+    Color(0xFF3949AB), Color(0xFF00ACC1), Color(0xFF7CB342), Color(0xFFD81B60),
+  ];
+  Color get _senderColor =>
+      _palette[message.senderId.hashCode.abs() % _palette.length];
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final bubbleDecoration = isIncoming
+        ? BoxDecoration(
+            color: cs.surfaceContainerHighest,
+            borderRadius: BorderRadius.circular(10),
+          )
+        : BoxDecoration(
+            gradient: AppTheme.chatBubbleGradient(context),
+            borderRadius: BorderRadius.circular(10),
+          );
+
+    final bubble = Bubble(
+      alignment: isIncoming ? Alignment.centerLeft : Alignment.centerRight,
+      radius: const Radius.circular(10),
+      nip: isIncoming ? BubbleNip.leftBottom : BubbleNip.rightBottom,
+      margin: const BubbleEdges.symmetric(vertical: 5),
+      padding: const BubbleEdges.all(0),
+      showNip: true,
+      color: Colors.transparent,
+      shadowColor: Colors.transparent,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+        decoration: bubbleDecoration,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment:
+              isIncoming ? CrossAxisAlignment.start : CrossAxisAlignment.end,
+          children: [
+            if (isIncoming)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 4),
+                child: Text(
+                  senderName,
+                  style: TextStyle(
+                    fontFamily: 'Plus Jakarta Sans',
+                    fontWeight: FontWeight.w600,
+                    fontSize: 11,
+                    color: _senderColor,
+                  ),
+                ),
+              ),
+            isIncoming
+                ? Row(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Flexible(
+                        child: ChatMarkdownBody(
+                          rawText: message.content,
+                          textColor: cs.onSurface,
+                          fontSize: 12,
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Text(
+                        DateFormat('hh:mm a').format(message.timestamp),
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 8,
+                          fontWeight: FontWeight.w400,
+                          color: cs.onSurface.withValues(alpha: 0.8),
+                        ),
+                      ),
+                    ],
+                  )
+                : Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ChatMarkdownBody(
+                        rawText: message.content,
+                        textColor: isDark ? cs.onPrimary : cs.onSurface,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        message.sendFailed
+                            ? 'Failed — tap to retry'
+                            : message.isDelivered
+                                ? 'Sent'
+                                : 'Sending…',
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 8,
+                          fontWeight: FontWeight.w400,
+                          color: message.sendFailed
+                              ? cs.error
+                              : (isDark ? cs.onPrimary : cs.onSurface)
+                                  .withValues(alpha: 0.8),
+                        ),
+                      ),
+                    ],
+                  ),
+          ],
+        ),
+      ),
+    );
+
+    if (!isIncoming) {
+      if (message.sendFailed && onRetry != null) {
+        return GestureDetector(onTap: onRetry, child: bubble);
+      }
+      return bubble;
+    }
+    // Incoming: avatar gutter + bubble.
+    return Padding(
+      padding: const EdgeInsets.only(right: 32),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 6, right: 6),
+            child: UserAvatar(url: avatarUrl, radius: 16),
+          ),
+          Flexible(child: bubble),
+        ],
       ),
     );
   }

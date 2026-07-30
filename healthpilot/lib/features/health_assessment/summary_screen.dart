@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:healthpilot/core/auth/auth_state.dart';
 import 'package:healthpilot/core/network/api_error.dart';
 import 'package:healthpilot/core/widgets/safe_assets.dart';
 import 'package:healthpilot/data/asset_paths.dart';
@@ -60,7 +61,11 @@ class _SummaryScreenState extends State<SummaryScreen> {
 
     setState(() => _submitting = true);
     try {
-      final entry = await context.read<AssessmentProvider>().submit(_summary);
+      final isGuest = context.read<AuthState>().isGuest;
+      final provider = context.read<AssessmentProvider>();
+      final entry = isGuest
+          ? await provider.submitGuestAssessment(_summary)
+          : await provider.submit(_summary);
       if (!mounted) return;
       setState(() {
         _entry = entry;
@@ -226,27 +231,47 @@ class _SummaryScreenState extends State<SummaryScreen> {
         const SizedBox(height: 8),
         for (final cause in result.possibleCauses)
           Padding(
-            padding: const EdgeInsets.only(bottom: 8),
-            child: ListTile(
-              tileColor: Theme.of(context)
-                  .colorScheme
-                  .surfaceContainerHighest
-                  .withValues(alpha: 0.5),
-              shape: RoundedRectangleBorder(
+            padding: const EdgeInsets.only(bottom: 10),
+            child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: Theme.of(context)
+                    .colorScheme
+                    .surfaceContainerHighest
+                    .withValues(alpha: 0.5),
                 borderRadius: BorderRadius.circular(12),
               ),
-              title: Text(cause.name, style: t.bodyMedium),
-              subtitle: () {
-                final details = [
-                  if (cause.description != null) cause.description,
-                  if (cause.likelihood != null)
-                    'Likelihood: ${cause.likelihood}',
-                  if (cause.urgency != null) 'Urgency: ${cause.urgency}',
-                  if (cause.nextSteps != null) cause.nextSteps,
-                ].whereType<String>().join('\n');
-                if (details.isEmpty) return null;
-                return Text(details, style: t.bodySmall);
-              }(),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(cause.name,
+                      style: t.titleSmall?.copyWith(fontWeight: FontWeight.w600)),
+                  if (cause.description != null) ...[
+                    const SizedBox(height: 6),
+                    Text(cause.description!, style: t.bodySmall),
+                  ],
+                  if (cause.likelihood != null || cause.urgency != null) ...[
+                    const SizedBox(height: 4),
+                    Wrap(
+                      spacing: 12,
+                      children: [
+                        if (cause.likelihood != null)
+                          _Tag(label: 'Likelihood: ${cause.likelihood}'),
+                        if (cause.urgency != null)
+                          _Tag(label: 'Urgency: ${cause.urgency}'),
+                      ],
+                    ),
+                  ],
+                  if (cause.nextSteps != null) ...[
+                    const SizedBox(height: 8),
+                    Text('→ ${cause.nextSteps}',
+                        style: t.bodySmall?.copyWith(
+                          fontStyle: FontStyle.italic,
+                        )),
+                  ],
+                ],
+              ),
             ),
           ),
       ];
@@ -285,5 +310,27 @@ class _SummaryScreenState extends State<SummaryScreen> {
         textAlign: TextAlign.center,
       ),
     ];
+  }
+}
+
+class _Tag extends StatelessWidget {
+  const _Tag({required this.label});
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = Theme.of(context).colorScheme;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      decoration: BoxDecoration(
+        color: c.primaryContainer,
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Text(label,
+          style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                color: c.onPrimaryContainer,
+                fontSize: 10,
+              )),
+    );
   }
 }

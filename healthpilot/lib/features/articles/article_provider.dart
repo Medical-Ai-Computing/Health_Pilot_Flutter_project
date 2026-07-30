@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:healthpilot/core/network/api_error.dart';
 import 'package:healthpilot/core/repositories/i_article_repository.dart';
 import 'package:healthpilot/features/articles/article_feed_item.dart';
 
@@ -9,10 +10,12 @@ class ArticleProvider extends ChangeNotifier {
 
   List<ArticleFeedItem> _articles = [];
   ArticleLoadStatus _status = ArticleLoadStatus.idle;
+  String? _error;
   bool _loadStarted = false;
 
   List<ArticleFeedItem> get articles => List.unmodifiable(_articles);
   ArticleLoadStatus get status => _status;
+  String? get error => _error;
 
   ArticleProvider(this._repo);
 
@@ -20,10 +23,14 @@ class ArticleProvider extends ChangeNotifier {
     if (_loadStarted) return;
     _loadStarted = true;
     _status = ArticleLoadStatus.loading;
+    _error = null;
     notifyListeners();
     try {
       _articles = await _repo.fetchArticles();
       _status = ArticleLoadStatus.loaded;
+    } on ApiException catch (e) {
+      _error = e.userMessage;
+      _status = ArticleLoadStatus.error;
     } catch (_) {
       _status = ArticleLoadStatus.error;
     } finally {
@@ -31,12 +38,38 @@ class ArticleProvider extends ChangeNotifier {
     }
   }
 
+  /// Re-run the feed load (used by the error-state retry affordance).
+  Future<void> refresh() async {
+    _loadStarted = false;
+    await load();
+  }
+
+  // ── Feed extras ──────────────────────────────────────────────────────────────
+  Future<List<ArticleFeedItem>> fetchRecommended() => _repo.fetchRecommended();
+
+  Future<List<ArticleFeedItem>> fetchBookmarks() => _repo.fetchBookmarks();
+
+  Future<ArticleFeedItem> fetchArticle(String id) => _repo.fetchArticle(id);
+
+  // ── Interactions ─────────────────────────────────────────────────────────────
   Future<void> likeArticle(String id) async {
-    final updated = await _repo.likeArticle(id);
+    final liked = await _repo.likeArticle(id);
     _articles = [
       for (final a in _articles)
-        if (a.id == updated.id) updated else a,
+        if (a.id == id)
+          a.copyWith(likes: liked ? a.likes + 1 : a.likes - 1)
+        else
+          a,
     ];
     notifyListeners();
   }
+
+  Future<bool> toggleBookmark(String id) => _repo.toggleBookmark(id);
+
+  // ── Comments ─────────────────────────────────────────────────────────────────
+  Future<List<ArticleComment>> fetchComments(String id) =>
+      _repo.fetchComments(id);
+
+  Future<ArticleComment> addComment(String id, String text) =>
+      _repo.addComment(id, text);
 }

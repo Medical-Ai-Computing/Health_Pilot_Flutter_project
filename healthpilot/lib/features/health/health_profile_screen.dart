@@ -2,7 +2,9 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:healthpilot/core/auth/auth_state.dart';
 import 'package:healthpilot/data/constants.dart';
+import 'package:healthpilot/features/health/health_dashboard_screen.dart';
 import 'package:healthpilot/features/health/health_provider.dart';
 import 'package:healthpilot/features/health/health_tracking_screen.dart';
 import 'package:healthpilot/features/medication/medications_screen.dart';
@@ -19,11 +21,6 @@ class HealthProfile extends StatefulWidget {
 }
 
 class _HealthProfileState extends State<HealthProfile> {
-  final List<String> peoples = [
-    'Yaikob zeray',
-    'Abel sisay',
-    'Kirubel hailu',
-  ];
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -31,6 +28,8 @@ class _HealthProfileState extends State<HealthProfile> {
     final healthProvider = context.watch<HealthProvider>();
     final conditions = healthProvider.conditions;
     final symptoms = healthProvider.symptoms;
+    final auth = context.watch<AuthState>();
+    final greeting = auth.isGuest ? 'Hello, Guest' : 'Hello, ${auth.firstName}';
     return Scaffold(
       body: SingleChildScrollView(
         child: SafeArea(
@@ -45,7 +44,7 @@ class _HealthProfileState extends State<HealthProfile> {
                 children: [
                   Expanded(
                     child: Text(
-                      'Hello, UserName',
+                      greeting,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
@@ -75,7 +74,13 @@ class _HealthProfileState extends State<HealthProfile> {
                       const SizedBox(width: 10),
                       InkWell(
                         splashColor: const Color.fromARGB(100, 0, 0, 0),
-                        onTap: () {},
+                        onTap: () {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Emergency alert coming soon'),
+                            ),
+                          );
+                        },
                         child: SvgPicture.asset(
                           triangleExclamationIcon,
                           colorFilter: ColorFilter.mode(
@@ -139,6 +144,19 @@ class _HealthProfileState extends State<HealthProfile> {
                     SizedBox(width: 12),
                     PremiumTags(),
                   ],
+                ),
+              ),
+              SizedBox(height: size.height * 0.02),
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton.icon(
+                  onPressed: () => Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const HealthDashboardScreen(),
+                    ),
+                  ),
+                  icon: const Icon(Icons.dashboard_outlined),
+                  label: const Text('Open Health Dashboard'),
                 ),
               ),
               SizedBox(
@@ -218,7 +236,32 @@ class _HealthProfileState extends State<HealthProfile> {
                   itemBuilder: (context, index) {
                     return SymptomTracking(
                       disorder: symptoms[index].name,
-                      onTap: () {},
+                      onTap: () async {
+                        final id = symptoms[index].id;
+                        if (id == null) return;
+                        final confirmed = await showDialog<bool>(
+                          context: context,
+                          builder: (ctx) => AlertDialog(
+                            title: const Text('Delete Symptom'),
+                            content: Text(
+                              'Delete "${symptoms[index].name}"?',
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(ctx, false),
+                                child: const Text('Cancel'),
+                              ),
+                              TextButton(
+                                onPressed: () => Navigator.pop(ctx, true),
+                                child: const Text('Delete'),
+                              ),
+                            ],
+                          ),
+                        );
+                        if (confirmed == true && context.mounted) {
+                          context.read<HealthProvider>().deleteSymptom(id);
+                        }
+                      },
                     );
                   },
                 ),
@@ -288,42 +331,6 @@ class _HealthProfileState extends State<HealthProfile> {
                   ],
                 ),
               ),
-              SizedBox(
-                height: size.height * 0.03,
-              ),
-              Row(
-                children: [
-                  const Expanded(
-                    child: Text(
-                      'Health Profiles',
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontFamily: "PlusJakartaSans",
-                        fontWeight: FontWeight.w500,
-                        fontSize: 16,
-                      ),
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: () {},
-                    icon: Icon(Icons.add_circle_outline, color: cs.onSurface),
-                  ),
-                ],
-              ),
-              SizedBox(
-                width: double.infinity,
-                height: size.height * 0.3,
-                child: ListView.builder(
-                  itemCount: peoples.length,
-                  itemBuilder: (context, index) {
-                    return HealthProfileModel(
-                      disorder: peoples[index],
-                      onTap: () {},
-                    );
-                  },
-                ),
-              ),
             ],
           ),
         )),
@@ -373,7 +380,13 @@ class PremiumTags extends StatelessWidget {
                 height: size.height * 0.03,
                 elevation: 0,
                 color: cs.primary,
-                onPressed: () {},
+                onPressed: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Subscription coming soon'),
+                    ),
+                  );
+                },
                 child: const Text(
                   'Subscribe',
                   style: TextStyle(
@@ -481,56 +494,60 @@ class SymptomTracking extends StatelessWidget {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final cs = Theme.of(context).colorScheme;
-    return Row(
-      children: [
-        Stack(
-          alignment: Alignment.center,
-          children: [
-            Container(
-              width: size.width * 0.003,
-              height: size.height * 0.08,
-              color: const Color.fromRGBO(110, 182, 255, 0.25),
-            ),
-            Container(
-              width: size.width * 0.03,
-              height: size.width * 0.03,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(size.width * 0.015),
-                color: const Color.fromRGBO(110, 182, 255, 0.25),
-              ),
-            ),
-            Container(
-              width: size.width * 0.03,
-              height: size.width * 0.03,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(size.width * 0.015),
-                color: const Color.fromRGBO(110, 182, 255, 0.25),
-              ),
-            ),
-          ],
-        ),
-        Expanded(
-          child: Row(
+    return InkWell(
+      onTap: () => onTap(),
+      child: Row(
+        children: [
+          Stack(
+            alignment: Alignment.center,
             children: [
-              Expanded(
-                child: Text(
-                  disorder,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontFamily: "PlusJakartaSans",
-                    fontWeight: FontWeight.w400,
-                  ),
-                  overflow: TextOverflow.ellipsis,
+              Container(
+                width: size.width * 0.003,
+                height: size.height * 0.08,
+                color: const Color.fromRGBO(110, 182, 255, 0.25),
+              ),
+              Container(
+                width: size.width * 0.03,
+                height: size.width * 0.03,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(size.width * 0.015),
+                  color: const Color.fromRGBO(110, 182, 255, 0.25),
                 ),
               ),
-              IconButton(
-                onPressed: () {},
-                icon: Icon(Icons.arrow_forward, color: cs.onSurface),
+              Container(
+                width: size.width * 0.03,
+                height: size.width * 0.03,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(size.width * 0.015),
+                  color: const Color.fromRGBO(110, 182, 255, 0.25),
+                ),
               ),
             ],
           ),
-        ),
-      ],
+          Expanded(
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    disorder,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontFamily: "PlusJakartaSans",
+                      fontWeight: FontWeight.w400,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                Icon(
+                  Icons.arrow_forward,
+                  color: cs.onSurface,
+                  size: 20,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -548,7 +565,9 @@ class HealthProfileModel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    return Row(
+    return InkWell(
+      onTap: () => onTap(),
+      child: Row(
       children: [
         Stack(
           alignment: Alignment.center,
@@ -603,7 +622,13 @@ class HealthProfileModel extends StatelessWidget {
                       borderRadius: BorderRadius.circular(size.width * 0.015),
                     ),
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Edit profile coming soon'),
+                      ),
+                    );
+                  },
                   child: const Text(
                     "Edit",
                     style: TextStyle(
@@ -620,6 +645,7 @@ class HealthProfileModel extends StatelessWidget {
           ),
         ),
       ],
+      ),
     );
   }
 }

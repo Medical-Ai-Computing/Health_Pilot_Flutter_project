@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:grouped_list/grouped_list.dart';
+import 'package:healthpilot/core/widgets/user_avatar.dart';
 import 'package:healthpilot/data/constants.dart';
 import 'package:healthpilot/features/chat/audio_call_screen.dart';
 import 'package:healthpilot/features/chat/chat_models.dart';
@@ -29,21 +30,31 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   Timer? _pollTimer;
 
+  /// True once the first fetch settles. Background (15s) polls must not blank
+  /// the conversation with a spinner — only the initial load shows one.
+  bool _initialLoadDone = false;
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      final provider = context.read<ChatProvider>();
-      provider.markRead(widget.senderId);
-      provider.fetchPrivateMessages(widget.senderId);
+      _syncThread();
     });
     _pollTimer = Timer.periodic(const Duration(seconds: 15), (_) {
       if (!mounted) return;
-      final provider = context.read<ChatProvider>();
-      provider.markRead(widget.senderId);
-      provider.fetchPrivateMessages(widget.senderId);
+      _syncThread();
     });
+  }
+
+  /// Pulls the latest messages, then marks the thread read (order matters so
+  /// freshly-fetched messages don't briefly count as unread while viewing).
+  Future<void> _syncThread() async {
+    final provider = context.read<ChatProvider>();
+    await provider.fetchPrivateMessages(widget.senderId);
+    if (!mounted) return;
+    if (!_initialLoadDone) setState(() => _initialLoadDone = true);
+    provider.markRead(widget.senderId);
   }
 
   @override
@@ -77,14 +88,29 @@ class _ChatScreenState extends State<ChatScreen> {
           child: CustomeAppBarForChatScreen(
             title: user.displayName,
             subTitle: user.chatHistory.isNotEmpty
-                ? 'Last seen ${DateFormat.yMMMMd().format(user.chatHistory.last.timestamp)}'
+                ? 'Last message ${DateFormat.yMMMMd().format(user.chatHistory.last.timestamp)}'
                 : '',
             profileImageUrl: devsImage,
+            avatarUrl:
+                user.profilePictureUrl.isEmpty ? null : user.profilePictureUrl,
             callNow: () {
               Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => AudioCallScreen(id: widget.senderId)));
             },
-            more: () {},
+            more: () {
+              // Same destination as tapping the avatar — open the peer's details.
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (_) => UserDetailScreen(
+                  peer: SuggestedPeer(
+                    id: int.tryParse(user.userId) ?? 0,
+                    fullName: user.displayName,
+                    age: 0,
+                    score: 0,
+                    reason: '',
+                  ),
+                ),
+              ));
+            },
             senderId: user.userId,
           )),
       body: SafeArea(
@@ -93,7 +119,8 @@ class _ChatScreenState extends State<ChatScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           child: Column(
             children: [
-              if (provider.isLoadingThread(widget.senderId))
+              if (provider.isLoadingThread(widget.senderId) &&
+                  !_initialLoadDone)
                 const Expanded(
                   child: Center(child: CircularProgressIndicator()),
                 )
@@ -106,7 +133,9 @@ class _ChatScreenState extends State<ChatScreen> {
                     chatList: user.chatHistory),
               SendMessage(
                 attach: () {
-                  debugPrint('add file');
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('File sharing coming soon')),
+                  );
                 },
                 sendMessage: (message) {
                   context
@@ -127,6 +156,7 @@ class CustomeAppBarForChatScreen extends StatelessWidget {
 
   final String subTitle;
   final String profileImageUrl;
+  final String? avatarUrl;
   final VoidCallback callNow;
   final VoidCallback more;
   final String senderId;
@@ -135,6 +165,7 @@ class CustomeAppBarForChatScreen extends StatelessWidget {
       required this.title,
       required this.subTitle,
       required this.profileImageUrl,
+      this.avatarUrl,
       required this.callNow,
       required this.more,
       required this.senderId});
@@ -197,9 +228,10 @@ class CustomeAppBarForChatScreen extends StatelessWidget {
                     color: Colors.white,
                     shape: BoxShape.circle,
                   ),
-                  child: CircleAvatar(
+                  child: UserAvatar(
+                    url: avatarUrl,
                     radius: size.height * 0.026,
-                    backgroundImage: AssetImage(profileImageUrl),
+                    fallbackAsset: profileImageUrl,
                   ),
                 ),
               ),
@@ -309,7 +341,7 @@ class EmptyChat extends StatelessWidget {
   }
 }
 
-class ChatList extends StatelessWidget {
+class ChatList extends StatefulWidget {
   final List<DirectMessage> chatList;
   final String senderId;
   final String userId;
@@ -322,11 +354,47 @@ class ChatList extends StatelessWidget {
   });
 
   @override
+  State<ChatList> createState() => _ChatListState();
+}
+
+class _ChatListState extends State<ChatList> {
+  final _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _scheduleScrollToBottom();
+  }
+
+  @override
+  void didUpdateWidget(ChatList old) {
+    super.didUpdateWidget(old);
+    // Auto-scroll to the newest message when the list grows.
+    if (widget.chatList.length != old.chatList.length) {
+      _scheduleScrollToBottom();
+    }
+  }
+
+  void _scheduleScrollToBottom() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!_scrollController.hasClients) return;
+      _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+    });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Expanded(
       child: GroupedListView(
-        elements: chatList,
+        controller: _scrollController,
+        elements: widget.chatList,
         groupBy: (chat) => DateFormat.MMMd().format(chat.timestamp),
         groupSeparatorBuilder: (chat) => SizedBox(
           width: double.infinity,
@@ -370,7 +438,8 @@ class ChatList extends StatelessWidget {
           ),
         ),
         itemBuilder: (context, chat) {
-          final isIncoming = int.parse(chat.senderId) != int.parse(userId);
+          // String compare avoids FormatException on any non-numeric id.
+          final isIncoming = chat.senderId != widget.userId;
           final cs = Theme.of(context).colorScheme;
           final isDark = Theme.of(context).brightness == Brightness.dark;
 
@@ -384,7 +453,7 @@ class ChatList extends StatelessWidget {
                   borderRadius: BorderRadius.circular(10),
                 );
 
-          return Bubble(
+          final bubble = Bubble(
             alignment:
                 isIncoming ? Alignment.centerLeft : Alignment.centerRight,
             radius: const Radius.circular(10),
@@ -433,7 +502,7 @@ class ChatList extends StatelessWidget {
                           const SizedBox(height: 4),
                           Text(
                             chat.sendFailed
-                                ? 'Failed'
+                                ? 'Failed — tap to retry'
                                 : chat.isDelivered
                                     ? 'Sent'
                                     : 'Sending…',
@@ -450,6 +519,15 @@ class ChatList extends StatelessWidget {
                       ),
             ),
           );
+          if (!isIncoming && chat.sendFailed) {
+            return GestureDetector(
+              onTap: () => context
+                  .read<ChatProvider>()
+                  .resendDirect(widget.senderId, chat),
+              child: bubble,
+            );
+          }
+          return bubble;
         },
       ),
     );

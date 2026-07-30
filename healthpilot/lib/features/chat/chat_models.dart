@@ -4,6 +4,10 @@ import 'package:flutter/foundation.dart';
 class DirectMessage {
   final String? id;
   final String senderId;
+
+  /// Display name of the sender — server-provided (`sender_name`), used to
+  /// label senders in group chats. Null for the current user's own messages.
+  final String? senderName;
   final String content;
   final DateTime timestamp;
 
@@ -16,6 +20,7 @@ class DirectMessage {
   const DirectMessage({
     this.id,
     required this.senderId,
+    this.senderName,
     required this.content,
     required this.timestamp,
     this.isDelivered = true,
@@ -25,6 +30,7 @@ class DirectMessage {
   DirectMessage copyWith({
     String? id,
     String? senderId,
+    String? senderName,
     String? content,
     DateTime? timestamp,
     bool? isDelivered,
@@ -33,6 +39,7 @@ class DirectMessage {
       DirectMessage(
         id: id ?? this.id,
         senderId: senderId ?? this.senderId,
+        senderName: senderName ?? this.senderName,
         content: content ?? this.content,
         timestamp: timestamp ?? this.timestamp,
         isDelivered: isDelivered ?? this.isDelivered,
@@ -44,6 +51,7 @@ class DirectMessage {
     return DirectMessage(
       id: json['id'] as String?,
       senderId: rawSenderId is int ? rawSenderId.toString() : rawSenderId as String,
+      senderName: json['sender_name'] as String?,
       content: json['content'] as String,
       timestamp: DateTime.parse(json['timestamp'] as String),
     );
@@ -95,19 +103,27 @@ class ChatUser {
         chatHistory: chatHistory ?? this.chatHistory,
       );
 
-  factory ChatUser.fromJson(Map<String, dynamic> json) => ChatUser(
-        userId: json['user_id'] as String,
-        displayName: json['display_name'] as String,
-        profilePictureUrl: json['profile_picture_url'] as String? ?? '',
-        status: json['status'] as String? ?? '',
-        isOnline: json['is_online'] as bool? ?? false,
-        bio: json['bio'] as String? ?? '',
-        isPro: json['is_pro'] as bool? ?? false,
-        chatId: json['chat_id'] as String?,
-        chatHistory: (json['chat_history'] as List<dynamic>? ?? [])
-            .map((e) => DirectMessage.fromJson(e as Map<String, dynamic>))
-            .toList(),
-      );
+  factory ChatUser.fromJson(Map<String, dynamic> json) {
+    // Live API `GET /chat/users/` returns connected peers as
+    // {id: <int>, full_name, email, avatar}. Older shape used
+    // {user_id, display_name, profile_picture_url, ...}; accept both.
+    final rawId = json['user_id'] ?? json['id'];
+    final rawName = json['display_name'] ?? json['full_name'];
+    final rawPic = json['profile_picture_url'] ?? json['avatar'];
+    return ChatUser(
+      userId: rawId.toString(),
+      displayName: rawName as String? ?? '',
+      profilePictureUrl: rawPic is String ? rawPic : '',
+      status: json['status'] as String? ?? '',
+      isOnline: json['is_online'] as bool? ?? false,
+      bio: json['bio'] as String? ?? '',
+      isPro: json['is_pro'] as bool? ?? false,
+      chatId: json['chat_id'] as String?,
+      chatHistory: (json['chat_history'] as List<dynamic>? ?? [])
+          .map((e) => DirectMessage.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    );
+  }
 
   Map<String, dynamic> toJson() => {
         'user_id': userId,
@@ -128,8 +144,17 @@ class ChatGroup {
   final String? description;
   final bool isMuted;
   final bool isPro;
+  final bool isJoined;
   final List<String> membersId;
+
+  /// Authoritative member count from the API (`participant_count`); the
+  /// `participants` array may only contain a subset, so prefer this for display.
+  final int participantCount;
   final List<DirectMessage> groupChatHistory;
+
+  /// Preview text from the API's `last_message` on the group list, shown until
+  /// the full [groupChatHistory] is fetched. Null when the group has no messages.
+  final String? lastMessagePreview;
 
   ChatGroup({
     required this.groupId,
@@ -137,16 +162,27 @@ class ChatGroup {
     this.description,
     this.isMuted = false,
     this.isPro = false,
+    this.isJoined = false,
     this.membersId = const [],
+    this.participantCount = 0,
     this.groupChatHistory = const [],
+    this.lastMessagePreview,
   });
+
+  /// Best available member count: the API's `participant_count` when present,
+  /// otherwise the size of the (possibly partial) participants list.
+  int get memberCount =>
+      participantCount > membersId.length ? participantCount : membersId.length;
 
   ChatGroup copyWith({
     List<DirectMessage>? groupChatHistory,
     String? description,
     List<String>? membersId,
+    int? participantCount,
     bool? isMuted,
     bool? isPro,
+    bool? isJoined,
+    String? lastMessagePreview,
   }) =>
       ChatGroup(
         groupId: groupId,
@@ -154,26 +190,45 @@ class ChatGroup {
         description: description ?? this.description,
         isMuted: isMuted ?? this.isMuted,
         isPro: isPro ?? this.isPro,
+        isJoined: isJoined ?? this.isJoined,
         membersId: membersId ?? this.membersId,
+        participantCount: participantCount ?? this.participantCount,
         groupChatHistory: groupChatHistory ?? this.groupChatHistory,
+        lastMessagePreview: lastMessagePreview ?? this.lastMessagePreview,
       );
 
   factory ChatGroup.fromJson(Map<String, dynamic> json) {
     final rawId = json['group_id'] ?? json['id'];
     final rawName = json['group_name'] ?? json['name'];
+    // Live API returns members as `participants: [{id, full_name, ...}]`;
+    // older shape used a flat `members_id: [<id>]`. Accept both.
+    final participants = json['participants'];
+    final membersId = participants is List
+        ? participants
+            .map((e) => (e as Map<String, dynamic>)['id'].toString())
+            .toList()
+        : (json['members_id'] as List<dynamic>?)
+                ?.map((e) => e.toString())
+                .toList() ??
+            const <String>[];
     return ChatGroup(
-      groupId: rawId as String,
+      groupId: rawId.toString(),
       groupName: rawName as String,
       description: json['description'] as String?,
       isMuted: json['is_muted'] as bool? ?? false,
       isPro: json['is_pro'] as bool? ?? false,
-      membersId: (json['members_id'] as List<dynamic>?)
-              ?.map((e) => e.toString())
-              .toList() ??
-          [],
+      // `/groups/discover/` returns `is_member`; the joined `/groups/` list has
+      // neither, so membership is also derived from `participants` against the
+      // current user id (see ChatProvider.load).
+      isJoined: (json['is_member'] ?? json['is_joined']) as bool? ?? false,
+      membersId: membersId,
+      participantCount: (json['participant_count'] as num?)?.toInt() ?? 0,
       groupChatHistory: (json['group_chat_history'] as List<dynamic>? ?? [])
           .map((e) => DirectMessage.fromJson(e as Map<String, dynamic>))
           .toList(),
+      lastMessagePreview: json['last_message'] is Map<String, dynamic>
+          ? (json['last_message'] as Map<String, dynamic>)['content'] as String?
+          : null,
     );
   }
 }
@@ -185,6 +240,7 @@ class ChatThread {
   final String lastMessage;
   final bool isPro;
   final bool isGroupChat;
+  final String? avatarUrl;
 
   const ChatThread({
     required this.id,
@@ -192,6 +248,7 @@ class ChatThread {
     required this.lastMessage,
     required this.isPro,
     required this.isGroupChat,
+    this.avatarUrl,
   });
 }
 
@@ -393,6 +450,7 @@ final kSeedGroups = [
   ChatGroup(
     groupId: 'g1',
     groupName: 'Schizophrenia Support',
+    isJoined: true,
     isMuted: false,
     isPro: true,
     membersId: ['1', '2', '3'],
@@ -425,68 +483,77 @@ final kSeedGroups = [
   ),
   ChatGroup(
     groupId: 'g2',
-    groupName: 'Schizophrenia Support',
+    groupName: 'Diabetes Support Group',
+    description: 'A community for managing diabetes together.',
+    isJoined: true,
     isMuted: true,
     isPro: false,
     membersId: ['4', '2', '5'],
     groupChatHistory: [
       DirectMessage(
           senderId: '4',
-          content: 'Hello John Doe!',
+          content: 'Has anyone tried the new glucose monitor?',
           timestamp: DateTime.now().subtract(const Duration(days: 2))),
       DirectMessage(
           senderId: '5',
-          content: 'How are you today?',
+          content: 'Yes, it is much more accurate!',
           timestamp:
               DateTime.now().subtract(const Duration(days: 2, hours: 23))),
       DirectMessage(
           senderId: '1',
-          content: "Hi! I'm doing well, thanks!",
+          content: "I've been thinking about switching.",
           timestamp:
               DateTime.now().subtract(const Duration(days: 2, hours: 22))),
       DirectMessage(
           senderId: '2',
-          content: "That's great to hear!",
+          content: 'You should, the readings are consistent.',
           timestamp:
               DateTime.now().subtract(const Duration(days: 2, hours: 21))),
       DirectMessage(
           senderId: '2',
-          content: 'By the way, have you seen the latest movie?',
+          content: 'Plus the app integration is seamless.',
           timestamp:
               DateTime.now().subtract(const Duration(days: 2, hours: 20))),
     ],
   ),
   ChatGroup(
     groupId: 'g3',
-    groupName: 'Schizophrenia Support',
+    groupName: 'Mental Wellness Circle',
+    description: 'Weekly check-ins and mindfulness exercises.',
+    isJoined: false,
     isMuted: true,
     isPro: false,
     membersId: ['1', '3', '5'],
     groupChatHistory: [
       DirectMessage(
           senderId: '1',
-          content: 'Hello John Doe!',
+          content: 'Welcome to the new members!',
           timestamp: DateTime.now().subtract(const Duration(days: 2))),
       DirectMessage(
           senderId: '3',
-          content: 'How are you today?',
+          content: 'Thank you, happy to be here.',
           timestamp:
               DateTime.now().subtract(const Duration(days: 2, hours: 23))),
+    ],
+  ),
+  ChatGroup(
+    groupId: 'g4',
+    groupName: 'Fitness & Recovery',
+    description: 'Share workout tips and recovery progress.',
+    isJoined: false,
+    isMuted: false,
+    isPro: true,
+    membersId: ['7', '8', '9'],
+    groupChatHistory: [
       DirectMessage(
-          senderId: '5',
-          content: "Hi! I'm doing well, thanks!",
-          timestamp:
-              DateTime.now().subtract(const Duration(days: 2, hours: 22))),
+          senderId: '7',
+          content: 'Morning workout done! Anyone else?',
+          timestamp: DateTime.now().subtract(const Duration(days: 1))),
       DirectMessage(
-          senderId: '1',
-          content: "That's great to hear!",
+          senderId: '8',
+          content: 'Just finished my run. Feeling great!',
           timestamp:
-              DateTime.now().subtract(const Duration(days: 2, hours: 21))),
-      DirectMessage(
-          senderId: '1',
-          content: 'By the way, have you seen the latest movie?',
-          timestamp:
-              DateTime.now().subtract(const Duration(days: 2, hours: 20))),
+              DateTime.now().subtract(const Duration(days: 1, hours: 1))),
     ],
   ),
 ];

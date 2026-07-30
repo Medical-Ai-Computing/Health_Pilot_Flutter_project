@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:healthpilot/core/widgets/user_avatar.dart';
 import 'package:healthpilot/data/constants.dart';
 import 'package:healthpilot/features/chat/public_profile_screen.dart';
 import 'package:healthpilot/features/chat/user_detail_screen.dart';
+import 'package:healthpilot/features/community/community_groups_screen.dart';
 import 'package:healthpilot/features/community/community_models.dart';
 import 'package:healthpilot/features/community/community_provider.dart';
 import 'package:healthpilot/features/profile/language_translation.dart';
@@ -40,6 +42,15 @@ class _SimilarPeopleScreenState extends State<SimilarPeopleScreen> {
                 Icons.arrow_back, 'Similar People', context),
           ),
           actions: [
+            IconButton(
+              tooltip: 'Community groups',
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => const CommunityGroupsScreen(),
+                ),
+              ),
+              icon: const Icon(Icons.groups_outlined),
+            ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
               child: IconButton(
@@ -68,7 +79,7 @@ class _SimilarPeopleScreenState extends State<SimilarPeopleScreen> {
                           itemCount: peers.length,
                           itemBuilder: (context, index) {
                             final peer = peers[index];
-                            return _DiscoverablePeerCard(peer: peer);
+                            return DiscoverablePeerCard(peer: peer);
                           },
                         ),
             ),
@@ -87,9 +98,9 @@ class _SimilarPeopleScreenState extends State<SimilarPeopleScreen> {
   }
 }
 
-class _DiscoverablePeerCard extends StatelessWidget {
+class DiscoverablePeerCard extends StatelessWidget {
   final SuggestedPeer peer;
-  const _DiscoverablePeerCard({required this.peer});
+  const DiscoverablePeerCard({super.key, required this.peer});
 
   void _connect(BuildContext context) async {
     final provider = context.read<CommunityProvider>();
@@ -133,10 +144,7 @@ class _DiscoverablePeerCard extends StatelessWidget {
           padding: const EdgeInsets.all(12),
           child: Row(
             children: [
-              CircleAvatar(
-                radius: 28,
-                backgroundImage: AssetImage(devsImage),
-              ),
+              UserAvatar(url: peer.profilePicture, radius: 28),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(

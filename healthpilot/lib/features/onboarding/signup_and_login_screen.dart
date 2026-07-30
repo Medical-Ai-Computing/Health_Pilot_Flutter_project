@@ -5,6 +5,7 @@ import 'package:healthpilot/core/auth/auth_state.dart';
 import 'package:healthpilot/core/flags/feature_flags.dart';
 import 'package:healthpilot/core/navigation/app_navigation.dart';
 import 'package:healthpilot/core/network/api_error.dart';
+import 'package:healthpilot/data/constants.dart';
 import 'package:healthpilot/features/onboarding/terms_dialogBox.dart';
 import 'package:provider/provider.dart';
 
@@ -74,15 +75,25 @@ class _SignupAndLoginScreenState extends State<SignupAndLoginScreen> {
   }
 
   Future<void> _login() async {
+    final email = emailController.text.trim();
+    final password = passwordController.text;
+    if (email.isEmpty || password.isEmpty) {
+      _showError('Please enter your email and password.');
+      return;
+    }
     if (!FeatureFlags.auth) {
+      _showError(
+        'Demo mode: add dart_defines.json and run with '
+        '--dart-define-from-file=dart_defines.json for real login.',
+      );
       AppNavigation.replaceWithHome(context);
       return;
     }
     setState(() => _isLoading = true);
     try {
       await context.read<AuthState>().login(
-            emailController.text.trim(),
-            passwordController.text,
+            email,
+            password,
           );
       if (!mounted) return;
       AppNavigation.replaceWithHome(context);
@@ -98,6 +109,11 @@ class _SignupAndLoginScreenState extends State<SignupAndLoginScreen> {
   }
 
   Future<void> _register() async {
+    if (!(_formKey.currentState?.validate() ?? false)) return;
+    if (!(_isChecked ?? false)) {
+      _showError('Please accept the terms and conditions to continue.');
+      return;
+    }
     if (passwordController.text != confirmPasswordController.text) {
       _showError('Passwords do not match.');
       return;
@@ -196,12 +212,39 @@ class _SignupAndLoginScreenState extends State<SignupAndLoginScreen> {
                       : "By creating an account, unlock complete features and access Personal data",
                   screenHeight: screenHeight,
                   screenWidth: screenWidth,
-                  color: const Color.fromRGBO(42, 42, 42, 0.5),
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                   letterHeight: 1.3,
                   padding: EdgeInsets.symmetric(
                       horizontal: screenWidth * 0.1,
                       vertical: screenHeight * 0.02),
                 ),
+                if (!FeatureFlags.auth) ...[
+                  Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
+                    child: Material(
+                      color: Theme.of(context)
+                          .colorScheme
+                          .errorContainer
+                          .withValues(alpha: 0.35),
+                      borderRadius: BorderRadius.circular(12),
+                      child: Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: Text(
+                          'Demo mode is active (dart defines not loaded). '
+                          'Copy dart_defines.example.json to dart_defines.json '
+                          'and run with --dart-define-from-file=dart_defines.json.',
+                          style: TextStyle(
+                            fontFamily: 'PlusJakartaSans',
+                            fontSize: 13,
+                            color: Theme.of(context).colorScheme.onSurface,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: screenHeight * 0.02),
+                ],
                 if (showActivationBanner) ...[
                   Padding(
                     padding:
@@ -379,11 +422,11 @@ class _SignupAndLoginScreenState extends State<SignupAndLoginScreen> {
                         Padding(
                           padding: EdgeInsets.symmetric(
                               horizontal: screenWidth * 0.01),
-                          child: const Text(
+                          child: Text(
                             "Or",
                             style: TextStyle(
                               fontFamily: 'PlusJakartaSans',
-                              color: Color.fromRGBO(42, 42, 42, 0.5),
+                              color: Theme.of(context).colorScheme.onSurfaceVariant,
                               fontSize: 15,
                               fontWeight: FontWeight.w400,
                               letterSpacing: -0.17,
@@ -591,7 +634,7 @@ class ConfirmEmailScreen extends StatelessWidget {
                     padding: EdgeInsets.symmetric(vertical: screenHeight * 0.1),
                     child: Column(
                       children: [
-                        const Text(
+                        Text(
                           'Didn’t receive an email?',
                           style: TextStyle(
                             fontFamily: 'PlusJakartaSans',
@@ -599,7 +642,7 @@ class ConfirmEmailScreen extends StatelessWidget {
                             fontWeight: FontWeight.w500,
                             height: 1.25,
                             letterSpacing: -0.165,
-                            color: Colors.black,
+                            color: Theme.of(context).colorScheme.onSurface,
                           ),
                           textAlign: TextAlign.left,
                         ),
@@ -751,8 +794,8 @@ class InputFields extends StatelessWidget {
               ),
               decoration: InputDecoration(
                 hintText: hintText,
-                hintStyle: const TextStyle(
-                  color: Color.fromRGBO(42, 42, 42, 0.5),
+                hintStyle: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                   fontFamily: 'PlusJakartaSans',
                   fontSize: 14,
                   fontWeight: FontWeight.w300,
@@ -796,8 +839,8 @@ class TermsPolicyText extends StatelessWidget {
     return RichText(
       text: TextSpan(
           text: "I have read and agree to the",
-          style: const TextStyle(
-            color: Color.fromRGBO(42, 42, 42, 0.5),
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
             fontFamily: 'PlusJakartasSans',
             fontSize: 11,
             fontWeight: FontWeight.w400,
@@ -826,10 +869,10 @@ class TermsPolicyText extends StatelessWidget {
                           );
                         });
                   }),
-            const TextSpan(
+            TextSpan(
                 text: ' and ',
                 style: TextStyle(
-                  color: Color.fromRGBO(42, 42, 42, 0.5),
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                   fontFamily: 'PlusJakartasSans',
                   fontSize: 12,
                   fontWeight: FontWeight.w400,
@@ -952,8 +995,10 @@ class IconContainor extends StatelessWidget {
           color: Colors.white,
           borderRadius: BorderRadius.circular(10),
           border: Border.all(color: const Color.fromRGBO(221, 218, 218, 1))),
-      child: Image.asset(
-          'assets/Icons/google.png'), //D:\Coding\healthApp\Flutter_project\healthpilot\assets\Icons\Google1.png
+      child: SvgPicture.asset(
+        googleSignIn,
+        fit: BoxFit.scaleDown,
+      ),
     );
   }
 }
@@ -976,7 +1021,7 @@ class BottomActionTexts extends StatelessWidget {
       text: TextSpan(
           text: normalTexts,
           style: TextStyle(
-            color: const Color.fromRGBO(42, 42, 42, 1),
+            color: Theme.of(context).colorScheme.onSurface,
             fontFamily: 'PlusJakartasSans',
             fontSize: fontSize,
             fontWeight: FontWeight.w400,

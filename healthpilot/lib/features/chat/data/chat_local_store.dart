@@ -72,7 +72,15 @@ class ChatLocalStore {
         await insertDirectMessage(threadId, m);
       }
     }
+    // Guarantee chronological order regardless of merge order.
+    merged.sort((a, b) => a.timestamp.compareTo(b.timestamp));
     return merged;
+  }
+
+  Future<void> clearDirectMessages(String threadId) async {
+    final db = await _database.database;
+    await db.delete('direct_messages',
+        where: 'thread_id = ?', whereArgs: [threadId]);
   }
 
   Future<void> insertDirectMessage(
@@ -83,6 +91,7 @@ class ChatLocalStore {
     await db.insert('direct_messages', {
       'thread_id': threadId,
       'sender_id': message.senderId,
+      'sender_name': message.senderName,
       'content': message.content,
       'timestamp': message.timestamp.toIso8601String(),
       'is_delivered': message.isDelivered ? 1 : 0,
@@ -134,7 +143,14 @@ class ChatLocalStore {
         await insertGroupMessage(threadId, m);
       }
     }
+    merged.sort((a, b) => a.timestamp.compareTo(b.timestamp));
     return merged;
+  }
+
+  Future<void> clearGroupMessages(String threadId) async {
+    final db = await _database.database;
+    await db.delete('group_messages',
+        where: 'thread_id = ?', whereArgs: [threadId]);
   }
 
   Future<void> insertGroupMessage(
@@ -143,6 +159,7 @@ class ChatLocalStore {
     await db.insert('group_messages', {
       'thread_id': threadId,
       'sender_id': message.senderId,
+      'sender_name': message.senderName,
       'content': message.content,
       'timestamp': message.timestamp.toIso8601String(),
       'is_delivered': message.isDelivered ? 1 : 0,
@@ -185,6 +202,7 @@ class ChatLocalStore {
   DirectMessage _directMessageFromRow(Map<String, Object?> row) =>
       DirectMessage(
         senderId: row['sender_id']! as String,
+        senderName: row['sender_name'] as String?,
         content: row['content']! as String,
         timestamp: DateTime.parse(row['timestamp']! as String),
         isDelivered: (row['is_delivered']! as int) == 1,

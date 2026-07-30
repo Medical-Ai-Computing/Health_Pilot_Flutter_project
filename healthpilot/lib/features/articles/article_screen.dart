@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:healthpilot/core/widgets/error_retry_view.dart';
 import 'package:healthpilot/data/asset_paths.dart';
 import 'package:healthpilot/features/articles/article_detail_screen.dart';
 import 'package:healthpilot/features/articles/article_feed_item.dart';
@@ -153,23 +154,45 @@ class _ArticleScreenState extends State<ArticleScreen> {
                   onSuffixTap: _showFilterShell,
                 ),
                 Expanded(
-                  child: ListView.builder(
-                    itemCount: visible.length,
-                    itemBuilder: (context, index) {
-                      return ArticleCard(
-                        screenWidth: screenWidth,
-                        screenHeight: screenHeight,
-                        item: visible[index],
-                        onOpen: _openDetail,
-                        onShare: (item) {
-                          Share.share(
-                            '${item.title}\n\n${item.body}',
-                            subject: item.title,
-                          );
-                        },
-                      );
-                    },
-                  ),
+                  child: (provider.status == ArticleLoadStatus.loading &&
+                          provider.articles.isEmpty)
+                      ? const Center(child: CircularProgressIndicator())
+                      : (provider.status == ArticleLoadStatus.error &&
+                              provider.articles.isEmpty)
+                          ? ErrorRetryView(
+                              message: provider.error,
+                              onRetry: () =>
+                                  context.read<ArticleProvider>().refresh(),
+                            )
+                          : visible.isEmpty
+                              ? Center(
+                                  child: Text(
+                                    _query.isEmpty
+                                        ? 'No articles yet.'
+                                        : 'No articles match your search.',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyLarge
+                                        ?.copyWith(color: cs.onSurfaceVariant),
+                                  ),
+                                )
+                              : ListView.builder(
+                                  itemCount: visible.length,
+                                  itemBuilder: (context, index) {
+                                    return ArticleCard(
+                                      screenWidth: screenWidth,
+                                      screenHeight: screenHeight,
+                                      item: visible[index],
+                                      onOpen: _openDetail,
+                                      onShare: (item) {
+                                        Share.share(
+                                          '${item.title}\n\n${item.body}',
+                                          subject: item.title,
+                                        );
+                                      },
+                                    );
+                                  },
+                                ),
                 ),
               ],
             );
@@ -220,11 +243,18 @@ class ArticleCard extends StatelessWidget {
                 topRight: Radius.circular(10),
                 topLeft: Radius.circular(10),
               ),
-              child: Image.asset(
-                item.imageUrl,
+              child: Image(
+                image: item.imageProvider,
                 width: double.infinity,
                 height: screenHeight * 0.12,
                 fit: BoxFit.cover,
+                // Fall back to a bundled asset if the network image 404s/fails.
+                errorBuilder: (_, __, ___) => Image.asset(
+                  'assets/images/old_woman.png',
+                  width: double.infinity,
+                  height: screenHeight * 0.12,
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
             SizedBox(height: screenHeight * 0.01),
@@ -342,7 +372,7 @@ class ArticleCard extends StatelessWidget {
                                     colorFilter: ColorFilter.mode(
                                         cs.onSurface, BlendMode.srcIn),
                                     child: Image.asset(
-                                        'assets/Icons/stopwatch .png'),
+                                        AssetPaths.articleStopwatchPng),
                                   ),
                                 ),
                                 SizedBox(width: screenWidth * 0.02),

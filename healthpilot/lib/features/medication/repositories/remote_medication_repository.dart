@@ -7,15 +7,47 @@ class RemoteMedicationRepository implements IMedicationRepository {
   const RemoteMedicationRepository(this._client);
   final ApiClient _client;
 
+  /// Fetches every page of a DRF-paginated endpoint, following `next` until
+  /// it is null, returning the concatenated `results`.
+  Future<List<dynamic>> _fetchAllPages(
+    String path, {
+    Map<String, dynamic>? query,
+  }) async {
+    final all = <dynamic>[];
+    final seen = <String>{};
+    while (true) {
+      final data = await _client.get(path, queryParameters: query);
+      if (data is! Map) {
+        if (data is List) all.addAll(data);
+        break;
+      }
+      final results = data['results'];
+      if (results is List) all.addAll(results);
+      final next = data['next'];
+      if (next is! String || next.isEmpty) break;
+      final nextQuery = Uri.parse(next).queryParameters;
+      final key = nextQuery.toString();
+      if (nextQuery.isEmpty || !seen.add(key)) break;
+      query = Map<String, dynamic>.from(nextQuery);
+    }
+    return all;
+  }
+
   @override
   Future<List<Medication>> fetchMedications({bool activeOnly = true}) async {
-    final data = await _client.get(
+    final items = await _fetchAllPages(
       '${ApiConstants.medicationsBase}/',
-      queryParameters: activeOnly ? {'active': true} : null,
+      query: activeOnly ? {'active': true} : null,
     );
-    return (data as List)
+    return items
         .map((e) => Medication.fromJson(e as Map<String, dynamic>))
         .toList();
+  }
+
+  @override
+  Future<Medication> fetchMedication(int id) async {
+    final data = await _client.get('${ApiConstants.medicationsBase}/$id/');
+    return Medication.fromJson(data as Map<String, dynamic>);
   }
 
   @override
@@ -44,7 +76,8 @@ class RemoteMedicationRepository implements IMedicationRepository {
   Future<List<MedicationReminder>> fetchReminders(int medicationId) async {
     final data = await _client
         .get('${ApiConstants.medicationsBase}/$medicationId/reminders/');
-    return (data as List)
+    final items = data is List ? data : const [];
+    return items
         .map((e) => MedicationReminder.fromJson(e as Map<String, dynamic>))
         .toList();
   }
@@ -76,9 +109,10 @@ class RemoteMedicationRepository implements IMedicationRepository {
 
   @override
   Future<List<DoseLog>> fetchDoses(int medicationId) async {
-    final data = await _client
-        .get('${ApiConstants.medicationsBase}/$medicationId/doses/');
-    return (data as List)
+    final items = await _fetchAllPages(
+      '${ApiConstants.medicationsBase}/$medicationId/doses/',
+    );
+    return items
         .map((e) => DoseLog.fromJson(e as Map<String, dynamic>))
         .toList();
   }

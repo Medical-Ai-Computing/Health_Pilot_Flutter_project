@@ -5,10 +5,27 @@ import 'package:flutter_svg/svg.dart';
 import 'package:healthpilot/data/asset_paths.dart';
 import 'package:healthpilot/features/articles/article_comment_screen.dart';
 import 'package:healthpilot/features/articles/article_feed_item.dart';
+import 'package:healthpilot/features/articles/article_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 
-class ArticleDetail extends StatelessWidget {
+class ArticleDetail extends StatefulWidget {
   const ArticleDetail({super.key});
+
+  @override
+  State<ArticleDetail> createState() => _ArticleDetailState();
+}
+
+class _ArticleDetailState extends State<ArticleDetail> {
+  ArticleFeedItem? _item;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_item != null) return;
+    _item = _itemFromRoute(context);
+    _loadFullArticle();
+  }
 
   ArticleFeedItem _itemFromRoute(BuildContext context) {
     final raw = ModalRoute.of(context)?.settings.arguments;
@@ -29,6 +46,22 @@ class ArticleDetail extends StatelessWidget {
     );
   }
 
+  /// The feed row only carries `summary`; the full `body`, like and comment
+  /// counts live on `GET /articles/{id}/`. Fetch them once so the detail body
+  /// isn't stuck showing the truncated summary. Ids that aren't real backend
+  /// ids (legacy/fallback) are skipped.
+  Future<void> _loadFullArticle() async {
+    final item = _item;
+    if (item == null) return;
+    if (item.id.startsWith('legacy') || item.id == 'fallback') return;
+    try {
+      final full = await context.read<ArticleProvider>().fetchArticle(item.id);
+      if (mounted) setState(() => _item = full);
+    } catch (_) {
+      // Keep the feed item already on screen if the detail fetch fails.
+    }
+  }
+
   void _share(ArticleFeedItem item) {
     Share.share(
       '${item.title}\n\n${item.body}',
@@ -38,7 +71,7 @@ class ArticleDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final item = _itemFromRoute(context);
+    final item = _item ?? _itemFromRoute(context);
 
     return Scaffold(
       body: LayoutBuilder(
@@ -55,7 +88,7 @@ class ArticleDetail extends StatelessWidget {
                   height: screenHeight * 0.42,
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: AssetImage(item.imageUrl),
+                      image: item.imageProvider,
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -100,7 +133,7 @@ class ArticleDetail extends StatelessWidget {
                                             BlendMode.srcIn,
                                           ),
                                           child: Image.asset(
-                                            'assets/Icons/stopwatch .png',
+                                            AssetPaths.articleStopwatchPng,
                                           ),
                                         ),
                                       ),
@@ -158,7 +191,6 @@ class ArticleDetail extends StatelessWidget {
                                                 builder: (context) =>
                                                     ArticleCommentScreen(
                                                   article: item,
-                                                  comments: const [],
                                                 ),
                                               ),
                                             );

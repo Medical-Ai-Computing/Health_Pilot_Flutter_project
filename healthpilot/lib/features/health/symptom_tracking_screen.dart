@@ -169,36 +169,60 @@ class _SymptomTrackingScreenState extends State<SymptomTrackingScreen> {
           ),
         ),
         SizedBox(height: size.height * 0.02),
-        TextFormField(
-          controller: _symptomController,
-          maxLines: 1,
-          decoration: InputDecoration(
-            hintText: 'Search Symptoms',
-            hintStyle: const TextStyle(
-              fontFamily: 'PlusJakartaSans',
-              fontWeight: FontWeight.w400,
-              fontSize: 14,
+        Row(
+          children: [
+            Expanded(
+              child: TextFormField(
+                controller: _symptomController,
+                maxLines: 1,
+                decoration: InputDecoration(
+                  hintText: 'Search Symptoms',
+                  hintStyle: const TextStyle(
+                    fontFamily: 'PlusJakartaSans',
+                    fontWeight: FontWeight.w400,
+                    fontSize: 14,
+                  ),
+                  prefixIcon: Icon(Icons.search,
+                      size: size.width * 0.08,
+                      color: const Color.fromRGBO(41, 41, 41, 0.5)),
+                  contentPadding: EdgeInsets.symmetric(
+                      vertical: size.height * 0.015, horizontal: size.width * 0.03),
+                  border: OutlineInputBorder(
+                    borderSide:
+                        const BorderSide(color: Color.fromRGBO(41, 41, 41, 0.25)),
+                    borderRadius:
+                        BorderRadius.all(Radius.circular(size.width * 0.03)),
+                  ),
+                  isDense: true,
+                ),
+                keyboardType: TextInputType.text,
+                textInputAction: TextInputAction.done,
+                onFieldSubmitted: (value) {
+                  if (value.trim().isNotEmpty) {
+                    setState(() => _symptomFilled = true);
+                  }
+                },
+              ),
             ),
-            prefixIcon: Icon(Icons.search,
-                size: size.width * 0.08,
-                color: const Color.fromRGBO(41, 41, 41, 0.5)),
-            contentPadding: EdgeInsets.symmetric(
-                vertical: size.height * 0.015, horizontal: size.width * 0.03),
-            border: OutlineInputBorder(
-              borderSide:
-                  const BorderSide(color: Color.fromRGBO(41, 41, 41, 0.25)),
-              borderRadius:
-                  BorderRadius.all(Radius.circular(size.width * 0.03)),
+            SizedBox(width: size.width * 0.02),
+            ElevatedButton(
+              onPressed: () {
+                if (_symptomController.text.trim().isNotEmpty) {
+                  setState(() => _symptomFilled = true);
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color.fromRGBO(110, 182, 255, 1),
+                foregroundColor: Colors.white,
+                padding: EdgeInsets.symmetric(
+                    vertical: size.height * 0.018),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(size.width * 0.03)),
+              ),
+              child: const Text('ADD',
+                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
             ),
-            isDense: true,
-          ),
-          keyboardType: TextInputType.text,
-          textInputAction: TextInputAction.done,
-          onFieldSubmitted: (value) {
-            if (value.trim().isNotEmpty) {
-              setState(() => _symptomFilled = true);
-            }
-          },
+          ],
         ),
       ],
     );
@@ -283,7 +307,73 @@ class _SymptomTrackingScreenState extends State<SymptomTrackingScreen> {
                   itemBuilder: (context, index) {
                     return SymptomTracking(
                       disorder: symptoms[index].name,
-                      onTap: () {},
+                      onTap: () async {
+                        final symptom = symptoms[index];
+                        final id = symptom.id;
+                        if (id == null) return;
+                        
+                        // Show symptom details dialog with option to delete
+                        final result = await showDialog<String>(
+                          context: context,
+                          builder: (ctx) => AlertDialog(
+                            title: const Text('Symptom Details'),
+                            content: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('Name: ${symptom.name}'),
+                                const SizedBox(height: 8),
+                                Text('Severity: ${symptom.severity}'),
+                                const SizedBox(height: 8),
+                                if (symptom.description != null && symptom.description!.isNotEmpty)
+                                  Text('Description: ${symptom.description}'),
+                                const SizedBox(height: 8),
+                                if (symptom.loggedAt.isNotEmpty)
+                                  Text('Logged: ${symptom.loggedAt}'),
+                                const SizedBox(height: 8),
+                                if (symptom.bodyLocation != null && symptom.bodyLocation!.isNotEmpty)
+                                  Text('Location: ${symptom.bodyLocation}'),
+                              ],
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(ctx, 'view'),
+                                child: const Text('Close'),
+                              ),
+                              TextButton(
+                                onPressed: () => Navigator.pop(ctx, 'delete'),
+                                style: TextButton.styleFrom(foregroundColor: Colors.red),
+                                child: const Text('Delete'),
+                              ),
+                            ],
+                          ),
+                        );
+                        
+                        if (result == 'delete' && context.mounted) {
+                          final confirmed = await showDialog<bool>(
+                            context: context,
+                            builder: (ctx) => AlertDialog(
+                              title: const Text('Delete Symptom'),
+                              content: Text(
+                                'Delete "${symptom.name}"?',
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.pop(ctx, false),
+                                  child: const Text('Cancel'),
+                                ),
+                                TextButton(
+                                  onPressed: () => Navigator.pop(ctx, true),
+                                  child: const Text('Delete'),
+                                ),
+                              ],
+                            ),
+                          );
+                          if (confirmed == true && context.mounted) {
+                            context.read<HealthProvider>().deleteSymptom(id);
+                          }
+                        }
+                      },
                     );
                   },
                 ),

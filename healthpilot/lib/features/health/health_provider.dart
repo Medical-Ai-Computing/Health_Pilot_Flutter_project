@@ -10,12 +10,24 @@ class HealthProvider extends ChangeNotifier {
 
   List<HealthCondition> _conditions = [];
   List<HealthSymptom> _symptoms = [];
+  List<VitalLog> _vitals = [];
+  List<HealthGoal> _goals = [];
+  HealthSummary? _latestSummary;
+  List<HealthSummary> _summaries = [];
+  HealthDashboard? _dashboard;
   HealthLoadStatus _status = HealthLoadStatus.idle;
   String? _error;
   bool _loadStarted = false;
 
   List<HealthCondition> get conditions => List.unmodifiable(_conditions);
   List<HealthSymptom> get symptoms => List.unmodifiable(_symptoms);
+  List<VitalLog> get vitals => List.unmodifiable(_vitals);
+  List<HealthGoal> get goals => List.unmodifiable(_goals);
+  List<HealthGoal> get activeGoals =>
+      _goals.where((g) => g.isActive).toList();
+  HealthSummary? get latestSummary => _latestSummary;
+  List<HealthSummary> get summaries => List.unmodifiable(_summaries);
+  HealthDashboard? get dashboard => _dashboard;
   HealthLoadStatus get status => _status;
   String? get error => _error;
 
@@ -28,13 +40,19 @@ class HealthProvider extends ChangeNotifier {
     _error = null;
     notifyListeners();
     try {
-      // conditions endpoint may not exist on backend yet — fail silently
+      // /health/conditions/ is not on the backend yet — empty list is expected.
       try {
         _conditions = await _repo.fetchConditions();
       } catch (_) {
         _conditions = [];
       }
-      _symptoms = await _repo.fetchSymptoms();
+      _symptoms = await _safe(_repo.fetchSymptoms, const <HealthSymptom>[]);
+      // Vitals, goals, summary and dashboard are independent and best-effort:
+      // a failure in one shouldn't blank the whole health screen.
+      _vitals = await _safe(_repo.fetchVitals, const <VitalLog>[]);
+      _goals = await _safe(_repo.fetchGoals, const <HealthGoal>[]);
+      _latestSummary = await _safe(_repo.fetchLatestSummary, null);
+      _dashboard = await _safe<HealthDashboard?>(_repo.fetchDashboard, null);
       _status = HealthLoadStatus.loaded;
     } on ApiException catch (e) {
       _error = e.userMessage;
@@ -42,6 +60,63 @@ class HealthProvider extends ChangeNotifier {
     } finally {
       notifyListeners();
     }
+  }
+
+  Future<T> _safe<T>(Future<T> Function() op, T fallback) async {
+    try {
+      return await op();
+    } catch (_) {
+      return fallback;
+    }
+  }
+
+  Future<void> refresh() async {
+    _loadStarted = false;
+    await load();
+  }
+
+  /// Clears in-memory state when the user logs out or switches accounts.
+  void reset() {
+    _conditions = [];
+    _symptoms = [];
+    _vitals = [];
+    _goals = [];
+    _latestSummary = null;
+    _summaries = [];
+    _dashboard = null;
+    _status = HealthLoadStatus.idle;
+    _error = null;
+    _loadStarted = false;
+    notifyListeners();
+  }
+
+  // ── Vitals ────────────────────────────────────────────────────────────────
+  Future<void> addVital(VitalLog vital) async {
+    final created = await _repo.addVital(vital);
+    _vitals = [created, ..._vitals];
+    _dashboard = await _safe<HealthDashboard?>(_repo.fetchDashboard, _dashboard);
+    notifyListeners();
+  }
+
+  // ── Goals ─────────────────────────────────────────────────────────────────
+  Future<void> addGoal(HealthGoal goal) async {
+    final created = await _repo.addGoal(goal);
+    _goals = [created, ..._goals];
+    notifyListeners();
+  }
+
+  Future<void> updateGoal(int id, HealthGoal goal) async {
+    final updated = await _repo.updateGoal(id, goal);
+    _goals = [
+      for (final g in _goals) if (g.id == id) updated else g,
+    ];
+    notifyListeners();
+  }
+
+  Future<void> deleteGoal(int id) async {
+    await _repo.deleteGoal(id);
+    _goals = _goals.where((g) => g.id != id).toList();
+    notifyListeners();
   }
 
   Future<void> addCondition(HealthCondition condition) async {
@@ -77,6 +152,16 @@ class HealthProvider extends ChangeNotifier {
   Future<void> clearSymptoms() async {
     await _repo.clearSymptoms();
     _symptoms = [];
+    notifyListeners();
+  }
+
+  Future<HealthSymptom> fetchSymptom(int id) async {
+    return await _repo.fetchSymptom(id);
+  }
+
+  // ── Summaries ───────────────────────────────────────────────────────────────
+  Future<void> fetchSummaries() async {
+    _summaries = await _repo.fetchSummaries();
     notifyListeners();
   }
 

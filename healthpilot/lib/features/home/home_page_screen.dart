@@ -8,12 +8,16 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:healthpilot/core/widgets/safe_assets.dart';
 import 'package:healthpilot/data/constants.dart';
 import 'package:healthpilot/features/chat/general_chat_screen.dart';
+import 'package:share_plus/share_plus.dart';
 
 import 'package:healthpilot/features/home/discover_healthpilot.dart';
 
 import 'package:healthpilot/features/health/health_profile_screen.dart';
+import 'package:healthpilot/features/health/symptom_tracking_screen.dart';
 
 import 'package:healthpilot/features/health_assessment/assessment_history_screen.dart';
+import 'package:healthpilot/features/health_assessment/health_assessment_flow_screen.dart';
+import 'package:healthpilot/features/notifications/notifications_screen.dart';
 import 'package:healthpilot/features/profile/language_translation.dart';
 import 'package:healthpilot/features/profile/profile_provider.dart';
 import 'package:line_icons/line_icons.dart';
@@ -21,6 +25,7 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:healthpilot/features/chatbot/chatbot_screen.dart';
 import 'package:healthpilot/features/onboarding/signup_and_login_screen.dart';
 import 'package:healthpilot/features/profile/profile_screen.dart';
+import 'package:healthpilot/features/community/community_hub_screen.dart';
 import 'package:healthpilot/features/tutorials/tutorials_entry_screen.dart';
 import 'package:healthpilot/features/home/overview_card.dart';
 import 'package:healthpilot/theme/app_theme.dart';
@@ -250,6 +255,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
         if (_emergencySecondsRemaining <= 1) {
           _emergencyCountdownTimer?.cancel();
           isOnEmeregencyCalling = false;
+          _sendEmergencyEmail();
         } else {
           _emergencySecondsRemaining--;
         }
@@ -264,12 +270,29 @@ class _HomePageScreenState extends State<HomePageScreen> {
     });
   }
 
-  Future<void> _dismissTutorial() async {
-    final p = await SharedPreferences.getInstance();
-    await p.setBool('isTutorGiven', true);
-    if (!mounted) {
-      return;
+  Future<void> _sendEmergencyEmail() async {
+    if (!mounted) return;
+    final messenger = ScaffoldMessenger.of(context);
+    try {
+      await Share.share(
+        'I need urgent assistance. This is an emergency alert sent from HealthPilot.',
+        subject: 'Emergency Alert from HealthPilot',
+      );
+    } catch (_) {
+      messenger.showSnackBar(
+        const SnackBar(content: Text('Could not open email client. Please call emergency services directly.')),
+      );
     }
+  }
+
+  Future<void> _dismissTutorial() async {
+    try {
+      final p = await SharedPreferences.getInstance();
+      await p.setBool('isTutorGiven', true);
+    } catch (_) {
+      // Proceed even if saving fails — the in-memory state is enough for this session.
+    }
+    if (!mounted) return;
     setState(() {
       isTutorGiven = true;
       isOnHelp = false;
@@ -365,17 +388,94 @@ class _HomePageScreenState extends State<HomePageScreen> {
                         ),
                       ),
                       const SizedBox(width: 10),
-                      SafeSvgAsset(
-                        bellReminder,
-                        width: size.width * 0.06,
-                        height: size.width * 0.06,
-                        color: cs.onSurface,
+                      InkWell(
+                        splashColor: const Color.fromARGB(100, 0, 0, 0),
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute<void>(
+                              builder: (_) => const NotificationsScreen(),
+                            ),
+                          );
+                        },
+                        child: SafeSvgAsset(
+                          bellReminder,
+                          width: size.width * 0.06,
+                          height: size.width * 0.06,
+                          color: cs.onSurface,
+                        ),
                       ),
                     ],
                   ),
                 ],
               ),
             ),
+            Builder(builder: (context) {
+              final auth = context.watch<AuthState>();
+              if (!auth.isGuest) return const SizedBox.shrink();
+              return Padding(
+                padding: EdgeInsets.fromLTRB(
+                  size.width * 0.06,
+                  size.width * 0.04,
+                  size.width * 0.06,
+                  0,
+                ),
+                child: Card(
+                  color: Theme.of(context).colorScheme.primaryContainer,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(12),
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute<void>(
+                          builder: (_) => const HealthAssessmentFlowScreen(),
+                        ),
+                      );
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Try our symptom checker',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleSmall
+                                      ?.copyWith(
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  'Get insights on your symptoms — no account needed.',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodySmall
+                                      ?.copyWith(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onSurfaceVariant,
+                                      ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Icon(
+                            Icons.arrow_forward_ios,
+                            size: 16,
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onPrimaryContainer,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            }),
             Container(
               margin: EdgeInsets.only(
                   left: size.width * 0.06, top: size.width * 0.06),
@@ -403,19 +503,23 @@ class _HomePageScreenState extends State<HomePageScreen> {
                     // SizedBox(width: 12),
                     Builder(builder: (context) {
                       final p = context.watch<ProfileProvider>().profile;
-                      final bmi = p.bmi?.toStringAsFixed(1) ?? '21.6';
+                      // Real BMI when the profile has height + weight; otherwise
+                      // a placeholder — never a fabricated value.
+                      final bmi = p.bmi?.toStringAsFixed(1) ?? '—';
                       return OverviewCard(
                         icon: LineIcons.weight,
                         overviewResult: bmi,
                         overviewUnit: 'BMI',
                       );
                     }),
-                    const SizedBox(width: 12),
-                    OverviewCard(
-                      icon: LineIcons.bed,
-                      overviewResult: '6.5',
-                      overviewUnit: 'hours',
-                    ),
+                    // Sleep card — hidden until sleep-tracking integration
+                    // (no data source yet; matches the hidden BPM card above).
+                    // const SizedBox(width: 12),
+                    // OverviewCard(
+                    //   icon: LineIcons.bed,
+                    //   overviewResult: '6.5',
+                    //   overviewUnit: 'hours',
+                    // ),
                   ],
                 ),
               ),
@@ -430,26 +534,34 @@ class _HomePageScreenState extends State<HomePageScreen> {
                 style: Theme.of(context).textTheme.titleSmall,
               ),
             ),
-            Container(
-                margin: EdgeInsets.only(
-                  left: size.width * 0.06,
-                ),
-                width: double.infinity,
-                child: Wrap(
-                  crossAxisAlignment: WrapCrossAlignment.center,
-                  spacing: 6,
-                  children: [
-                    Text(
-                      'Tell us your symptoms',
-                      style: AppTheme.bodyMuted(context),
+            GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => const SymptomTrackingScreen(),
                     ),
-                    Icon(
-                      LineIcons.arrowRight,
-                      size: 16,
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  );
+                },
+                child: Container(
+                    margin: EdgeInsets.only(
+                      left: size.width * 0.06,
                     ),
-                  ],
-                )),
+                    width: double.infinity,
+                    child: Wrap(
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      spacing: 6,
+                      children: [
+                        Text(
+                          'Tell us your symptoms',
+                          style: AppTheme.bodyMuted(context),
+                        ),
+                        Icon(
+                          LineIcons.arrowRight,
+                          size: 16,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
+                      ],
+                    ))),
             Container(
               margin: EdgeInsets.only(
                   left: size.width * 0.06, top: size.height * 0.03),
@@ -479,6 +591,30 @@ class _HomePageScreenState extends State<HomePageScreen> {
                     Navigator.of(context).push(
                       MaterialPageRoute<void>(
                         builder: (context) => const TutorialsEntryScreen(),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
+            SizedBox(height: size.height * 0.02),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: size.width * 0.06),
+              child: Card(
+                margin: EdgeInsets.zero,
+                child: ListTile(
+                  leading: Icon(
+                    Icons.groups_outlined,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                  title: const Text('Community'),
+                  subtitle:
+                      const Text('Find people like you and join support groups'),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (context) => const CommunityHubScreen(),
                       ),
                     );
                   },
@@ -608,7 +744,16 @@ class _HomePageScreenState extends State<HomePageScreen> {
                 ),
               ],
             ),
-            body: SafeArea(child: pages[_currentIndex]),
+            // IndexedStack keeps all tab subtrees mounted (offstage) so their
+            // scroll positions and in-progress input survive tab switches;
+            // only the active one is shown.
+            body: SafeArea(
+              child: IndexedStack(
+                index: _currentIndex,
+                sizing: StackFit.expand,
+                children: pages,
+              ),
+            ),
             floatingActionButton: _currentIndex == 0
                 ? FloatingActionButton(
                     shape: RoundedRectangleBorder(
@@ -647,7 +792,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
                       ),
                       SizedBox(height: size.height * 0.015),
                       const Text(
-                        'Calling your emergency contacts',
+                        'Emergency Alert',
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
@@ -656,7 +801,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
                       ),
                       SizedBox(height: size.height * 0.015),
                       Text(
-                        'Connecting in ${_formatEmergencyCountdown()}',
+                        'Contacting emergency contacts in ${_formatEmergencyCountdown()}',
                         style: TextStyle(
                           fontSize: 28,
                           fontWeight: FontWeight.w700,
@@ -666,7 +811,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
                       ),
                       SizedBox(height: size.height * 0.012),
                       Text(
-                        'This is a demo flow—no real call is placed. Tap Cancel to stop the countdown.',
+                        'An emergency email will be sent to your contacts when the countdown reaches zero. If this is a real emergency, call your local emergency number immediately.',
                         style: TextStyle(
                           color: Theme.of(context)
                               .colorScheme

@@ -40,6 +40,8 @@ class _InitialInfoFinal extends State<InitialInfoFinal> {
     final size = MediaQuery.of(context).size;
 
     return Scaffold(
+        // Light-themed onboarding flow — keep dark text readable in dark mode.
+        backgroundColor: Colors.white,
         body: SingleChildScrollView(
       child: Column(children: [
         Padding(

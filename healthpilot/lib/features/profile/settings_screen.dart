@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:healthpilot/core/auth/auth_state.dart';
-import 'package:healthpilot/features/forgot_password/forgot_password_flow.dart';
+import 'package:healthpilot/features/forgot_password/change_password_screen.dart';
 import 'package:healthpilot/core/navigation/app_navigation.dart';
 import 'package:healthpilot/features/profile/language_translation.dart';
 import 'package:healthpilot/features/profile/terms_and_policy_dialog.dart';
@@ -28,6 +28,91 @@ class _SettingsScreenState extends State<SettingsScreen> {
     await context.read<AuthState>().logout();
     if (!mounted) return;
     AppNavigation.replaceWithLogin(context);
+  }
+
+  void _showFaqDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Frequently Asked Questions'),
+        content: const SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _FaqItem(
+                question: 'What is HealthPilot?',
+                answer: 'HealthPilot is a health companion app that helps you track symptoms, '
+                    'assess health concerns, manage medications, and connect with a community.',
+              ),
+              _FaqItem(
+                question: 'Is my data secure?',
+                answer: 'Yes. Your health data is encrypted and stored securely. '
+                    'We do not share your personal information without your consent.',
+              ),
+              _FaqItem(
+                question: 'How do I activate my account?',
+                answer: 'After signing up, check your email for an activation link. '
+                    'Tap the link to activate your account and start using all features.',
+              ),
+              _FaqItem(
+                question: 'Is this a replacement for medical advice?',
+                answer: 'No. HealthPilot provides general information only and is not a '
+                    'substitute for professional medical advice, diagnosis, or treatment.',
+              ),
+              _FaqItem(
+                question: 'How do I reset my password?',
+                answer: 'Go to the login screen and tap "Forgot your password? Reset now" '
+                    'to receive reset instructions via email.',
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Close'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _deleteAccount() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Delete account?'),
+        content: const Text(
+          'This permanently deletes your account and all associated data. '
+          'This cannot be undone.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            style: TextButton.styleFrom(
+                foregroundColor: Theme.of(ctx).colorScheme.error),
+            onPressed: () => Navigator.of(ctx).pop(true),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+    try {
+      await context.read<AuthState>().deleteAccount();
+      if (!mounted) return;
+      AppNavigation.replaceWithLogin(context);
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Could not delete account. Try again.')),
+        );
+      }
+    }
   }
 
   @override
@@ -76,7 +161,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       onpressed: () {
                         Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) =>
-                                const ForgotPasswordScreen()));
+                                const ChangePasswordScreen()));
                       },
                     ),
                     HealthInformationSettings(
@@ -118,7 +203,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       imageAdress: 'assets/Icons/FAQ.svg',
                       settingAdress: 'FAQ',
                       iconData: Icons.arrow_forward,
-                      onpressed: null,
+                      onpressed: () => _showFaqDialog(context),
+                    ),
+                    HealthInformationSettings(
+                      imageAdress: 'assets/Icons/profile.svg',
+                      settingAdress: 'Delete Account',
+                      iconData: Icons.delete_outline,
+                      onpressed: _deleteAccount,
                     ),
                     _loggingOut
                         ? Padding(
@@ -179,6 +270,36 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _FaqItem extends StatelessWidget {
+  const _FaqItem({required this.question, required this.answer});
+
+  final String question;
+  final String answer;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            question,
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            answer,
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+        ],
       ),
     );
   }

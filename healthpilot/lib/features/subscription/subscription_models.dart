@@ -21,13 +21,17 @@ class SubscriptionPlan {
 
   factory SubscriptionPlan.fromJson(Map<String, dynamic> json) =>
       SubscriptionPlan(
-        id: json['id'] as String,
-        name: json['name'] as String,
-        priceMonthly: (json['price_monthly'] as num).toDouble(),
-        features: (json['features'] as List<dynamic>)
-            .map((e) => e as String)
+        id: json['id'].toString(),
+        name: json['name'] as String? ?? '',
+        // Live API sends `price`; older shape used `price_monthly`.
+        priceMonthly:
+            ((json['price'] ?? json['price_monthly']) as num?)?.toDouble() ?? 0,
+        features: (json['features'] as List<dynamic>? ?? const [])
+            .map((e) => e.toString())
             .toList(),
-        isPremium: json['is_premium'] as bool? ?? false,
+        // Plans don't carry `is_premium`; the free tier has id `free`.
+        isPremium:
+            json['is_premium'] as bool? ?? (json['id']?.toString() != 'free'),
       );
 
   Map<String, dynamic> toJson() => {
@@ -51,12 +55,61 @@ class SubscriptionStatus {
   final bool isActive;
   final DateTime? expiresAt;
 
-  factory SubscriptionStatus.fromJson(Map<String, dynamic> json) =>
-      SubscriptionStatus(
-        planId: json['plan_id'] as String,
-        isActive: json['is_active'] as bool? ?? false,
-        expiresAt: json['expires_at'] != null
-            ? DateTime.parse(json['expires_at'] as String)
-            : null,
+  factory SubscriptionStatus.fromJson(Map<String, dynamic> json) {
+    // Live API: {plan, is_premium, end_date}. Older shape used
+    // {plan_id, is_active, expires_at}. Accept both.
+    final expiresRaw = json['end_date'] ?? json['expires_at'];
+    return SubscriptionStatus(
+      planId: (json['plan'] ?? json['plan_id']) as String? ?? '',
+      isActive: (json['is_premium'] ?? json['is_active']) as bool? ?? false,
+      expiresAt: expiresRaw is String ? DateTime.tryParse(expiresRaw) : null,
+    );
+  }
+}
+
+/// Valid `payment_method` values accepted by `POST /subscriptions/payment/`.
+const List<String> kPaymentMethods = [
+  'bank',
+  'paypal',
+  'credit_card',
+  'stripe',
+  'other',
+];
+
+/// A payment record — `/subscriptions/payment/...`.
+class Payment {
+  const Payment({
+    required this.id,
+    required this.amount,
+    required this.currency,
+    required this.paymentMethod,
+    required this.status,
+    this.externalRef,
+    this.membershipDays,
+    this.createdAt,
+  });
+
+  final int id;
+  final double amount;
+  final String currency;
+  final String paymentMethod;
+  final String status; // pending | succeeded | failed | …
+  final String? externalRef;
+  final int? membershipDays;
+  final DateTime? createdAt;
+
+  static double _toDouble(dynamic v) => v is num
+      ? v.toDouble()
+      : double.tryParse('${v ?? ''}') ?? 0;
+
+  factory Payment.fromJson(Map<String, dynamic> json) => Payment(
+        id: (json['id'] as num?)?.toInt() ?? 0,
+        amount: _toDouble(json['amount']),
+        currency: json['currency'] as String? ?? 'USD',
+        paymentMethod: json['payment_method'] as String? ?? '',
+        status: json['status'] as String? ?? '',
+        externalRef: json['external_ref'] as String?,
+        membershipDays: (json['membership_days'] as num?)?.toInt(),
+        createdAt: DateTime.tryParse(json['created_at'] as String? ?? ''),
       );
 }

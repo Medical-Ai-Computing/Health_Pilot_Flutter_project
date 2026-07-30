@@ -28,12 +28,40 @@ class Medication {
   final String dosageUnit;
   final bool isActive;
 
+  static int _parseDosageAmount(Map<String, dynamic> json) {
+    final raw = json['dosage_amount'];
+    if (raw is num) return raw.toInt();
+    if (raw is String) {
+      final parsed = double.tryParse(raw);
+      if (parsed != null) return parsed.toInt();
+    }
+    final display = json['dosage_display'] as String?;
+    if (display != null) {
+      final match = RegExp(r'([\d.]+)').firstMatch(display);
+      if (match != null) {
+        return double.tryParse(match.group(1)!)?.toInt() ?? 0;
+      }
+    }
+    return 0;
+  }
+
+  static String _parseDosageUnit(Map<String, dynamic> json) {
+    final unit = json['dosage_unit'] as String?;
+    if (unit != null && unit.isNotEmpty) return unit;
+    final display = json['dosage_display'] as String?;
+    if (display != null) {
+      final match = RegExp(r'[\d.]+\s*(.+)$').firstMatch(display.trim());
+      if (match != null) return match.group(1)!.trim();
+    }
+    return 'mg';
+  }
+
   factory Medication.fromJson(Map<String, dynamic> json) => Medication(
         json['medication_name'] as String? ?? '',
         json['doses_per_day'] as int? ?? 1,
-        ((json['dosage_amount'] as num?)?.toInt()) ?? 0,
+        _parseDosageAmount(json),
         id: json['id'] as int?,
-        dosageUnit: json['dosage_unit'] as String? ?? 'mg',
+        dosageUnit: _parseDosageUnit(json),
         isActive: json['is_active'] as bool? ?? true,
       );
 
@@ -73,11 +101,21 @@ class MedicationReminder {
   final String reminderTime; // "HH:MM" 24-hour
   final List<int> daysOfWeek; // 0 = Monday (backend convention)
 
+  static String _normalizeReminderTime(String raw) {
+    // Backend may return "08:00:00"; UI expects "HH:MM".
+    final parts = raw.split(':');
+    if (parts.length >= 2) {
+      return '${parts[0].padLeft(2, '0')}:${parts[1].padLeft(2, '0')}';
+    }
+    return raw;
+  }
+
   factory MedicationReminder.fromJson(Map<String, dynamic> json) =>
       MedicationReminder(
         id: json['id'] as int?,
-        reminderTime: json['reminder_time'] as String,
-        daysOfWeek: List<int>.from(json['days_of_week'] as List),
+        reminderTime:
+            _normalizeReminderTime(json['reminder_time'] as String? ?? ''),
+        daysOfWeek: List<int>.from(json['days_of_week'] as List? ?? const []),
       );
 
   Map<String, dynamic> toJson() => {

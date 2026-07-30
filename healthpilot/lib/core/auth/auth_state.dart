@@ -115,6 +115,18 @@ class AuthState extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Clears the activation-pending state without calling the API.
+  ///
+  /// Used when the user taps the verified deep link (`/open-app?verified=true`)
+  /// after the backend has already consumed the activation token.
+  Future<void> clearActivationPending() async {
+    await _tokenStore.setActivationPending(false);
+    await _tokenStore.clearPendingActivationEmail();
+    _activationPending = false;
+    _pendingActivationEmail = '';
+    notifyListeners();
+  }
+
   Future<void> activate(String token) async {
     final tokens = await _repo.activate(token: token);
     await _storeTokens(tokens);
@@ -153,6 +165,34 @@ class AuthState extends ChangeNotifier {
     } catch (_) {
       // Best-effort — always clear local tokens regardless.
     }
+    await _clearUserSession();
+    _healthInfoCompleted = false;
+    _status = AuthStatus.unauthenticated;
+    notifyListeners();
+  }
+
+  Future<void> changePassword({
+    required String oldPassword,
+    required String newPassword,
+  }) async {
+    await _repo.changePassword(
+        oldPassword: oldPassword, newPassword: newPassword);
+  }
+
+  Future<void> requestPasswordReset(String email) async {
+    await _repo.requestPasswordReset(email: email);
+  }
+
+  Future<void> confirmPasswordReset({
+    required String token,
+    required String newPassword,
+  }) async {
+    await _repo.confirmPasswordReset(token: token, newPassword: newPassword);
+  }
+
+  /// Permanently deletes the account, then tears down the local session.
+  Future<void> deleteAccount() async {
+    await _repo.deleteAccount();
     await _clearUserSession();
     _healthInfoCompleted = false;
     _status = AuthStatus.unauthenticated;

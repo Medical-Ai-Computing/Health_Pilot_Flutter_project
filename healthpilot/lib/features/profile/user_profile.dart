@@ -59,6 +59,7 @@ class UserProfile {
     this.aboutMe,
     this.isVisibleInCommunity = true,
     this.avatarAssetPath,
+    this.profilePictureUrl,
   });
 
   final int? id;
@@ -81,7 +82,12 @@ class UserProfile {
   final String? hadRecentSurgery;
   final String? aboutMe;
   final bool isVisibleInCommunity;
+
+  /// Local picked-file path (preview before upload).
   final String? avatarAssetPath;
+
+  /// Server-hosted avatar URL (`profile_picture` from `/auth/me/`).
+  final String? profilePictureUrl;
 
   String? get displayName {
     final parts =
@@ -98,7 +104,13 @@ class UserProfile {
       firstName: firstName,
       lastName: lastName,
       email: data['email'] as String?,
+      phoneE164: (data['mobile_no'] as String?)?.isNotEmpty == true
+          ? data['mobile_no'] as String?
+          : null,
       gender: data['gender'] as String?,
+      profilePictureUrl: (data['profile_picture'] as String?)?.isNotEmpty == true
+          ? data['profile_picture'] as String?
+          : null,
       dateOfBirth: _parseApiDate(data['date_of_birth'] as String?),
       age: _parseApiInt(data['age']),
       weightKg: _parseApiDouble(data['weight_kg']),
@@ -185,6 +197,7 @@ class UserProfile {
         aboutMe: other.aboutMe ?? aboutMe,
         isVisibleInCommunity: other.isVisibleInCommunity,
         avatarAssetPath: other.avatarAssetPath ?? avatarAssetPath,
+        profilePictureUrl: other.profilePictureUrl ?? profilePictureUrl,
       );
 
   UserProfile copyWith({
@@ -209,6 +222,7 @@ class UserProfile {
     String? aboutMe,
     bool? isVisibleInCommunity,
     String? avatarAssetPath,
+    String? profilePictureUrl,
   }) =>
       UserProfile(
         id: id ?? this.id,
@@ -232,12 +246,14 @@ class UserProfile {
         aboutMe: aboutMe ?? this.aboutMe,
         isVisibleInCommunity: isVisibleInCommunity ?? this.isVisibleInCommunity,
         avatarAssetPath: avatarAssetPath ?? this.avatarAssetPath,
+        profilePictureUrl: profilePictureUrl ?? this.profilePictureUrl,
       );
 
   Map<String, dynamic> toAuthUpdateJson() => {
         if (firstName != null) 'first_name': firstName,
         if (lastName != null) 'last_name': lastName,
         if (email != null) 'email': email,
+        if (phoneE164 != null) 'mobile_no': phoneE164,
         if (gender != null) 'gender': gender,
         if (dateOfBirth != null) 'date_of_birth': _formatApiDate(dateOfBirth!),
         if (weightKg != null) 'weight_kg': weightKg,

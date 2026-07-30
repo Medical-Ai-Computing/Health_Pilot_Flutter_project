@@ -7,7 +7,29 @@ abstract class IHealthRepository {
   Future<void> clearConditions();
 
   Future<List<HealthSymptom>> fetchSymptoms();
+  Future<HealthSymptom> fetchSymptom(int id);
   Future<HealthSymptom> addSymptom(HealthSymptom symptom);
   Future<void> deleteSymptom(int id);
   Future<void> clearSymptoms();
+
+  // Vitals — `/health/vitals/`
+  Future<List<VitalLog>> fetchVitals();
+  Future<VitalLog> fetchVital(int id);
+  Future<VitalLog> addVital(VitalLog vital);
+
+  // Goals — `/health/goals/`
+  Future<List<HealthGoal>> fetchGoals();
+  Future<HealthGoal> fetchGoal(int id);
+  Future<HealthGoal> addGoal(HealthGoal goal);
+  Future<HealthGoal> updateGoal(int id, HealthGoal goal);
+  Future<void> deleteGoal(int id);
+
+  // AI summaries — `/health/summaries/`
+  Future<HealthSummary?> fetchLatestSummary();
+
+  /// List all AI summaries — `GET /health/summaries/`.
+  Future<List<HealthSummary>> fetchSummaries();
+
+  // Aggregate overview — `/health/dashboard/`
+  Future<HealthDashboard> fetchDashboard();
 }
