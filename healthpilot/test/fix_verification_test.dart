@@ -134,6 +134,12 @@ class _CountedCommunityRepo implements ICommunityRepository {
   }
 
   @override
+  Future<CommunityGroup> fetchGroup(int id) async => throw UnimplementedError();
+
+  @override
+  Future<void> deleteGroup(int id) async {}
+
+  @override
   Future<void> leaveGroup(int groupId) async {
     _leaveCallCount++;
     await Future.delayed(const Duration(milliseconds: 10));

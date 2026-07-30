@@ -26,18 +26,19 @@ Needs a live probe to determine fields before integrating.
 
 ---
 
-## Recently integrated (this pass)
-- **Subscriptions payment**: `createPayment` (`POST /payment/` — `{amount,
-  payment_method}`, methods: `bank|paypal|credit_card|stripe|other`),
-  `confirmPayment` (`POST /payment/confirm/` — response is `{payment, membership}`,
-  payment unwrapped), `fetchPaymentHistory` (`GET /payment/history/`). Also fixed
-  `subscribe` to use the path form `POST /subscriptions/subscribe/{plan}/`.
-- **Notifications** (new feature module): `fetchNotifications`, `unreadCount`
-  (`{unread_count}`), `markRead({ids})` (omit ids → mark all), `registerDevice`
-  (`{token, platform}`). Provider + DI wired behind `FF_NOTIFICATIONS`.
-- **Ads** (new feature module): `fetchAds` (tolerant of `data:null` / list /
-  `{results}`), `recordClick`. Provider + DI behind new `FF_ADS`. Ad shape has no
-  Swagger schema, so `AdItem` maps common fields and keeps the raw payload.
+## Recently integrated
+
+### `GET /health/symptoms/{id}/`
+Single symptom detail. Implemented as `fetchSymptom(int id)` on
+`IHealthRepository` / `RemoteHealthRepository` / `MockHealthRepository`.
+
+### `GET /community/groups/{id}/`
+Single community group detail. Implemented as `fetchGroup(int id)` on
+`ICommunityRepository` / `RemoteCommunityRepository` / `MockCommunityRepository`.
+
+### `DELETE /community/groups/{id}/`
+Delete a community group (creator only). Implemented as `deleteGroup(int id)` on
+`ICommunityRepository` / `RemoteCommunityRepository` / `MockCommunityRepository`.
 
 ## Notes
 - All new providers auto-load on authentication via `ChangeNotifierProxyProvider`

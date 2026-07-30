@@ -86,12 +86,16 @@ class HealthSymptom {
   final String name;
   final int severity; // 0–10
   final String loggedAt;
+  final String? description;
+  final String? bodyLocation;
 
   const HealthSymptom({
     this.id,
     required this.name,
     required this.severity,
     required this.loggedAt,
+    this.description,
+    this.bodyLocation,
   });
 
   factory HealthSymptom.fromJson(Map<String, dynamic> json) => HealthSymptom(
@@ -101,6 +105,8 @@ class HealthSymptom {
         severity: json['severity'] as int? ?? 1,
         // Server stamps `logged_at` (ISO 8601); fall back to created_at.
         loggedAt: (json['logged_at'] ?? json['created_at'] ?? '') as String,
+        description: json['description'] as String?,
+        bodyLocation: json['body_location'] as String?,
       );
 
   // Backend requires `symptom_name` and `severity` (1–10); `logged_at` is
@@ -109,6 +115,8 @@ class HealthSymptom {
   Map<String, dynamic> toJson() => {
         'symptom_name': name,
         'severity': severity.clamp(1, 10),
+        if (description != null && description!.isNotEmpty) 'description': description,
+        if (bodyLocation != null && bodyLocation!.isNotEmpty) 'body_location': bodyLocation,
       };
 }
 

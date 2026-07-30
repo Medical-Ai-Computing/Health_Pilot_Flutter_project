@@ -301,6 +301,12 @@ class MockCommunityRepo implements ICommunityRepository {
       throw UnimplementedError();
 
   @override
+  Future<CommunityGroup> fetchGroup(int id) async => throw UnimplementedError();
+
+  @override
+  Future<void> deleteGroup(int id) async {}
+
+  @override
   Future<void> joinGroup(int groupId) async {}
 
   @override
@@ -338,6 +344,12 @@ class EmptyMockCommunityRepo implements ICommunityRepository {
     String? description,
   }) async =>
       throw UnimplementedError();
+
+  @override
+  Future<CommunityGroup> fetchGroup(int id) async => throw UnimplementedError();
+
+  @override
+  Future<void> deleteGroup(int id) async {}
 
   @override
   Future<void> joinGroup(int groupId) async {}

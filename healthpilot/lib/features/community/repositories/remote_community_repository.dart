@@ -98,10 +98,20 @@ class RemoteCommunityRepository implements ICommunityRepository {
   }
 
   @override
+  Future<CommunityGroup> fetchGroup(int id) async {
+    final data = await _api.get('${ApiConstants.communityBase}/groups/$id/');
+    return CommunityGroup.fromJson(data as Map<String, dynamic>);
+  }
+
+  @override
   Future<void> joinGroup(int groupId) async =>
       _api.post('${ApiConstants.communityBase}/groups/$groupId/join/');
 
   @override
   Future<void> leaveGroup(int groupId) async =>
       _api.post('${ApiConstants.communityBase}/groups/$groupId/leave/');
+
+  @override
+  Future<void> deleteGroup(int id) async =>
+      _api.delete('${ApiConstants.communityBase}/groups/$id/');
 }

@@ -131,17 +131,32 @@ fi
 step "HEALTH: GET /health/symptoms/"
 call GET "/health/symptoms/"
 
-step "HEALTH: POST /health/symptoms/ (create temp)"
+step "HEALTH: POST /health/symptoms/ (create temp 1)"
+call POST "/health/symptoms/" '{"symptom_name":"__probe_bulk_1","severity":2}'
+
+step "HEALTH: POST /health/symptoms/ (create temp 2)"
+call POST "/health/symptoms/" '{"symptom_name":"__probe_bulk_2","severity":4}'
+
+step "HEALTH: DELETE /health/symptoms/ (bulk delete all)"
+call DELETE "/health/symptoms/"
+
+step "HEALTH: GET /health/symptoms/ (verify empty after bulk delete)"
+call GET "/health/symptoms/"
+
+step "HEALTH: POST /health/symptoms/ (create temp for individual test)"
 call POST "/health/symptoms/" '{"symptom_name":"__probe_symptom","severity":3}'
 SYMPTOM_ID="$(echo "$LAST_BODY" | jq -r '.data.id // .id // empty')"
 info "created symptom id = ${SYMPTOM_ID:-<none>}"
 
 if [[ -n "$SYMPTOM_ID" ]]; then
-  step "HEALTH: DELETE /health/symptoms/$SYMPTOM_ID/ (cleanup)"
+  step "HEALTH: GET /health/symptoms/$SYMPTOM_ID/"
+  call GET "/health/symptoms/$SYMPTOM_ID/"
+
+  step "HEALTH: DELETE /health/symptoms/$SYMPTOM_ID/ (individual cleanup)"
   call DELETE "/health/symptoms/$SYMPTOM_ID/"
 fi
 
-step "HEALTH: GET /health/conditions/ (app says this doesn't exist — verify)"
+step "HEALTH: GET /health/conditions/ (backend confirmed no /health/conditions/ endpoint — expect 404)"
 call GET "/health/conditions/"
 
 ############################  NUTRITION  ############################
@@ -217,6 +232,40 @@ if [[ "$PROBE_SUBSCRIPTION_WRITES" == "1" ]]; then
 else
   info "Skipping subscription write probes (set PROBE_SUBSCRIPTION_WRITES=1 to POST /subscriptions/payment/)."
   info "subscribe / cancel / payment confirm are always skipped to avoid mutating live membership."
+fi
+
+############################  COMMUNITY & CHAT  ############################
+step "COMMUNITY: GET /community/groups/"
+call GET "/community/groups/"
+
+step "COMMUNITY: POST /community/groups/ (create temp)"
+call POST "/community/groups/" \
+  '{"name":"__probe_community","slug":"probe-community","description":"Temporary probe community","is_public":true}'
+COMM_ID="$(echo "$LAST_BODY" | jq -r '.data.id // .id // empty')"
+CHAT_GROUP_ID="$(echo "$LAST_BODY" | jq -r '.data.chat_group_id // empty')"
+info "created community id = ${COMM_ID:-<none>}, chat_group_id = ${CHAT_GROUP_ID:-<none>}"
+
+if [[ -n "$COMM_ID" ]]; then
+  step "COMMUNITY: GET /community/groups/$COMM_ID/"
+  call GET "/community/groups/$COMM_ID/"
+
+  step "COMMUNITY: POST /community/groups/$COMM_ID/join/"
+  call POST "/community/groups/$COMM_ID/join/"
+
+  if [[ -n "$CHAT_GROUP_ID" ]]; then
+    step "CHAT: GET /chat/groups/$CHAT_GROUP_ID/messages/"
+    call GET "/chat/groups/$CHAT_GROUP_ID/messages/"
+
+    step "CHAT: POST /chat/groups/$CHAT_GROUP_ID/messages/ (send temp message)"
+    call POST "/chat/groups/$CHAT_GROUP_ID/messages/" \
+      '{"content":"__probe_message from api_probe.sh"}'
+  fi
+
+  step "COMMUNITY: POST /community/groups/$COMM_ID/leave/"
+  call POST "/community/groups/$COMM_ID/leave/"
+
+  step "COMMUNITY: DELETE /community/groups/$COMM_ID/ (cleanup)"
+  call DELETE "/community/groups/$COMM_ID/"
 fi
 
 step "Done. (logout intentionally skipped to keep refresh token valid)"

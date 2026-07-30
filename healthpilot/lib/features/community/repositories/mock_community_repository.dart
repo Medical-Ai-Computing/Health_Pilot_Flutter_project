@@ -128,6 +128,18 @@ class MockCommunityRepository implements ICommunityRepository {
   }
 
   @override
+  Future<CommunityGroup> fetchGroup(int id) async {
+    final idx = _groups.indexWhere((g) => g.id == id);
+    if (idx == -1) throw Exception('CommunityGroup $id not found');
+    return _groups[idx];
+  }
+
+  @override
+  Future<void> deleteGroup(int id) async {
+    _groups.removeWhere((g) => g.id == id);
+  }
+
+  @override
   Future<void> joinGroup(int groupId) async {
     final i = _groups.indexWhere((g) => g.id == groupId);
     if (i != -1) {

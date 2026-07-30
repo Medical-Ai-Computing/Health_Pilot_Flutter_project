@@ -7,21 +7,31 @@ class RemoteHealthRepository implements IHealthRepository {
   const RemoteHealthRepository(this._client);
   final ApiClient _client;
 
-  // conditions/ endpoint does not exist on the backend — stubs return empty/throw.
+  // Health Tracking "conditions" (chronic disorders) UI expects:
+  //   GET/POST   /api/v1/health/conditions/
+  //   DELETE     /api/v1/health/conditions/<id>/
+  //   DELETE     /api/v1/health/conditions/   (clear history)
+  // Backend does not expose this yet — list stays empty; writes throw.
   @override
   Future<List<HealthCondition>> fetchConditions() async => [];
 
   @override
   Future<HealthCondition> addCondition(HealthCondition condition) =>
-      throw UnimplementedError('conditions endpoint not available');
+      throw UnimplementedError(
+        'GET/POST /api/v1/health/conditions/ not available on backend',
+      );
 
   @override
   Future<void> deleteCondition(int id) =>
-      throw UnimplementedError('conditions endpoint not available');
+      throw UnimplementedError(
+        'DELETE /api/v1/health/conditions/<id>/ not available on backend',
+      );
 
   @override
   Future<void> clearConditions() =>
-      throw UnimplementedError('conditions endpoint not available');
+      throw UnimplementedError(
+        'DELETE /api/v1/health/conditions/ not available on backend',
+      );
 
   /// Fetches every page of a DRF-paginated endpoint, following `next` until
   /// it is null, returning the concatenated `results`.
@@ -66,12 +76,19 @@ class RemoteHealthRepository implements IHealthRepository {
   }
 
   @override
+  Future<HealthSymptom> fetchSymptom(int id) async {
+    final data = await _client.get('${ApiConstants.healthBase}/symptoms/$id/');
+    return HealthSymptom.fromJson(data as Map<String, dynamic>);
+  }
+
+  @override
   Future<void> deleteSymptom(int id) async =>
       _client.delete('${ApiConstants.healthBase}/symptoms/$id/');
 
   @override
   Future<void> clearSymptoms() async {
-    // Backend has no bulk DELETE for symptoms; UI clears local state only.
+    // Bulk delete: DELETE /health/symptoms/ removes all records for the user.
+    await _client.delete('${ApiConstants.healthBase}/symptoms/');
   }
 
   // ── Vitals ────────────────────────────────────────────────────────────────

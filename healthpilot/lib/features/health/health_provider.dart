@@ -40,7 +40,7 @@ class HealthProvider extends ChangeNotifier {
     _error = null;
     notifyListeners();
     try {
-      // conditions endpoint may not exist on backend yet — fail silently
+      // /health/conditions/ is not on the backend yet — empty list is expected.
       try {
         _conditions = await _repo.fetchConditions();
       } catch (_) {
@@ -153,6 +153,10 @@ class HealthProvider extends ChangeNotifier {
     await _repo.clearSymptoms();
     _symptoms = [];
     notifyListeners();
+  }
+
+  Future<HealthSymptom> fetchSymptom(int id) async {
+    return await _repo.fetchSymptom(id);
   }
 
   // ── Summaries ───────────────────────────────────────────────────────────────

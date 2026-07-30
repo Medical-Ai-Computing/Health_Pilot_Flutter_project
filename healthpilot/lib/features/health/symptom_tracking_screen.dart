@@ -308,29 +308,70 @@ class _SymptomTrackingScreenState extends State<SymptomTrackingScreen> {
                     return SymptomTracking(
                       disorder: symptoms[index].name,
                       onTap: () async {
-                        final id = symptoms[index].id;
+                        final symptom = symptoms[index];
+                        final id = symptom.id;
                         if (id == null) return;
-                        final confirmed = await showDialog<bool>(
+                        
+                        // Show symptom details dialog with option to delete
+                        final result = await showDialog<String>(
                           context: context,
                           builder: (ctx) => AlertDialog(
-                            title: const Text('Delete Symptom'),
-                            content: Text(
-                              'Delete "${symptoms[index].name}"?',
+                            title: const Text('Symptom Details'),
+                            content: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('Name: ${symptom.name}'),
+                                const SizedBox(height: 8),
+                                Text('Severity: ${symptom.severity}'),
+                                const SizedBox(height: 8),
+                                if (symptom.description != null && symptom.description!.isNotEmpty)
+                                  Text('Description: ${symptom.description}'),
+                                const SizedBox(height: 8),
+                                if (symptom.loggedAt.isNotEmpty)
+                                  Text('Logged: ${symptom.loggedAt}'),
+                                const SizedBox(height: 8),
+                                if (symptom.bodyLocation != null && symptom.bodyLocation!.isNotEmpty)
+                                  Text('Location: ${symptom.bodyLocation}'),
+                              ],
                             ),
                             actions: [
                               TextButton(
-                                onPressed: () => Navigator.pop(ctx, false),
-                                child: const Text('Cancel'),
+                                onPressed: () => Navigator.pop(ctx, 'view'),
+                                child: const Text('Close'),
                               ),
                               TextButton(
-                                onPressed: () => Navigator.pop(ctx, true),
+                                onPressed: () => Navigator.pop(ctx, 'delete'),
+                                style: TextButton.styleFrom(foregroundColor: Colors.red),
                                 child: const Text('Delete'),
                               ),
                             ],
                           ),
                         );
-                        if (confirmed == true && context.mounted) {
-                          context.read<HealthProvider>().deleteSymptom(id);
+                        
+                        if (result == 'delete' && context.mounted) {
+                          final confirmed = await showDialog<bool>(
+                            context: context,
+                            builder: (ctx) => AlertDialog(
+                              title: const Text('Delete Symptom'),
+                              content: Text(
+                                'Delete "${symptom.name}"?',
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.pop(ctx, false),
+                                  child: const Text('Cancel'),
+                                ),
+                                TextButton(
+                                  onPressed: () => Navigator.pop(ctx, true),
+                                  child: const Text('Delete'),
+                                ),
+                              ],
+                            ),
+                          );
+                          if (confirmed == true && context.mounted) {
+                            context.read<HealthProvider>().deleteSymptom(id);
+                          }
                         }
                       },
                     );

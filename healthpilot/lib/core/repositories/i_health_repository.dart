@@ -7,6 +7,7 @@ abstract class IHealthRepository {
   Future<void> clearConditions();
 
   Future<List<HealthSymptom>> fetchSymptoms();
+  Future<HealthSymptom> fetchSymptom(int id);
   Future<HealthSymptom> addSymptom(HealthSymptom symptom);
   Future<void> deleteSymptom(int id);
   Future<void> clearSymptoms();

@@ -9,6 +9,7 @@ abstract class ICommunityRepository {
 
   // Community groups — `/community/groups/`
   Future<List<CommunityGroup>> fetchGroups();
+  Future<CommunityGroup> fetchGroup(int id);
   Future<CommunityGroup> createGroup({
     required String name,
     required String slug,
@@ -16,4 +17,5 @@ abstract class ICommunityRepository {
   });
   Future<void> joinGroup(int groupId);
   Future<void> leaveGroup(int groupId);
+  Future<void> deleteGroup(int id);
 }

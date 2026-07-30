@@ -49,6 +49,13 @@ class MockHealthRepository implements IHealthRepository {
   Future<List<HealthSymptom>> fetchSymptoms() async => List.of(_symptoms);
 
   @override
+  Future<HealthSymptom> fetchSymptom(int id) async {
+    final idx = _symptoms.indexWhere((s) => s.id == id);
+    if (idx == -1) throw Exception('HealthSymptom $id not found');
+    return _symptoms[idx];
+  }
+
+  @override
   Future<HealthSymptom> addSymptom(HealthSymptom symptom) async {
     final created = HealthSymptom(
       id: _nextId++,

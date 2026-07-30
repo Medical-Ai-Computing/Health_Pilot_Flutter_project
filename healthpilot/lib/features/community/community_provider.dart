@@ -170,6 +170,16 @@ class CommunityProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<CommunityGroup> fetchGroup(int id) async {
+    return await _repo.fetchGroup(id);
+  }
+
+  Future<void> deleteGroup(int id) async {
+    await _repo.deleteGroup(id);
+    _groups = _groups.where((g) => g.id != id).toList();
+    notifyListeners();
+  }
+
   // ── Persistence ──────────────────────────────────────────────────────────
 
   Future<void> _saveSentPeerIds() async {

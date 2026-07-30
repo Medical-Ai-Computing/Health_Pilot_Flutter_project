@@ -24,12 +24,19 @@ class CommunityGroup {
   final bool isMember;
   final bool isActive;
 
-  /// UUID of the linked GroupChat room, when the backend has associated one.
-  /// Null means "no conversation linked" — joining this group is membership
-  /// only; the chat is opt-in (see CommunityGroupsScreen "Open chat").
+  /// UUID of the linked GroupChat room.
+  ///
+  /// Every community is linked to a chat room. Join/leave the community via
+  /// the Community API; use this id only to open the room and send/receive
+  /// messages via the Chat API (do not call chat join/leave for communities).
   final String? chatGroupId;
 
-  CommunityGroup copyWith({bool? isMember, int? memberCount}) => CommunityGroup(
+  CommunityGroup copyWith({
+    bool? isMember,
+    int? memberCount,
+    String? chatGroupId,
+  }) =>
+      CommunityGroup(
         id: id,
         name: name,
         slug: slug,
@@ -38,7 +45,7 @@ class CommunityGroup {
         memberCount: memberCount ?? this.memberCount,
         isMember: isMember ?? this.isMember,
         isActive: isActive,
-        chatGroupId: chatGroupId,
+        chatGroupId: chatGroupId ?? this.chatGroupId,
       );
 
   factory CommunityGroup.fromJson(Map<String, dynamic> json) => CommunityGroup(
@@ -52,8 +59,7 @@ class CommunityGroup {
         memberCount: (json['member_count'] as num?)?.toInt() ?? 0,
         isMember: json['is_member'] as bool? ?? false,
         isActive: json['is_active'] as bool? ?? true,
-        // Backend will add this once community↔chat linking ships; tolerate
-        // both `chat_group_id` and a nested `group_chat_id` ref.
+        // Prefer `chat_group_id`; tolerate legacy nested `group_chat_id`.
         chatGroupId:
             (json['chat_group_id'] ?? json['group_chat_id'])?.toString(),
       );
